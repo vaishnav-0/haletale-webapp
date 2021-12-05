@@ -1,0 +1,22 @@
+html {
+  box-sizing: border-box;
+}
+textarea:focus,
+input:focus,
+input {
+  outline: none;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+img {
+  max-width: 100%;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+:root {
+  --teal-dark: teal;
+}

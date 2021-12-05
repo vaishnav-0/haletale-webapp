@@ -1,0 +1,116 @@
+.header {
+  height: 70px;
+}
+
+.topnav {
+  display: flex;
+  height: 100%;
+  justify-content: space-between;
+  height: 100%;
+  background-color: white;
+}
+.topnav img {
+  max-height: 100%;
+}
+.logo {
+  height: 100%;
+}
+.logo > img {
+  max-height: 100%;
+  object-fit: contain;
+}
+.btn-smoothround-hollow {
+  background-color: #00000000;
+  border: var(--teal-dark) solid 1px;
+  color: var(--teal-dark);
+}
+.btn-smoothround-solid {
+  border: var(--teal-dark) solid 2px;
+  color: white;
+  background-color: var(--teal-dark);
+}
+.topnav-right-container,
+.topnav-left-container {
+  display: flex;
+  height: 100%;
+}
+.topnav-right-container {
+  padding: 18px 0 18px 0;
+  gap: 10px;
+  margin-right: 13px;
+  justify-content: space-around;
+}
+.topnav-right-container button {
+  padding: 0 13px 0 13px;
+}
+.profile-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.profile-container > img {
+  border-radius: 50%;
+  border: 2px solid var(--teal-dark);
+}
+.profile-container > a {
+  height: 100%;
+}
+.profile-dropdown {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.profile-dropdown > p > span {
+  color: var(--teal-dark);
+}
+
+.profile-dropdown-down {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.profile-dropdown-down > img {
+  height: 40%;
+}
+.notifbell {
+  padding: 5px 0 5px 0;
+  display: flex;
+  justify-content: center;
+}
+@media screen and (min-width: 481px) {
+  .header {
+    height: 90px;
+  }
+  .topnav {
+    padding-right: 15px;
+  }
+  .topnav-right-container {
+    padding: 20px 0 20px 0;
+    gap: 25px;
+  }
+  .topnav-right-container button {
+    padding: 0 23px 0 23px;
+    margin: 5px 0 5px 0;
+  }
+  .notifbell {
+    padding: 10px 0 10px 0;
+  }
+}
+@media screen and (min-width: 768px) {
+  .topnav {
+    padding: 0 15px 0 15px;
+  }
+  .topnav-right-container {
+    gap: 45px;
+  }
+}
+@media screen and (min-width: 1400px) {
+  .topnav {
+    padding: 0 55px 0 55px;
+  }
+  .topnav-right-container {
+    gap: 55px;
+  }
+}
