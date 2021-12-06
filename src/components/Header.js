@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import userPlaceholder from "../assets/images/user.png";
 import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import bellIcon from "../assets/images/noti-icon.png";
+import menuIcon from "../assets/icons/menu.png";
 import "./Header.scss";
+import { ButtonHollow } from './Button';
+import { ButtonSolid } from './Button';
 export default function Header() {
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
     return (
         <div className="header">
             <div className="topnav">
@@ -14,25 +19,39 @@ export default function Header() {
                     </div>
                 </div>
                 <div className="topnav-right-container">
+
                     <div className="profile-container">
                         <img src={userPlaceholder} />
                         <div className="profile-dropdown">
                             <p>Welcome <span className="name-highlight">John!</span></p>
-                            <div className="profile-dropdown-down">
+                            <div className="profile-dropdown-down" onClick={() => setDropdownOpen(!dropdownOpen)}>
                                 <img src={downIcon} />
+                            </div>
+                            <div className={`dropdown-box ${!dropdownOpen ? "is-close" : ""}`}>
+                                <a href="#">Profile{dropdownOpen}</a>
+                                <a href="#">Change Password</a>
+                                <a href="#">Account</a>
+                                <a href="#">Notifications</a>
+                                <a href="#">Your Bookings</a>
+                                <a href="#">Wishlist</a>
+                                <a href="#">Settings</a>
+                                <a href="#">Help</a>
+                                <a href="#">Logout</a>
                             </div>
                         </div>
                     </div>
                     <div className="notifbell">
                         <img src={bellIcon} />
                     </div>
-                    {/*
-                    <button className="btn-smoothround-hollow">Sign In</button>
-                    <button className="btn-smoothround-solid">Sign Up</button>
                     <div className="menuicon">
-                        <img src="menu-button-of-three-horizontal-lines.png" />
+                        <img src={menuIcon} />
                     </div>
-                    */}
+                    {/*
+
+                    <ButtonHollow label="Sign in" />
+                    <ButtonSolid label="Sign up" />
+
+                                        */}
 
 
                 </div>
