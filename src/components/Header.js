@@ -3,7 +3,7 @@ import userPlaceholder from "../assets/images/user.png";
 import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import bellIcon from "../assets/images/noti-icon.png";
-import "./Header.css";
+import "./Header.scss";
 export default function Header() {
     return (
         <div className="header">
