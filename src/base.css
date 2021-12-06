@@ -1,5 +1,6 @@
 html {
   box-sizing: border-box;
+  font-family: "HelveticaNeue";
 }
 textarea:focus,
 input:focus,
@@ -16,7 +17,27 @@ img {
 *:before,
 *:after {
   box-sizing: inherit;
+  font-weight: 200;
 }
 :root {
   --teal-dark: teal;
+}
+@font-face {
+  font-family: "HelveticaNeue";
+  font-weight: 800;
+  src: url(assets/fonts/helvetica/HelveticaNeue-Heavy.otf);
+}
+
+@font-face {
+  font-family: "HelveticaNeue";
+  font-weight: 400;
+
+  src: url(assets/fonts/helvetica/HelveticaNeue-Medium.otf);
+}
+
+@font-face {
+  font-family: "HelveticaNeue";
+  font-weight: 200;
+
+  src: url(assets/fonts/helvetica/HelveticaNeue-Extended.otf);
 }
