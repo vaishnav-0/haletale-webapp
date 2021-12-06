@@ -1,116 +1,203 @@
+@import "../breakpoints.scss";
+
 .header {
   height: 70px;
+  font-size: 15px;
+
+  @include media(">=smMin") {
+    height: 100px;
+    font-size: 18px;
+  }
 }
 
 .topnav {
   display: flex;
   height: 100%;
   justify-content: space-between;
-  height: 100%;
   background-color: white;
+
+  @include media_template("sm") {
+
+    padding-right: 15px;
+  }
+
+  @include media_template("md") {
+    padding: 0 15px 0 15px;
+
+  }
+
+  @include media(">=lgMin") {
+    padding: 0 55px 0 55px;
+
+  }
+
+  img {
+    max-height: 100%;
+  }
 }
-.topnav img {
-  max-height: 100%;
-}
+
 .logo {
   height: 100%;
+
+  >img {
+    max-height: 100%;
+    object-fit: contain;
+  }
 }
-.logo > img {
-  max-height: 100%;
-  object-fit: contain;
-}
-.btn-smoothround-hollow {
-  background-color: #00000000;
-  border: var(--teal-dark) solid 1px;
-  color: var(--teal-dark);
-}
-.btn-smoothround-solid {
-  border: var(--teal-dark) solid 2px;
-  color: white;
-  background-color: var(--teal-dark);
-}
+
 .topnav-right-container,
 .topnav-left-container {
   display: flex;
   height: 100%;
 }
+
 .topnav-right-container {
   padding: 18px 0 18px 0;
   gap: 10px;
   margin-right: 13px;
   justify-content: space-around;
+
+  @include media_template("sm") {
+
+    padding: 20px 0 20px 0;
+    gap: 25px;
+  }
+
+  @include media_template("md") {
+    gap: 45px;
+
+  }
+
+  @include media(">=lgMin") {
+    gap: 55px;
+
+  }
+
+  button {
+    padding: 0 13px 0 13px;
+
+    @include media(">=smMin") {
+
+      padding: 0 25px 0 25px;
+      margin: 5px 0 5px 0;
+    }
+  }
 }
-.topnav-right-container button {
-  padding: 0 13px 0 13px;
-}
+
 .profile-container {
   display: flex;
   align-items: center;
   gap: 10px;
   height: 100%;
+
+  >img {
+    border-radius: 50%;
+    border: 2px solid var(--teal-dark);
+  }
+
+  >a {
+    height: 100%;
+  }
 }
-.profile-container > img {
-  border-radius: 50%;
-  border: 2px solid var(--teal-dark);
-}
-.profile-container > a {
-  height: 100%;
-}
+
 .profile-dropdown {
   height: 100%;
+  position: relative;
   display: flex;
   align-items: center;
-}
-.profile-dropdown > p > span {
-  color: var(--teal-dark);
+
+  >p>span {
+    color: var(--teal-dark);
+  }
+
 }
 
 .profile-dropdown-down {
   height: 100%;
   display: flex;
   align-items: center;
+
+  >img {
+    height: 40%;
+  }
 }
 
-.profile-dropdown-down > img {
-  height: 40%;
+.dropdown-box {
+  display: flex;
+  position: absolute;
+  max-height: 650px;
+  overflow: hidden;
+  flex-direction: column;
+  background-color: var(--teal-dark);
+  top: 115%;
+  right: -30px;
+  border-radius: 20px;
+  padding: 0px 50px 0px 25px;
+  transition: max-height 0.5s ease-in;
+
+  :nth-child(1) {
+    margin-top: 10px;
+  }
+
+  :nth-last-child(1) {
+    margin-bottom: 10px;
+  }
+
+  @include media(">=smMin") {
+    font-size: 21px;
+    padding: 0 60px 0 35px;
+    right: 0;
+    :nth-child(1) {
+      margin-top: 15px;
+    }
+
+    :nth-last-child(1) {
+      margin-bottom: 15px;
+    }
+  }
+
+  @include media(">=lgMin") {
+    font-size: 24px;
+    padding: 0 70px 0 45px;
+
+    :nth-child(1) {
+      margin-top: 20px;
+    }
+
+    :nth-last-child(1) {
+      margin-bottom: 20px;
+    }
+  }
+
+
+
+  a {
+    text-decoration: none;
+    color: white;
+    padding: 10px 0 10px 0;
+    transition: color 0.7s ease;
+    white-space: nowrap;
+
+
+    &:hover {
+      color: black;
+    }
+  }
 }
-.notifbell {
+
+.is-close {
+  max-height: 0px;
+}
+
+.notifbell,
+.menuicon {
   padding: 5px 0 5px 0;
   display: flex;
   justify-content: center;
-}
-@media screen and (min-width: var(--sm-min)) {
-  .header {
-    height: 90px;
-  }
-  .topnav {
-    padding-right: 15px;
-  }
-  .topnav-right-container {
-    padding: 20px 0 20px 0;
-    gap: 25px;
-  }
-  .topnav-right-container button {
-    padding: 0 23px 0 23px;
-    margin: 5px 0 5px 0;
-  }
-  .notifbell {
-    padding: 10px 0 10px 0;
-  }
-}
-@media screen and (min-width: var(--md-min)) {
-  .topnav {
-    padding: 0 15px 0 15px;
-  }
-  .topnav-right-container {
-    gap: 45px;
-  }
-}
-@media screen and (min-width: var(--lg-min)) {
-  .topnav {
-    padding: 0 55px 0 55px;
-  }
-  .topnav-right-container {
-    gap: 55px;
+  height: 100%;
+
+  @include media(">=smMin") {
+    padding: 15px 0 15px 0;
+
   }
 }
