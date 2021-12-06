@@ -1,0 +1,13 @@
+.btn-smoothround-hollow {
+    background-color: #00000000;
+    border: var(--teal-dark) solid 1px;
+    color: var(--teal-dark);
+    border-radius: 10px;
+}
+
+.btn-smoothround-solid {
+    border: var(--teal-dark) solid 2px;
+    color: white;
+    background-color: var(--teal-dark);
+    border-radius: 10px;
+}

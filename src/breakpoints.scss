@@ -1,0 +1,73 @@
+$smMin: 576px;
+$mdMin: 768px;
+$lgMin: 992px;
+$xlMin: 1200px;
+
+@function translate-media-condition($c) {
+    $condMap: ("screen": "only screen",
+        "print": "only print",
+        "retina": "(-webkit-min-device-pixel-ratio: 1.5), (min--moz-device-pixel-ratio: 1.5), (-o-min-device-pixel-ratio: 3/2), (min-device-pixel-ratio: 1.5), (min-resolution: 120dpi)",
+        ">smMin": "(min-width: #{$smMin + 1})",
+        "<smMin": "(max-width: #{$smMin - 1})",
+        ">=smMin": "(min-width: #{$smMin})",
+        "<=smMin": "(max-width: #{$smMin})",
+        ">mdMin": "(min-width: #{$mdMin + 1})",
+        "<mdMin": "(max-width: #{$mdMin - 1})",
+        ">=mdMin": "(min-width: #{$mdMin})",
+        "<=mdMin": "(max-width: #{$mdMin})",
+        ">lgMin": "(min-width: #{$lgMin + 1})",
+        "<lgMin": "(max-width: #{$lgMin - 1})",
+        ">=lgMin": "(min-width: #{$lgMin})",
+        "<=lgMin": "(max-width: #{$lgMin})",
+        ">xlMin": "(min-width: #{$xlMin + 1})",
+        "<xlMin": "(max-width: #{$xlMin - 1})",
+        ">=xlMin": "(min-width: #{$xlMin})",
+        "<=xlMin": "(max-width: #{$xlMin})",
+    );
+    @return map-get($condMap, $c);
+
+}
+
+@mixin media($args...) {
+    $query: "";
+
+    @each $arg in $args {
+        $op: "";
+
+        @if ($query !="") {
+            $op: " and ";
+        }
+
+        $query: $query+$op+translate-media-condition($arg);
+    }
+
+    @media #{$query} {
+        @content;
+    }
+}
+
+@mixin media_template($arg) {
+    @if $arg=="sm" {
+        @include media(">=smMin", "<mdMin") {
+            @content;
+        }
+    }
+
+    @else if $arg=="md" {
+        @include media(">=mdMin", "<lgMin") {
+            @content;
+        }
+    }
+
+    @else if $arg=="lg" {
+        @include media(">=lgMin", "<xlMin") {
+            @content;
+        }
+    }
+
+    @else if $arg=="xl" {
+        @include media(">=xlMin") {
+            @content;
+        }
+    }
+}
