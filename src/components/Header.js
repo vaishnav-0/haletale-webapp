@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import userPlaceholder from "../assets/images/user.png";
 import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
@@ -9,7 +9,19 @@ import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 export default function Header() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const ref = useRef(null);
 
+    const handleClickOutside = (event) => {
+        if (ref.current && !ref.current.contains(event.target)) {
+            setDropdownOpen(false);
+        }
+    };
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside, true);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true);
+        };
+    }, []);
     return (
         <div className="header">
             <div className="topnav">
@@ -22,12 +34,12 @@ export default function Header() {
 
                     <div className="profile-container">
                         <img src={userPlaceholder} />
-                        <div className="profile-dropdown">
+                        <div className="profile-dropdown" ref={ref} onClick={() => setDropdownOpen(!dropdownOpen)}>
                             <p>Welcome <span className="name-highlight">John!</span></p>
-                            <div className="profile-dropdown-down" onClick={() => setDropdownOpen(!dropdownOpen)}>
+                            <div className="profile-dropdown-down" >
                                 <img src={downIcon} />
                             </div>
-                            <div className={`dropdown-box ${!dropdownOpen ? "is-close" : ""}`}>
+                            <div className={`dropdown-box ${!dropdownOpen ? "is-close" : ""}`} >
                                 <a href="#">Profile{dropdownOpen}</a>
                                 <a href="#">Change Password</a>
                                 <a href="#">Account</a>
