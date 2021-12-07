@@ -1,15 +1,17 @@
 import React from 'react';
-import Header from './components/Header';
 import './normalize.css';
 import './base.css';
 import './App.css';
+import Header from './components/Header';
+import Footer from './components/Footer'
+
 
 function App() {
   return (
     <div className="VP">
       <Header />
       <div className="body"></div>
-      <div className="footer"></div>
+      <Footer />
     </div>
   );
 }
