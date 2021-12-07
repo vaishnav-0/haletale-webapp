@@ -55,9 +55,6 @@ export default function Header() {
                     <div className="notifbell">
                         <img src={bellIcon} />
                     </div>
-                    <div className="menuicon">
-                        <img src={menuIcon} />
-                    </div>
                     {/*
 
                     <ButtonHollow label="Sign in" />
