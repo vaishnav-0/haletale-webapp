@@ -1,7 +1,10 @@
+@import './breakpoints.scss';
+
 html {
   box-sizing: border-box;
   font-family: "HelveticaNeue";
 }
+
 textarea:focus,
 input:focus,
 input {
@@ -10,20 +13,34 @@ input {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+
 a {
   text-decoration: none;
 }
+
 img {
   max-width: 100%;
 }
+
 *,
 *:before,
 *:after {
+  font-size: $defaulFontSize;
   box-sizing: inherit;
+
+  @include media(">=smMin") {
+    font-size: $smFontSize;
+  }
+
+  @include media(">=lgMin") {
+    font-size: $lgFontSize;
+  }
 }
+
 :root {
   --teal-dark: teal;
 }
+
 @font-face {
   font-family: "HelveticaNeue";
   font-weight: 800;
