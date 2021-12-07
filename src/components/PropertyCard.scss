@@ -1,0 +1,39 @@
+@import '../breakpoints.scss';
+
+.card-property {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .property-price {
+        font-weight: 800;
+    }
+
+    img {
+        margin-bottom: 10px;
+        border-radius: 10px;
+    }
+}
+
+.property-features {
+    display: flex;
+    align-items: stretch;
+    color: #999999;
+    gap: 3px;
+
+    >* {
+        padding: 5px 0 5px 0;
+        font-size: $defaulFontSize - 2px;
+        display: flex;
+        align-items: center;
+    }
+
+    .seperator {
+        &::after {
+            content: "\2022";
+            display: flex;
+            align-items: center;
+            color: var(--teal-dark);
+        }
+    }
+}

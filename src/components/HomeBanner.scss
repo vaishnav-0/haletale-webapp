@@ -1,0 +1,66 @@
+@import "../breakpoints.scss";
+
+.homebanner-container {
+    position: relative;
+    height: 350px;
+    background-image: linear-gradient(0deg, rgba(0, 184, 170, 0.7140456768644958) 0%, rgba(0, 0, 0, 0.6832333519345238) 100%),
+        url("../assets/images/BG.jpg");
+    background-size: 100%;
+    background-position: center;
+    border-radius: 20px;
+    margin: 20px;
+    color: white;
+
+    @include media(">=smMin") {
+        height: 500px;
+
+    }
+
+    @include media(">=mdMin") {
+        height: 600px;
+        margin: 20px $mdVerticalSpace 20px $mdVerticalSpace;
+
+    }
+
+    @include media(">=lgMin") {
+        height: 700px;
+
+    }
+
+    @include media(">=xlMin") {
+        height: 750px;
+
+    }
+
+    .overlay {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column-reverse;
+        text-align: center;
+
+        >div {
+            margin: 0 20px 30px 20px;
+        }
+
+        .banner-subtext {
+            font-size: 14px;
+
+            @include media(">=smMin") {
+                font-size: 16px;
+
+            }
+        }
+
+        .banner-maintext {
+            font-size: 20px;
+            font-weight: 800;
+
+            @include media(">=smMin") {
+                font-size: 25px;
+
+            }
+        }
+    }
+}
