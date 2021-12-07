@@ -10,6 +10,9 @@ input {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+a {
+  text-decoration: none;
+}
 img {
   max-width: 100%;
 }
@@ -17,7 +20,6 @@ img {
 *:before,
 *:after {
   box-sizing: inherit;
-  font-weight: 200;
 }
 :root {
   --teal-dark: teal;
@@ -25,19 +27,19 @@ img {
 @font-face {
   font-family: "HelveticaNeue";
   font-weight: 800;
-  src: url(assets/fonts/helvetica/HelveticaNeue-Heavy.otf);
-}
-
-@font-face {
-  font-family: "HelveticaNeue";
-  font-weight: 400;
-
-  src: url(assets/fonts/helvetica/HelveticaNeue-Medium.otf);
+  src: url(assets/fonts/helvetica/HelveticaNeue-MediumExt.otf);
 }
 
 @font-face {
   font-family: "HelveticaNeue";
   font-weight: 200;
+
+  src: url(assets/fonts/helvetica/HelveticaNeue-LightExt.otf);
+}
+
+@font-face {
+  font-family: "HelveticaNeue";
+  font-weight: 400;
 
   src: url(assets/fonts/helvetica/HelveticaNeue-Extended.otf);
 }
