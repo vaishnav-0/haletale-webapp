@@ -1,10 +1,58 @@
 //attempt to standarde spacings
 $vsmVerticalSpace: 15px;
-$smVerticalSpace: 15px;
+$smVerticalSpace: 20px;
 $mdVerticalSpace: 40px;
-$lgVerticalSpace: 15px;
-$xlVerticalSpace: 15px;
+$lgVerticalSpace: 50px;
+$xlVerticalSpace: 60px;
 
+@mixin standardHMargin {
+    margin-left: $vsmVerticalSpace;
+    margin-right: $vsmVerticalSpace;
+
+    @include media_template("sm") {
+        margin-left: $smVerticalSpace;
+        margin-right: $smVerticalSpace;
+    }
+
+    @include media_template("md") {
+        margin-left: $mdVerticalSpace;
+        margin-right: $mdVerticalSpace;
+    }
+
+    @include media_template("lg") {
+        margin-left: $lgVerticalSpace;
+        margin-right: $lgVerticalSpace;
+    }
+
+    @include media_template("xl") {
+        margin-left: $xlVerticalSpace;
+        margin-right: $xlVerticalSpace;
+    }
+}
+@mixin standardHPadding {
+    padding-left: $vsmVerticalSpace;
+    padding-right: $vsmVerticalSpace;
+
+    @include media_template("sm") {
+        padding-left: $smVerticalSpace;
+        padding-right: $smVerticalSpace;
+    }
+
+    @include media_template("md") {
+        padding-left: $mdVerticalSpace;
+        padding-right: $mdVerticalSpace;
+    }
+
+    @include media_template("lg") {
+        padding-left: $lgVerticalSpace;
+        padding-right: $lgVerticalSpace;
+    }
+
+    @include media_template("xl") {
+        padding-left: $xlVerticalSpace;
+        padding-right: $xlVerticalSpace;
+    }
+}
 $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
