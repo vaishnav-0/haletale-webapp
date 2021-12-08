@@ -8,7 +8,7 @@
     background-size: 100%;
     background-position: center;
     border-radius: 20px;
-    margin: 20px;
+    margin: $vsmVerticalSpace;
     color: white;
 
     @include media(">=smMin") {
