@@ -8,7 +8,8 @@
     background-size: 100%;
     background-position: center;
     border-radius: 20px;
-    margin: $vsmVerticalSpace;
+    margin-top: $vsmVerticalSpace;
+    margin-bottom: $vsmVerticalSpace;
     color: white;
 
     @include media(">=smMin") {
@@ -18,18 +19,14 @@
 
     @include media(">=mdMin") {
         height: 600px;
-        margin: 20px $mdVerticalSpace 20px $mdVerticalSpace;
-
     }
 
     @include media(">=lgMin") {
         height: 700px;
-
     }
 
     @include media(">=xlMin") {
         height: 750px;
-
     }
 
     .overlay {
