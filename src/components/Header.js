@@ -52,10 +52,11 @@ export default function Header() {
                             </div>
                         </div>
                     </div>
+                                        {/*
+
                     <div className="notifbell">
                         <img src={bellIcon} />
                     </div>
-                    {/*
 
                     <ButtonHollow label="Sign in" />
                     <ButtonSolid label="Sign up" />

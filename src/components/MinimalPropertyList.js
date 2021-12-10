@@ -2,7 +2,7 @@ import React from 'react';
 import './MinimalPropertyList.scss';
 import PropertyCard from './PropertyCard';
 
-export default function () {
+export default function ({title}) {
     const listRef = React.useRef(null);
     const scrollLeftList = () => {
         listRef.current.scrollBy({
@@ -22,7 +22,7 @@ export default function () {
     return (
         <div className="property-list">
             <div className="list-heading-container">
-                <div className="list-heading">Popular properties</div>
+                <div className="list-heading">{title}</div>
                 <button class="list-more-btn">SEE ALL</button>
             </div>
             <div className="minimal-list-container-wrapper">
