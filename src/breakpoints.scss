@@ -5,63 +5,65 @@ $mdVerticalSpace: 40px;
 $lgVerticalSpace: 50px;
 $xlVerticalSpace: 60px;
 
-@mixin standardHMargin {
-    margin-left: $vsmVerticalSpace;
-    margin-right: $vsmVerticalSpace;
+@mixin standardSpacing {
+    &>* {
+        margin-left: $vsmVerticalSpace;
+        margin-right: $vsmVerticalSpace;
 
-    @include media_template("sm") {
-        margin-left: $smVerticalSpace;
-        margin-right: $smVerticalSpace;
+        @include media_template("sm") {
+            margin-left: $smVerticalSpace;
+            margin-right: $smVerticalSpace;
+        }
+
+        @include media_template("md") {
+            margin-left: $mdVerticalSpace;
+            margin-right: $mdVerticalSpace;
+        }
+
+        @include media_template("lg") {
+            margin-left: $lgVerticalSpace;
+            margin-right: $lgVerticalSpace;
+        }
+
+        @include media_template("xl") {
+            margin-left: $xlVerticalSpace;
+            margin-right: $xlVerticalSpace;
+        }
+
     }
 
-    @include media_template("md") {
-        margin-left: $mdVerticalSpace;
-        margin-right: $mdVerticalSpace;
+    @include media(">=xxlMin") {
+        margin: auto;
+        max-width: 2000px;
     }
 
-    @include media_template("lg") {
-        margin-left: $lgVerticalSpace;
-        margin-right: $lgVerticalSpace;
-    }
-
-    @include media_template("xl") {
-        margin-left: $xlVerticalSpace;
-        margin-right: $xlVerticalSpace;
-    }
 }
-@mixin standardHPadding {
-    padding-left: $vsmVerticalSpace;
-    padding-right: $vsmVerticalSpace;
 
-    @include media_template("sm") {
-        padding-left: $smVerticalSpace;
-        padding-right: $smVerticalSpace;
-    }
 
-    @include media_template("md") {
-        padding-left: $mdVerticalSpace;
-        padding-right: $mdVerticalSpace;
-    }
 
-    @include media_template("lg") {
-        padding-left: $lgVerticalSpace;
-        padding-right: $lgVerticalSpace;
-    }
-
-    @include media_template("xl") {
-        padding-left: $xlVerticalSpace;
-        padding-right: $xlVerticalSpace;
-    }
-}
 $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
+
+@mixin standardFontsize($mod:0) {
+    font-size: $defaulFontSize + $mod;
+
+    @include media(">=smMin") {
+        font-size: $smFontSize + $mod;
+    }
+
+    @include media(">=lgMin") {
+        font-size: $lgFontSize + $mod;
+    }
+
+}
 
 //breakpoints
 $smMin: 576px;
 $mdMin: 768px;
 $lgMin: 992px;
 $xlMin: 1200px;
+$xxlMin: 2000px;
 
 @function translate-media-condition($c) {
     $condMap: ("screen": "only screen",
@@ -83,6 +85,11 @@ $xlMin: 1200px;
         "<xlMin": "(max-width: #{$xlMin - 1})",
         ">=xlMin": "(min-width: #{$xlMin})",
         "<=xlMin": "(max-width: #{$xlMin})",
+        ">xxlMin": "(min-width: #{$xxlMin + 1})",
+        "<xxlMin": "(max-width: #{$xxlMin - 1})",
+        ">=xxlMin": "(min-width: #{$xxlMin})",
+        "<=xxlMin": "(max-width: #{$xxlMin})"
+
     );
     @return map-get($condMap, $c);
 
