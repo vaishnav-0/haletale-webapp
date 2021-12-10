@@ -1,0 +1,101 @@
+@import "../breakpoints.scss";
+
+.property-card {
+    width: 100%;
+    position: relative;
+}
+
+.property-card-container {
+    overflow: hidden;
+    border-radius: 20px;
+    height: 100%;
+    width: 100%;
+}
+
+.fav-icon {
+    display: flex;
+    align-items: center;
+    width: 1.4em;
+}
+
+.image-slider {
+    img {
+        width: 100%;
+    }
+}
+
+.property-details {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 20px;
+    position: absolute;
+    width: 90%;
+    margin: 0 5% 0 5%;
+    transform: translateY(-50%);
+    box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    -webkit-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    -moz-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    padding: 10px;
+
+
+
+}
+
+.top-container {
+    display: flex;
+    margin-right: 0.5em;
+    & :nth-child(1) {
+        margin-bottom: 0.3em;
+    }
+}
+
+.bottom-container>div {
+    margin: 0.3em 0 0.3em 0;
+}
+
+.property-features {
+    display: flex;
+    font-weight: 800;
+    justify-content: space-between;
+
+    div {
+        @include standardFontsize(-4px);
+
+        display: flex;
+
+        .feature-icon {
+            width: 1.1em;
+            margin-right: 0.3em;
+
+        }
+    }
+}
+
+.property-price {
+    display: flex;
+    flex-direction: row-reverse;
+    font-weight: 800;
+    margin-top: 5px;
+    @include standardFontsize(-2px);
+    color: var(--teal-dark);
+
+    div {
+        font-size: inherit;
+        width: max-content;
+    }
+}
+
+.property-location {
+    flex: 1;
+
+    & :nth-child(1) {
+        font-weight: 800;
+    }
+
+    & :nth-child(2) {
+        color: #828282;
+        @include standardFontsize(-3px);
+
+    }
+}

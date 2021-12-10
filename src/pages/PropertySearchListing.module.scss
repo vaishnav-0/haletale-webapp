@@ -1,0 +1,49 @@
+@import "../breakpoints.scss";
+
+.header {
+    display: flex;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    padding: 15px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.txt-container {
+
+    & :nth-child(1) {
+        font-weight: 800;
+        margin-bottom: 5px;
+
+    }
+
+    & :nth-child(2) {
+        @include standardFontsize(-3px);
+        color: #828282;
+
+    }
+}
+
+.btn-container {
+    button {
+        border-radius: 50%;
+        background-color: #08ada7;
+        border: 0;
+        font-weight: 100;
+        width: 25px;
+        height: 25px;
+        margin: 5px;
+    }
+}
+
+.search-list {
+    display: grid;
+    grid-auto-flow: row;
+    row-gap: 80px;
+
+    @include media(">=smMin") {
+        grid-template-columns: 1fr 1fr;
+        column-gap: 25px;
+    }
+}
