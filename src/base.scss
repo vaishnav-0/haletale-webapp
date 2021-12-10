@@ -28,13 +28,7 @@ img {
   font-size: $defaulFontSize;
   box-sizing: inherit;
 
-  @include media(">=smMin") {
-    font-size: $smFontSize;
-  }
-
-  @include media(">=lgMin") {
-    font-size: $lgFontSize;
-  }
+  @include standardFontsize;
 }
 
 :root {
@@ -59,4 +53,10 @@ img {
   font-weight: 400;
 
   src: url(assets/fonts/helvetica/HelveticaNeue-Extended.otf);
+}
+
+@font-face {
+  font-family: "HelveticaNeueRegular";
+  font-weight: 400;
+  src: url(assets/fonts/helvetica/HelveticaNeue-Medium.otf);
 }
