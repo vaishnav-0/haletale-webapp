@@ -3,6 +3,8 @@
 html {
   box-sizing: border-box;
   font-family: "HelveticaNeue";
+  @include standardFontsize;
+
 }
 
 textarea:focus,
@@ -25,10 +27,9 @@ img {
 *,
 *:before,
 *:after {
-  font-size: $defaulFontSize;
+  //font-size: $defaulFontSize;
   box-sizing: inherit;
 
-  @include standardFontsize;
 }
 
 :root {
