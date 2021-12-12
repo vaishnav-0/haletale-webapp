@@ -1,4 +1,5 @@
 @import "../breakpoints.scss";
+@import "../colors.scss";
 
 .property-card {
     width: 100%;
@@ -8,19 +9,65 @@
 .property-card-container {
     overflow: hidden;
     border-radius: 20px;
-    height: 100%;
     width: 100%;
 }
 
 .fav-icon {
     display: flex;
     align-items: center;
-    width: 1.4em;
+    font-size: 1.2em;
+
+    button {
+        padding: 0;
+    }
+
+    .filled {
+        color: red;
+    }
+
+    .regular {
+        color: $grey;
+    }
 }
 
 .image-slider {
-    img {
+    position: relative;
+    background-color: whitesmoke;
+
+    &::after {
+        display: block;
+        content: "";
         width: 100%;
+        padding-bottom: 56.25%;
+    }
+
+    img {
+        object-fit: contain;
+        height: 100%;
+    }
+
+    .image-slider-container {
+        display: flex;
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        div {
+            display: flex;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            flex-shrink: 0;
+            scroll-snap-align: start;
+        }
     }
 }
 
@@ -36,7 +83,7 @@
     box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
     -webkit-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
     -moz-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
-    padding: 10px;
+    padding: 15px;
 
 
 
@@ -45,6 +92,7 @@
 .top-container {
     display: flex;
     margin-right: 0.5em;
+
     & :nth-child(1) {
         margin-bottom: 0.3em;
     }
@@ -76,7 +124,7 @@
     display: flex;
     flex-direction: row-reverse;
     font-weight: 800;
-    margin-top: 5px;
+    padding-top: 0.5em;
     @include standardFontsize(-2px);
     color: var(--teal-dark);
 
