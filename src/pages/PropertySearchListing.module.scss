@@ -1,6 +1,8 @@
 @import "../breakpoints.scss";
+@import "../colors.scss";
 
 .header {
+    position: relative;
     display: flex;
     background-color: whitesmoke;
     border-radius: 10px;
@@ -8,6 +10,8 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 25px;
+    margin-top: 25px;
+
 }
 
 .txt-container {
@@ -28,22 +32,52 @@
 .btn-container {
     button {
         border-radius: 50%;
-        background-color: #08ada7;
+        background-color: $primary;
         border: 0;
         font-weight: 100;
-        width: 25px;
-        height: 25px;
-        margin: 5px;
+        width: 2.2em;
+        height: 2.2em;
+        margin: 0.5em;
+        color: white;
+
+        &:hover {
+            background-color: $secondary;
+        }
     }
 }
 
 .search-list {
     display: grid;
     grid-auto-flow: row;
-    row-gap: 80px;
+    row-gap: 110px;
+    margin-bottom: 200px;
 
-    @include media(">=smMin") {
+    @include media(">=mdMin") {
         grid-template-columns: 1fr 1fr;
         column-gap: 25px;
     }
+}
+
+.filter-container {
+    position: absolute;
+    z-index: 50;
+    width: 100%;
+    left: 0;
+    top: 0;
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+
+
+}
+
+.filter-background {
+    position: absolute;
+    height: 100%;
+    width: 100vw;
+    background-color: #000000b8;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    margin: 0;
 }
