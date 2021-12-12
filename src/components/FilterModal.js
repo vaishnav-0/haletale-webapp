@@ -3,10 +3,13 @@ import style from './FilterModal.module.scss';
 import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './PillList';
 import { NumberInput } from './NumberInput';
+import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
 
 function FilterModel({ onClose = () => { } }) {
+    const filterRef = React.useRef(null);
+    useClickOutsideEvent(filterRef, onClose);
     return (
-        <div className={style["modal-container"]}>
+        <div ref={filterRef} className={style["modal-container"]}>
             <div className={style["modal-header"]}>
                 <button onClick={onClose} className={style["modal-close-btn"]}>
                     <i className="fas fa-times" />
