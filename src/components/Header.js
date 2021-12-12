@@ -7,21 +7,11 @@ import menuIcon from "../assets/icons/menu.png";
 import "./Header.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
+import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
 export default function Header() {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const ref = useRef(null);
-
-    const handleClickOutside = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
-            setDropdownOpen(false);
-        }
-    };
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
-        return () => {
-            document.removeEventListener('click', handleClickOutside, true);
-        };
-    }, []);
+    useClickOutsideEvent(ref, () => setDropdownOpen(false));
     return (
         <div className="header">
             <div className="topnav">
@@ -52,7 +42,7 @@ export default function Header() {
                             </div>
                         </div>
                     </div>
-                                        {/*
+                    {/*
 
                     <div className="notifbell">
                         <img src={bellIcon} />
