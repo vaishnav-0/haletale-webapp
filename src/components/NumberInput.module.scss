@@ -1,0 +1,29 @@
+@import '../breakpoints.scss';
+@import '../colors.scss';
+
+.container {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    .count{
+        display: flex;
+        justify-content: center;
+        width: 0.6em;
+    }
+    button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 1.4em;
+        height: 1.4em;
+        border-radius: 50%;
+        border: 1px solid $primary;
+        background-color: white;
+        color: $primary;
+
+        i {
+            @include standardFontsize(-6px);
+
+        }
+    }
+}
