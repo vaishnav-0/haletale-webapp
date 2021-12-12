@@ -1,12 +1,11 @@
 import React from 'react';
 import style from "./PropertyCardDetailed.module.scss";
-import propertyImg1 from "../assets/images/16_9_house.png";
+import propertyImg1 from "../assets/images/property.jpeg";
 import propertyImg2 from "../assets/images/housewide.jpg";
 import bedIcon from "../assets/icons/pro-details-icon1.png";
 import bathIcon from "../assets/icons/pro-details-icon2.png";
 import petIcon from "../assets/icons/pro-details-icon3.png";
 import sqftIcon from "../assets/icons/pro-details-icon4.png";
-import heartIcon from "../assets/icons/heart-thin.svg";
 export default function () {
     const [fav, setFav] = React.useState(false);
     return (
