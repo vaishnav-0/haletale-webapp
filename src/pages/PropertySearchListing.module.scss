@@ -58,17 +58,26 @@
     }
 }
 
-.filter-container {
+.filter-wrapper {
+    width: 100%;
+    display: flex;
     position: absolute;
     z-index: 50;
-    width: 100%;
     left: 0;
     top: 0;
+    @include standardSpacing("padding", (0 0 50px 100px 180px), 1500px);
+
+    @include media(">=xxlMin") {
+        left: 50%;
+        margin-left: -750px;
+    }
+}
+
+.filter-container {
+    flex: 1;
     background-color: white;
     border-radius: 20px;
     overflow: hidden;
-
-
 }
 
 .filter-background {

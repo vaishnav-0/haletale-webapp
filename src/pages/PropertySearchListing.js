@@ -21,12 +21,16 @@ export default function () {
                     <button><i className="fas fa-sort"></i></button>
                 </div>
                 {filterOpen &&
-                    <div className={style["filter-container"]}>
-                        <FilterModel onClose={()=>{
-                            setFilterOpen(false);
-                        }}/>
+                    <div className={style["filter-wrapper"]}>
 
+                        <div className={style["filter-container"]}>
+                            <FilterModel onClose={() => {
+                                setFilterOpen(false);
+                            }} />
+
+                        </div>
                     </div>
+
                 }
 
             </div>
