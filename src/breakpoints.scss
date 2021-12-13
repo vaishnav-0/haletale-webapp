@@ -5,36 +5,64 @@ $mdVerticalSpace: 40px;
 $lgVerticalSpace: 50px;
 $xlVerticalSpace: 60px;
 
-@mixin standardSpacing {
-    &>* {
-        margin-left: $vsmVerticalSpace;
-        margin-right: $vsmVerticalSpace;
+@mixin standardM_P($mod:(0, 0, 0, 0, 0), $type:"margin") {
+    @if($type="padding"or $type="margin") {}
 
-        @include media_template("sm") {
-            margin-left: $smVerticalSpace;
-            margin-right: $smVerticalSpace;
-        }
+    #{$type}: 0 $vsmVerticalSpace+nth($mod, 1);
 
-        @include media_template("md") {
-            margin-left: $mdVerticalSpace;
-            margin-right: $mdVerticalSpace;
-        }
-
-        @include media_template("lg") {
-            margin-left: $lgVerticalSpace;
-            margin-right: $lgVerticalSpace;
-        }
-
-        @include media_template("xl") {
-            margin-left: $xlVerticalSpace;
-            margin-right: $xlVerticalSpace;
-        }
-
+    @include media_template("sm") {
+        #{$type}: 0 $smVerticalSpace+ +nth($mod, 2);
     }
+
+    @include media_template("md") {
+        #{$type}: 0 $mdVerticalSpace+ +nth($mod, 3);
+    }
+
+    @include media_template("lg") {
+        #{$type}: 0 $lgVerticalSpace+ +nth($mod, 4);
+    }
+
+    @include media_template("xl") {
+        #{$type}: 0 $xlVerticalSpace+ +nth($mod, 5);
+    }
+}
+
+@function fillZero($list, $n) {
+    @if($n>0) {
+        @for $i from 1 through $n {
+
+            $list: append($list, 0);
+        }
+    }
+
+    @return $list;
+}
+
+@mixin standardSpacing($type:"margin", $mod:(), $wideScreenWidth:null) {
+    $maxLen: 5;
+    $extra: $maxLen - length($mod);
+    $mod: fillZero($mod, $extra);
+
+    @if($type=="margin") {
+        @include standardM_P($mod);
+    }
+
+    @else if($type=="padding") {
+        @include standardM_P($mod, "padding");
+    }
+
 
     @include media(">=xxlMin") {
         margin: auto;
-        width: 2000px;
+
+        @if($wideScreenWidth) {
+            width: $wideScreenWidth;
+
+        }
+
+        @else {
+            width: 2000px;
+        }
     }
 
 }
