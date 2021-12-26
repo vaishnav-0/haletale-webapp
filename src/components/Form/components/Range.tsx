@@ -5,9 +5,10 @@ type prop = {
     renderThumb?: (state: { value: number | number[], index: number, valueNow: number }) => void
     max?: number,
     min?: number,
-    step?: number
+    step?: number,
+    defaultValue?: number | number[]
 }
-export default function ({ renderThumb = () => { }, max = 100, min = 0, step = 1 }: prop): JSX.Element {
+export default function ({ renderThumb = () => { }, max = 100, min = 0, step = 1, defaultValue }: prop): JSX.Element {
     const [value, setValue] = React.useState([0, 100]);
     const onChange = (val: number[]) => {
         setValue(val);
@@ -18,8 +19,8 @@ export default function ({ renderThumb = () => { }, max = 100, min = 0, step = 1
         min={min}
         thumbClassName="Range-thumb-style"
         trackClassName="Range-track-style"
-        defaultValue={[0, 100]}
-        ariaLabel={['Lower thumb', 'Upper thumb']}
+        defaultValue={defaultValue}
+        ariaLabel={['Lower limit', 'Upper limit']}
         ariaValuetext={(state: any) => `Thumb value ${state.valueNow}`}
         renderThumb={(props: any, state: any) => <div {...props}>
             {renderThumb(state)}
@@ -28,5 +29,6 @@ export default function ({ renderThumb = () => { }, max = 100, min = 0, step = 1
         minDistance={10}
         marks={10}
         step={step}
+
     />
 }
