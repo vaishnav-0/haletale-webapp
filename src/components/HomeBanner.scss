@@ -13,22 +13,30 @@
     color: white;
 
     @include media(">=smMin") {
-        height: 500px;
+        height: 450px;
 
     }
 
     @include media(">=mdMin") {
-        height: 600px;
+        height: 550px;
     }
 
     @include media(">=lgMin") {
-        height: 700px;
+        height: 650px;
+        @media screen and (max-height:950px) {
+            height: 530px;
+        }
     }
 
     @include media(">=xlMin") {
-        height: 750px;
+        height: 700px;
+        @media screen and (max-height:950px) {
+            height: 550px;
+        }
     }
-
+    @media screen {
+        
+    }
     .overlay {
         position: absolute;
         height: 100%;
