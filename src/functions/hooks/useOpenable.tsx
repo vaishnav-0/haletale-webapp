@@ -3,7 +3,7 @@ import { useClickOutsideEvent } from './useClickOutsideEvent';
 
 type args = {
     clickOutsideClose?: boolean,
-    clickOutsideCloseException?: HTMLElement[],
+    clickOutsideCloseException?: React.MutableRefObject<HTMLElement>[],
     onClose?: () => void,
     onOpen?: () => void,
 }
@@ -14,7 +14,6 @@ type ret = {
     },
     isOpen: boolean,
     setOpen: (state: boolean) => void,
-    setClickOutsideExceptions: (e: HTMLElement[]) => void
 }
 export function useOpenable({
     clickOutsideClose = true,
@@ -24,14 +23,12 @@ export function useOpenable({
 }: args): ret {
     const [open, setOpen] = React.useState(false);
     const excluded = React.useRef<HTMLElement[]>([]);
-    if (clickOutsideCloseException)
-        excluded.current = clickOutsideCloseException;
     const openFunc = (s: boolean = true) => {
         setOpen(s);
         s ? onOpen() : onClose();
     }
     const ref = React.useRef<HTMLDivElement>(null!);
-    useClickOutsideEvent(ref, () => setOpen(false), excluded.current);
+    useClickOutsideEvent(ref, () => setOpen(false), clickOutsideCloseException);
     console.log(excluded.current);
     return {
         props: {
@@ -40,7 +37,6 @@ export function useOpenable({
         },
         isOpen: open,
         setOpen: openFunc,
-        setClickOutsideExceptions: (el) => { excluded.current = el }
     }
 }
 type OpenableProps = {
