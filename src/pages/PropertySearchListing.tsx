@@ -5,15 +5,15 @@ import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
 import RadioButton from '../components/Form/components/Radiobutton';
 import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
+import { useOpenable, Openable } from '../functions/hooks/useOpenable';
 
 export default function (): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
-    const [sortOpen, setSortOpen] = React.useState(false);
-    const sortRef = React.useRef<HTMLDivElement>(null!);
     const sortButtonRef = React.useRef<HTMLButtonElement>(null!);
-    const { setExcludedFromClick } = useClickOutsideEvent(sortRef, () => setSortOpen(false));
+    const sortMenu = useOpenable({ clickOutsideCloseException: [sortButtonRef] })
+
     React.useEffect(() => {
-        setExcludedFromClick([sortButtonRef.current])
+        //sortMenu.setClickOutsideExceptions([sortButtonRef.current])
     }, []);
     return (
         <Layout>
@@ -27,14 +27,14 @@ export default function (): JSX.Element {
                 </div>
                 <div className={style["btn-container"]}>
                     <button onClick={() => { setFilterOpen(true); }}><i className="fas fa-sliders-h"></i></button>
-                    <button ref={sortButtonRef} onClick={() => { setSortOpen(!sortOpen) }}>
+                    <button ref={sortButtonRef} onClick={() => { sortMenu.setOpen(!sortMenu.isOpen) }}>
                         <i className="fas fa-sort"></i>
 
                     </button>
                 </div>
-                <div ref={sortRef} className={style["sort-popup"]} style={{ display: !sortOpen ? "none" : "revert" }}>
+                <Openable className={style["sort-popup"]} {...sortMenu.props}>
                     <RadioButton name="sort" values={["Default", "Recent"]} />
-                </div>
+                </Openable>
                 <div className={style["filter-wrapper"]} style={{ display: !filterOpen ? "none" : "revert" }}>
 
                     <div className={style["filter-container"]}>
