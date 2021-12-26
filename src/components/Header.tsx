@@ -4,7 +4,7 @@ import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import bellIcon from "../assets/images/noti-icon.png";
 import menuIcon from "../assets/icons/menu.png";
-import "./Header.scss";
+import style from "./Header.module.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
@@ -17,24 +17,24 @@ export default function Header(): JSX.Element {
     const loginModalref = useRef<HTMLDivElement>(null!);
     useClickOutsideEvent(loginModalref, () => setloginModalOpen(false));
     return (
-        <div className="header">
-            <div className="topnav">
-                <div className="topnav-left-container">
-                    <div className="logo">
+        <div className={style["header"]}>
+            <div className={style["topnav"]}>
+                <div className={style["topnav-left-container"]}>
+                    <div className={style["logo"]}>
                         <img src={haletaleLogo} />
                     </div>
                 </div>
-                <div className="topnav-right-container">
+                <div className={style["topnav-right-container"]}>
 
                     {logedin ?
-                        <div className="profile-container">
+                        <div className={style["profile-container"]}>
                             <img src={userPlaceholder} />
-                            <div className="profile-dropdown" ref={dropDownref} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                                <p>Welcome <span className="name-highlight">John!</span></p>
-                                <div className="profile-dropdown-down" >
+                            <div className={style["profile-dropdown"]} ref={dropDownref} onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                <p>Welcome <span className={style["name-highlight"]}>John!</span></p>
+                                <div className={style["profile-dropdown-down"]} >
                                     <img src={downIcon} />
                                 </div>
-                                <div className={`dropdown-box ${!dropdownOpen ? "is-close" : ""}`} >
+                                <div className={`${style["dropdown-box"]} ${!dropdownOpen && style["is-close"]}`} >
                                     <a href="#">Profile{dropdownOpen}</a>
                                     <a href="#">Change Password</a>
                                     <a href="#">Account</a>
