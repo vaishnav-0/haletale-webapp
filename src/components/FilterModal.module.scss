@@ -79,3 +79,8 @@
         @include standardFontsize(-2px)
     }
 }
+
+.range-limit-marker {
+    display: flex;
+    justify-content: space-between;
+}

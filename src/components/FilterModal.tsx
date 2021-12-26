@@ -2,8 +2,11 @@ import React from 'react';
 import style from './FilterModal.module.scss';
 import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './PillList';
+import pillStyle from './PillList.module.scss';
 import { NumberInput } from './NumberInput';
 import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
+import Range from './Form/components/Range';
+
 type props = {
     onClose: () => void;
 }
@@ -79,7 +82,24 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                     </div>
 
                 </div>
+                <div className={style["filter-item"]}>
+                    <div className={style["filter-item-heading"]}>
+                        Rent
+                    </div>
+                    <div className={style["filter-item-content"]}>
+                        <Range
+                            min={200}
+                            max={1200}
+                            step={5}
+                            renderThumb={(state => (<div className={`${pillStyle["pill"]} ${pillStyle["pill-active"]}`}>${state.valueNow}</div>))}
+                        />
+                        <div className={style["range-limit-marker"]}>
+                            <div>$200</div>
+                            <div>$1200</div>
+                        </div>
+                    </div>
 
+                </div>
             </div>
 
         </div >

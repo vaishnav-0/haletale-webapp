@@ -1,0 +1,34 @@
+@import 'src/breakpoints.scss';
+@import 'src/colors.scss';
+
+.range-slider{
+    display: flex;
+    align-items: center;
+    height: 1em;
+}
+.Range-track-style {
+    height: 0.2em;
+
+    &#{&}-0,
+    &#{&}-2 {
+        background-color: adjust-color($primary, $alpha:-0.7);
+    }
+
+    &#{&}-1 {
+        background-color: $primary;
+    }
+}
+
+.Range-thumb-style {
+    position: relative;
+    height: 0.8em;
+    width: 0.8em;
+    border: 0;
+    border-radius: 50%;
+    background-color: $primary;
+    &>*{
+        position: absolute;
+        top: 100%;
+    }
+    
+}
