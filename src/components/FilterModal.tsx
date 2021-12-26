@@ -91,6 +91,7 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                             min={200}
                             max={1200}
                             step={5}
+                            defaultValue={[500, 800]}
                             renderThumb={(state => (<div className={`${pillStyle["pill"]} ${pillStyle["pill-active"]}`}>${state.valueNow}</div>))}
                         />
                         <div className={style["range-limit-marker"]}>
