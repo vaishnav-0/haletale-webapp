@@ -11,7 +11,10 @@ export default function (): JSX.Element {
     const [sortOpen, setSortOpen] = React.useState(false);
     const sortRef = React.useRef<HTMLDivElement>(null!);
     const sortButtonRef = React.useRef<HTMLButtonElement>(null!);
-    useClickOutsideEvent<HTMLButtonElement>(sortRef, () => setSortOpen(false), [sortButtonRef]);
+    const { setExcludedFromClick } = useClickOutsideEvent(sortRef, () => setSortOpen(false));
+    React.useEffect(() => {
+        setExcludedFromClick([sortButtonRef.current])
+    }, []);
     return (
         <Layout>
             {filterOpen &&
@@ -29,9 +32,9 @@ export default function (): JSX.Element {
 
                     </button>
                 </div>
-                    <div ref={sortRef} className={style["sort-popup"]} style={{ display: !sortOpen ? "none" : "revert" }}>
-                        <RadioButton name="sort" values={["Default", "Recent"]} />
-                    </div>
+                <div ref={sortRef} className={style["sort-popup"]} style={{ display: !sortOpen ? "none" : "revert" }}>
+                    <RadioButton name="sort" values={["Default", "Recent"]} />
+                </div>
                 <div className={style["filter-wrapper"]} style={{ display: !filterOpen ? "none" : "revert" }}>
 
                     <div className={style["filter-container"]}>
