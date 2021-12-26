@@ -90,3 +90,19 @@
     left: 0;
     margin: 0;
 }
+
+.sort-popup {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    z-index: 50;
+    box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    -webkit-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    -moz-box-shadow: 0px 0px 82px -11px rgba(0, 0, 0, 0.52);
+    padding: 15px 15px;
+    border-radius: 20px;
+    
+}
