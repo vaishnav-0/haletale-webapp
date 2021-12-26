@@ -4,7 +4,7 @@ import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './PillList';
 import pillStyle from './PillList.module.scss';
 import { NumberInput } from './NumberInput';
-import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
+import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
 import Range from './Form/components/Range';
 
 type props = {

@@ -7,7 +7,7 @@ import menuIcon from "../assets/icons/menu.png";
 import style from "./Header.module.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
-import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
+import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);

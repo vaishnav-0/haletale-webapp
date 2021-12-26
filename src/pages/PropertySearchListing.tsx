@@ -4,7 +4,7 @@ import FilterModel from '../components/FilterModal';
 import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
 import RadioButton from '../components/Form/components/Radiobutton';
-import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
+import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
 
 export default function (): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
