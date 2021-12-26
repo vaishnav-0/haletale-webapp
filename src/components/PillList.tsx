@@ -1,10 +1,12 @@
 import React from 'react';
 import style from './PillList.module.scss';
-
-export function PillList({ items }) {
-    const [activePills, setActivePills] = React.useState([]);
+type props = {
+    items: string[];
+}
+export function PillList({ items }: props): JSX.Element {
+    const [activePills, setActivePills] = React.useState<number[]>([]);
     if (!Array.isArray(items))
-        return null;
+        return <></>;
     else
         return (
             <div className={style["pill-list"]}>

@@ -8,9 +8,9 @@ import "./Header.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
-export default function Header() {
+export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-    const ref = useRef(null);
+    const ref = useRef<HTMLDivElement>(null!);
     useClickOutsideEvent(ref, () => setDropdownOpen(false));
     return (
         <div className="header">

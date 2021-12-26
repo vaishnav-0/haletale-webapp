@@ -1,7 +1,7 @@
 import React from 'react';
 import "./PropertyCard.scss";
 import propertyImage from "../assets/images/pro-img1.png"
-export default function () {
+export default function (): JSX.Element {
     return (
         <div className="card-property">
             <img src={propertyImage} />

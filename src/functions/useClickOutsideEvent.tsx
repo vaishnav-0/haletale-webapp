@@ -1,7 +1,8 @@
 import React from "react";
-export function useClickOutsideEvent(ref, onClick = () => { }) {
-    const handleClickOutside = (event) => {
-        if (ref.current && !ref.current.contains(event.target)) {
+
+export function useClickOutsideEvent(ref: { current: HTMLElement }, onClick: () => void = () => { }): void {
+    const handleClickOutside = (event: Event) => {
+        if (ref.current && !ref.current.contains(event.target as Node)) {
             onClick();
         }
     };

@@ -2,14 +2,18 @@ import React from 'react';
 import Header from '../components/Header';
 import Body from '../components/Body';
 import Footer from '../components/Footer';
-function Layout({ children, footer }) {
+type props = {
+    children: React.ReactNode,
+    footer?: boolean
+}
+function Layout({ children, footer }: props): JSX.Element {
     return (
         <div className="VP">
             <Header />
             <Body>
                 {children}
             </Body>
-            {footer && <Footer/>}
+            {footer && <Footer />}
         </div>
     );
 }

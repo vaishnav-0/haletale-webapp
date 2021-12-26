@@ -6,7 +6,7 @@ import bedIcon from "../assets/icons/pro-details-icon1.png";
 import bathIcon from "../assets/icons/pro-details-icon2.png";
 import petIcon from "../assets/icons/pro-details-icon3.png";
 import sqftIcon from "../assets/icons/pro-details-icon4.png";
-export default function () {
+export default function (): JSX.Element {
     const [fav, setFav] = React.useState(false);
     return (
         <div className={style["property-card"]}>

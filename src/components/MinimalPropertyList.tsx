@@ -1,10 +1,13 @@
 import React from 'react';
 import './MinimalPropertyList.scss';
 import PropertyCard from './PropertyCard';
-
-export default function ({title}) {
-    const listRef = React.useRef(null);
+type props = {
+    title: string;
+}
+export default function ({ title }: props): JSX.Element {
+    const listRef = React.useRef<HTMLDivElement>(null);
     const scrollLeftList = () => {
+        if (!listRef.current) throw Error("divRef is not assigned");
         listRef.current.scrollBy({
             top: 0,
             left: -300,
@@ -12,6 +15,7 @@ export default function ({title}) {
         });
     }
     const scrollRightList = () => {
+        if (!listRef.current) throw Error("divRef is not assigned");
         listRef.current.scrollBy({
             top: 0,
             left: 300,
@@ -23,7 +27,7 @@ export default function ({title}) {
         <div className="property-list">
             <div className="list-heading-container">
                 <div className="list-heading">{title}</div>
-                <button class="list-more-btn">SEE ALL</button>
+                <button className="list-more-btn">SEE ALL</button>
             </div>
             <div className="minimal-list-container-wrapper">
                 <div ref={listRef} className="minimal-list-container">

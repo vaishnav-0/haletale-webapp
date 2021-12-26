@@ -4,9 +4,11 @@ import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './PillList';
 import { NumberInput } from './NumberInput';
 import { useClickOutsideEvent } from '../functions/useClickOutsideEvent';
-
-function FilterModel({ onClose = () => { } }) {
-    const filterRef = React.useRef(null);
+type props = {
+    onClose: () => void;
+}
+function FilterModel({ onClose = () => { } }: props): JSX.Element {
+    const filterRef = React.useRef<HTMLDivElement>(null!);
     useClickOutsideEvent(filterRef, onClose);
     return (
         <div ref={filterRef} className={style["modal-container"]}>

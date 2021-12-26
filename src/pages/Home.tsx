@@ -4,7 +4,7 @@ import Layout from './Layout';
 import HomeBanner from '../components/HomeBanner';
 import MinimalPropertyList from '../components/MinimalPropertyList';
 import Searchbar from '../components/Searchbar';
-function HomePage() {
+function HomePage(): JSX.Element {
     return (
         <Layout footer={true}>
             <HomeBanner />

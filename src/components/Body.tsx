@@ -1,6 +1,6 @@
 import React from 'react';
 import "./Body.scss";
-export default function ({ children }) {
+const Body = function ({ children }: { children: React.ReactNode; }): JSX.Element {
     return (
         <div className="body">
             {children}
@@ -8,3 +8,5 @@ export default function ({ children }) {
         </div>
     );
 }
+
+export default Body;

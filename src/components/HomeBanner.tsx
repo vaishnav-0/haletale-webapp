@@ -1,9 +1,9 @@
 import React from 'react';
 import "./HomeBanner.scss";
 import bannerImg from "../assets/images/BG.jpg"
-export default function () {
+export default function (): JSX.Element {
     return (
-        <div class="homebanner-container">
+        <div className="homebanner-container">
             <div className="overlay">
                 <div className="banner-subtext">
                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium

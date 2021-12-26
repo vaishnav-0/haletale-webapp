@@ -1,6 +1,6 @@
 import React from 'react';
 import "./Footer.scss";
-export default function () {
+export default function (): JSX.Element {
     return (
         <div className="footer">
             <div className="footer-top">

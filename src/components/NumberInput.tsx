@@ -1,7 +1,11 @@
 import React from 'react';
 import style from './NumberInput.module.scss';
-
-export function NumberInput({ init = 0, min = 0, max  }) {
+type props = {
+    init?: number,
+    min?: number,
+    max?: number | null
+}
+export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
     const [count, setCount] = React.useState(0)
     return (
         <div className={style["container"]}>

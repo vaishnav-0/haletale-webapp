@@ -4,7 +4,7 @@ import FilterModel from '../components/FilterModal';
 import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
 
-export default function () {
+export default function (): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
     return (
         <Layout>
