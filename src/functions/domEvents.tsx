@@ -1,12 +1,11 @@
 import React from "react";
 
-export function useClickOutsideEvent(
+export function clickOutsideEvent(
     ref: { current: HTMLElement },
     onClick: () => void = () => { },
     exclude?: React.MutableRefObject<HTMLElement>[])
-    : void {
+    : () => void {
     const handleClickOutside = function (event: Event) {
-        console.log(exclude);
         if (exclude)
             for (let i = 0; i < exclude.length; i++) {
                 if (exclude[i]?.current.contains(event.target as Node))
@@ -17,11 +16,7 @@ export function useClickOutsideEvent(
         }
 
     }
-    React.useEffect(() => {
-        document.addEventListener('click', handleClickOutside, true);
-        return () => {
-            document.removeEventListener('click', handleClickOutside, true);
-        };
-    }, []);
+    document.addEventListener('click', handleClickOutside, true);
+    return () => document.removeEventListener('click', handleClickOutside, true);
 
 }
