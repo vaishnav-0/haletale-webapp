@@ -30,15 +30,13 @@ export default function (): JSX.Element {
                 <Openable className={style["sort-popup"]} open={[openSort, setOpenSort]} clickOutsideCloseException={[sortButtonRef]}>
                     <RadioButton name="sort" values={["Default", "Recent"]} />
                 </Openable>
-                <div className={style["filter-wrapper"]} style={{ display: !filterOpen ? "none" : "revert" }}>
 
-                    <div className={style["filter-container"]}>
-                        <FilterModel onClose={() => {
-                            setFilterOpen(false);
-                        }} />
+                <Openable className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
+                    <FilterModel onClose={() => {
+                        setFilterOpen(false);
+                    }} />
 
-                    </div>
-                </div>
+                </Openable>
 
 
             </div>
