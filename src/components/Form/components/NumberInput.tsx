@@ -13,7 +13,8 @@ export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
                 className={count === min ? style["inactive"] : ""}
                 onClick={() => {
                     count > min && setCount(count - 1);
-                }}><i className="fas fa-plus"></i>
+                }}>
+                <i className="fas fa-minus"></i>
             </button>
             <div className={style["count"]}>
                 {count}
@@ -22,7 +23,8 @@ export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
                 className={count === max ? style["inactive"] : ""}
                 onClick={() => {
                     (max != null && count == max) || setCount(count + 1)
-                }}><i className="fas fa-minus"></i>
+                }}>
+                <i className="fas fa-plus"></i>
             </button>
         </div>
     );
