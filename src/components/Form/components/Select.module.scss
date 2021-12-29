@@ -1,0 +1,31 @@
+@import 'src/styles/mixins.scss';
+@import 'src/colors.scss';
+
+.box {
+    display: flex;
+    align-items: center;
+    height: 3em;
+    background-color: white;
+    border-radius: 1.5em;
+    @include def-shadow;
+    padding: 0 0.8em;
+
+    i {
+        font-size: 0.6em;
+        margin-right: 0.2em;
+        color: $greyText;
+    }
+
+    select {
+        flex: 1;
+        background-color: inherit;
+        height: 100%;
+        border: 0;
+        outline: none;
+        border: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        -ms-appearance: none;
+    }
+}
