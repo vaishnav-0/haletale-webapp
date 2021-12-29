@@ -79,7 +79,7 @@ $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
 
-@mixin responsiveFontsize($mod:(1rem, 1rem, 1rem, 1rem, 1rem)) {
+@mixin responsiveFontsize($mod:(1em, 1em, 1em, 1em, 1em)) {
 
     font-size: nth($mod, 1);
 
