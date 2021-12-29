@@ -7,9 +7,14 @@
     display: flex;
 }
 
-.radio-item input[type=radio] {
-    position: absolute;
-    visibility: hidden;
+.radio-item {
+
+    input[type=radio],
+    input[type=checkbox] {
+        position: absolute;
+        visibility: hidden;
+    }
+
 }
 
 .radio-item label {
@@ -38,12 +43,17 @@
 
 .radio-item {
 
-    input[type=radio]:checked~.checked {
-        display: inline;
+    input[type=radio],
+    input[type=checkbox] {
+        &:checked~.checked {
+            display: inline;
+        }
     }
 
-    input[type=radio]:checked~.unchecked {
-        display: none;
-
+    input[type=radio],
+    input[type=checkbox] {
+        &:checked~.unchecked {
+            display: none;
+        }
     }
 }
