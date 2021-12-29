@@ -12,9 +12,6 @@ export default function (): JSX.Element {
     const [openSort, setOpenSort] = React.useState(false);
     return (
         <Layout>
-            {filterOpen &&
-                <div className={style["filter-background"]} />
-            }
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
                     <div>Toronto</div>
@@ -30,13 +27,15 @@ export default function (): JSX.Element {
                 <Openable className={style["sort-popup"]} open={[openSort, setOpenSort]} clickOutsideCloseException={[sortButtonRef]}>
                     <RadioButton name="sort" values={["Default", "Recent"]} />
                 </Openable>
+                <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
+                    <Openable className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
+                        <FilterModel onClose={() => {
+                            setFilterOpen(false);
+                        }} />
 
-                <Openable className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
-                    <FilterModel onClose={() => {
-                        setFilterOpen(false);
-                    }} />
+                    </Openable>
+                </div>
 
-                </Openable>
 
 
             </div>
