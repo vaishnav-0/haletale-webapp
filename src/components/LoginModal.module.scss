@@ -1,0 +1,156 @@
+@import '../breakpoints.scss';
+@import '../colors.scss';
+
+@mixin clickable-text-btn {
+    color: $primary;
+    font-weight: 800;
+    background-color: inherit;
+    border: none;
+
+    &:hover {
+        color: adjust-color($primary, $lightness:-5%);
+    }
+}
+
+@mixin def-shadow {
+    box-shadow: 0px 0px 19px -10px rgba(61, 61, 61, 0.74);
+    -webkit-box-shadow: 0px 0px 19px -10px rgba(61, 61, 61, 0.74);
+    -moz-box-shadow: 0px 0px 19px -10px rgba(61, 61, 61, 0.74);
+}
+
+.modal-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10em;
+    font-weight: 800;
+
+    .modal-title {
+        z-index: 10;
+        height: 80%;
+
+        img {
+            max-height: 100%;
+        }
+    }
+}
+
+
+
+.modal-item-heading {
+    font-weight: 800;
+}
+
+.modal-item {
+    width: 100%;
+    padding: 0 1.5em;
+
+    &>div {
+        margin: 1.5em auto;
+    }
+}
+
+
+.modal-close-btn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+    top: 0.8em;
+    right: 0.8em;
+    border: 0;
+    border-radius: 50%;
+    height: 1.5em;
+    width: 1.5em;
+    background-color: #fe5252;
+    color: white;
+
+    i {
+        @include responsiveFontsize(-2px)
+    }
+}
+
+.textbox {
+    display: flex;
+    height: 3em;
+    background-color: white;
+    border-radius: 1.5em;
+    @include def-shadow;
+    padding: 0 0.8em;
+
+    button {
+        @include clickable-text-btn;
+    }
+
+    input {
+        flex: 1;
+        border-radius: inherit;
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.signup-message {
+    margin: auto;
+    width: fit-content;
+    font-weight: 800;
+
+    button {
+        @include clickable-text-btn;
+    }
+}
+
+.other-methods-message {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    font-weight: 200;
+
+    .line {
+        flex: 1;
+        height: 1px;
+        background-color: $greyText;
+    }
+}
+
+.other-methods-btn {
+    display: flex;
+    margin: auto;
+    width: fit-content;
+    gap: 2em;
+
+    button {
+        width: 4em;
+        height: 4em;
+        border: 0;
+        background-color: white;
+        padding: 0;
+        border-radius: 50%;
+        @include def-shadow;
+    }
+
+    img {
+        max-width: 80%;
+        object-fit: contain;
+    }
+
+    .fb-btn {
+        max-width: 100%;
+    }
+}
+
+.signin-btn {
+    width: 100%;
+
+    button {
+        padding: 1em 0;
+        width: 100%;
+    }
+}
