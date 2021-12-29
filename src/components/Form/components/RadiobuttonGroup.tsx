@@ -5,7 +5,7 @@ type props = {
     name: string
     values: string[]
 }
-const RadioButton = function ({ name, values }: props): JSX.Element {
+const RadioButtonGroup = function ({ name, values }: props): JSX.Element {
     return (<>
         {values.map(e => {
             const id = Math.random().toString(36).substr(2, 5);
@@ -26,4 +26,4 @@ const RadioButton = function ({ name, values }: props): JSX.Element {
     );
 }
 
-export default RadioButton;
+export default RadioButtonGroup;

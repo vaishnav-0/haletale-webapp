@@ -3,7 +3,7 @@ import PropertyCardDetailed from '../components/PropertyCardDetailed';
 import FilterModel from '../components/FilterModal';
 import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
-import RadioButton from '../components/Form/components/Radiobutton';
+import RadioButtonGroup from '../components/Form/components/RadiobuttonGroup';
 import { Openable } from '../components/Openable';
 
 export default function (): JSX.Element {
@@ -26,7 +26,7 @@ export default function (): JSX.Element {
                 </div>
                 <Openable className={style["sort-popup"]} open={[openSort, setOpenSort]} clickOutsideCloseException={[sortButtonRef]}>
                     <div className={style["sortradio-container"]}>
-                        <RadioButton name="sort" values={["Default", "Recent"]} />
+                        <RadioButtonGroup name="sort" values={["Default", "Recent"]} />
                     </div>
                 </Openable>
                 <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
