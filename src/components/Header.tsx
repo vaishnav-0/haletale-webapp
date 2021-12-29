@@ -4,18 +4,15 @@ import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import bellIcon from "../assets/images/noti-icon.png";
 import menuIcon from "../assets/icons/menu.png";
+import LoginModal from '../components/LoginModal';
 import style from "./Header.module.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
-import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
+import { Openable } from './Openable';
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
     const logedin = false;//temporary
-    const dropDownref = useRef<HTMLDivElement>(null!);
-    useClickOutsideEvent(dropDownref, () => setDropdownOpen(false));
-    const loginModalref = useRef<HTMLDivElement>(null!);
-    useClickOutsideEvent(loginModalref, () => setloginModalOpen(false));
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -29,12 +26,20 @@ export default function Header(): JSX.Element {
                     {logedin ?
                         <div className={style["profile-container"]}>
                             <img src={userPlaceholder} />
-                            <div className={style["profile-dropdown"]} ref={dropDownref} onClick={() => setDropdownOpen(!dropdownOpen)}>
+                            <Openable                           //seems hacky
+                                open={[true, setDropdownOpen]}
+                                className={style["profile-dropdown"]}
+                                onClick={() => setDropdownOpen(!dropdownOpen)}>
                                 <p>Welcome <span className={style["name-highlight"]}>John!</span></p>
                                 <div className={style["profile-dropdown-down"]} >
                                     <img src={downIcon} />
                                 </div>
-                                <div className={`${style["dropdown-box"]} ${!dropdownOpen && style["is-close"]}`} >
+                                <Openable
+                                    open={[dropdownOpen, setDropdownOpen]}
+                                    closeOnClickOutside={false}
+                                    className={style["dropdown-box"]}
+                                    animation="slide"
+                                >
                                     <a href="#">Profile{dropdownOpen}</a>
                                     <a href="#">Change Password</a>
                                     <a href="#">Account</a>
@@ -44,20 +49,23 @@ export default function Header(): JSX.Element {
                                     <a href="#">Settings</a>
                                     <a href="#">Help</a>
                                     <a href="#">Logout</a>
-                                </div>
-                            </div>
+                                </Openable>
+                            </Openable>
                         </div>
 
                         :
                         <>
                             <ButtonHollow onClick={() => setloginModalOpen(true)} label="Sign in" />
                             <ButtonSolid label="Sign up" />
+
+                            <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
+                                <LoginModal onClose={() => {
+                                    setloginModalOpen(false);
+                                }} />
+
+                            </Openable>
                         </>
                     }
-
-                    <div>
-                    </div>
-
 
                 </div>
             </div>
