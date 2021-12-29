@@ -1,6 +1,6 @@
 import React from 'react';
 import style from './RadioButton.module.scss';
-import RadioButton from './RadioButton';
+import { RadioButton } from './ToggleButtons';
 
 type props = {
     name: string
