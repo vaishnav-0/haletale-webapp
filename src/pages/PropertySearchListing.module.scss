@@ -23,7 +23,7 @@
     }
 
     & :nth-child(2) {
-        @include standardFontsize(-3px);
+        @include responsiveFontsize(-3px);
         color: #828282;
 
     }
@@ -68,8 +68,8 @@
     background-color: white;
     border-radius: 20px;
     overflow: hidden;
-    @include standardSpacing("margin", (0 0 50px 100px 180px), 1500px);
-
+    margin-top: 4em;
+    @include responsiveVSpacing("margin", (0 0 50px 100px 180px), 1500px);
     @include media(">=xxlMin") {
         left: 50%;
         margin-left: -750px;
@@ -78,9 +78,9 @@
 }
 
 .filter-background {
-    position: absolute;
+    position: fixed;
     height: 100%;
-    width: 100vw;
+    width: 100%;
     background-color: #000000b8;
     z-index: 20;
     top: 0;

@@ -76,7 +76,7 @@
     color: white;
 
     i {
-        @include standardFontsize(-2px)
+        @include responsiveFontsize(-2px)
     }
 }
 

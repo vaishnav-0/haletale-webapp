@@ -43,7 +43,7 @@ $xlVerticalSpace: 60px;
     @return $list;
 }
 
-@mixin standardSpacing($type:"margin", $mod:(), $wideScreenWidth:null) {
+@mixin responsiveVSpacing($type:"margin", $mod:(), $wideScreenWidth:null) {
     $maxLen: 5;
     $extra: $maxLen - length($mod);
     $mod: fillZero($mod, $extra);
@@ -79,7 +79,7 @@ $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
 
-@mixin standardFontsize($mod:0) {
+@mixin responsiveFontsize($mod:0) {
     font-size: $defaulFontSize + $mod;
 
     @include media(">=smMin") {

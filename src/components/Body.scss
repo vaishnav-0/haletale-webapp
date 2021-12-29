@@ -1,6 +1,6 @@
 @import "../breakpoints.scss";
 .body {
     flex: 1;
-    @include standardSpacing;
+    @include responsiveVSpacing;
 
 }
