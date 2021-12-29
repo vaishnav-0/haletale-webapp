@@ -1,6 +1,11 @@
 @import "../breakpoints.scss";
+
 .body {
     flex: 1;
-    @include responsiveVSpacing;
+    @include responsiveVSpacing_standard;
 
+    @include media(">=xxlMin") {
+        width: 1850px;
+        margin: auto;
+    }
 }

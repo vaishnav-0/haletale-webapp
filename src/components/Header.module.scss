@@ -8,6 +8,11 @@
     height: 100px;
     font-size: 18px;
   }
+
+  @include media(">=xxlMin") {
+    width: 1900px;
+    margin: auto;
+  }
 }
 
 .topnav {
