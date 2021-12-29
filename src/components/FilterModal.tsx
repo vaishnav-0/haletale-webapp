@@ -1,20 +1,17 @@
 import React from 'react';
 import style from './FilterModal.module.scss';
 import filterTop from '../assets/icons/filterTop.svg';
-import { PillList } from './PillList';
-import pillStyle from './PillList.module.scss';
-import { NumberInput } from './NumberInput';
-import { useClickOutsideEvent } from '../functions/hooks/useClickOutsideEvent';
+import { PillList } from './Form/components/PillList';
+import pillStyle from './Form/components/PillList.module.scss';
+import { NumberInput } from './Form/components/NumberInput';
 import Range from './Form/components/Range';
 
 type props = {
     onClose: () => void;
 }
 function FilterModel({ onClose = () => { } }: props): JSX.Element {
-    const filterRef = React.useRef<HTMLDivElement>(null!);
-    useClickOutsideEvent(filterRef, onClose);
     return (
-        <div ref={filterRef} className={style["modal-container"]}>
+        <div className={style["modal-container"]}>
             <div className={style["modal-header"]}>
                 <button onClick={onClose} className={style["modal-close-btn"]}>
                     <i className="fas fa-times" />
