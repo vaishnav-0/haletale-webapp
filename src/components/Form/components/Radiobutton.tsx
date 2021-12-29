@@ -6,11 +6,11 @@ type props = {
     values: string[]
 }
 const RadioButton = function ({ name, values }: props): JSX.Element {
-    return (<ul className={style["list"]}>
+    return (<>
         {values.map(e => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <li className={style["list-item"]}>
+                <div className={style["radio-item"]}>
                     <input type="radio" id={id} name={name} value={e} />
                     <div className={style["checked"]}>
                         <i className="far fa-dot-circle" />
@@ -19,10 +19,10 @@ const RadioButton = function ({ name, values }: props): JSX.Element {
                         <i className="far fa-circle" />
                     </div>
                     <label htmlFor={id}>{e}</label>
-                </li>
+                </div>
             );
         })}
-    </ul>
+    </>
     );
 }
 

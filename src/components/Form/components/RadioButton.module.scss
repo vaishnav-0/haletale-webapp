@@ -1,38 +1,27 @@
 @import 'src/breakpoints.scss';
 @import 'src/colors.scss';
 
-.list {
-    color: black;
-    display: flex;
-    flex-direction: column;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: visible;
-    align-items: center;
-}
 
-.list .list-item {
+.radio-item {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.list .list-item input[type=radio] {
+.radio-item input[type=radio] {
     position: absolute;
     visibility: hidden;
 }
 
-.list .list-item label {
+.radio-item label {
     display: block;
     position: relative;
-    padding: 1em;
-    padding-left: 1.5em;
+    padding-left: 0.8em;
     cursor: pointer;
     -webkit-transition: all 0.25s linear;
 }
 
-.list .list-item:hover label {
+.radio-item:hover label {
     color: $greyText;
 }
 
@@ -45,7 +34,7 @@
     display: none;
 }
 
-.list-item {
+.radio-item {
 
     input[type=radio]:checked~.checked {
         display: inline;
