@@ -57,13 +57,16 @@ export default function Header(): JSX.Element {
                         <>
                             <ButtonHollow onClick={() => setloginModalOpen(true)} label="Sign in" />
                             <ButtonSolid label="Sign up" />
+                            <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
 
-                            <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
-                                <LoginModal onClose={() => {
-                                    setloginModalOpen(false);
-                                }} />
+                                <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
+                                    <LoginModal onClose={() => {
+                                        setloginModalOpen(false);
+                                    }} />
 
-                            </Openable>
+                                </Openable>
+                            </div>
+
                         </>
                     }
 

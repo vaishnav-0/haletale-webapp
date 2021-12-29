@@ -234,7 +234,18 @@
 
   @include media(">smMin") {
     width: 30em;
-    margin: auto;
-    margin-top: 6em;
+    margin-left: auto;
+    margin-right: auto;
   }
+}
+
+.modal-background {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: #000000b8;
+  z-index: 20;
+  top: 0;
+  left: 0;
+  margin: 0;
 }
