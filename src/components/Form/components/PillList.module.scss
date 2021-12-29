@@ -1,11 +1,11 @@
-@import '../breakpoints.scss';
-@import '../colors.scss';
+@import 'src/breakpoints.scss';
+@import 'src/colors.scss';
 
 .pill-list {
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
-    @include standardFontsize(-2px);
+    @include responsiveFontsize(-2px);
 
 }
 
