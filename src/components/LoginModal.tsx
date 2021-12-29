@@ -3,7 +3,7 @@ import style from './LoginModal.module.scss';
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import googleLogo from '../assets/icons/google-logo.png';
 import fbLogo from '../assets/icons/fb_logo_color.png';
-
+import { TextInput } from './Form/components/TextInput';
 import { ButtonSolid } from './Button';
 type props = {
     onClose: () => void;
@@ -24,20 +24,17 @@ function LoginModal({ onClose = () => { } }: props): JSX.Element {
                     <div className={style["modal-item-heading"]}>
                         Email address
                     </div>
-                    <div className={style["textbox"]}>
-                        <input type="text" />
-                    </div>
+                    <TextInput type="text" />
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["modal-item-heading"]}>
                         Password
                     </div>
-                    <div className={style["textbox"]}>
-                        <input type="password" />
+                    <TextInput type="password">
                         <button>
                             Forgot?
                         </button>
-                    </div>
+                    </TextInput>
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["signin-btn"]}>
