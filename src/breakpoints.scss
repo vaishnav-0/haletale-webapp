@@ -79,15 +79,24 @@ $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
 
-@mixin responsiveFontsize($mod:0) {
-    font-size: $defaulFontSize + $mod;
+@mixin responsiveFontsize($mod:(1rem, 1rem, 1rem, 1rem, 1rem)) {
 
-    @include media(">=smMin") {
-        font-size: $smFontSize + $mod;
+    font-size: nth($mod, 1);
+
+    @include media_template("sm") {
+        font-size: nth($mod, 2);
     }
 
-    @include media(">=lgMin") {
-        font-size: $lgFontSize + $mod;
+    @include media_template("md") {
+        font-size: nth($mod, 3);
+    }
+
+    @include media_template("lg") {
+        font-size: nth($mod, 4);
+    }
+
+    @include media_template("xl") {
+        font-size: nth($mod, 5);
     }
 
 }

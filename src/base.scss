@@ -3,7 +3,7 @@
 html {
   box-sizing: border-box;
   font-family: "HelveticaNeue";
-  @include responsiveFontsize;
+  @include responsiveFontsize((14px, 16px, 16px, 18px, 18px));
 
 }
 
