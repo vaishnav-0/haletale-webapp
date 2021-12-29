@@ -27,5 +27,10 @@
             @include responsiveFontsize(-6px);
 
         }
+
+        &.inactive {
+            color: adjust-color($primary, $alpha:-0.7);
+            border-color: adjust-color($primary, $alpha:-0.7);
+        }
     }
 }
