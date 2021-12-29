@@ -80,7 +80,9 @@ $smFontSize:16px;
 $lgFontSize:18px;
 
 @mixin responsiveFontsize($mod:(1em, 1em, 1em, 1em, 1em)) {
-
+    $extra: 5 - length($mod);
+    $mod: fillList($mod, $extra, 1em);
+    
     font-size: nth($mod, 1);
 
     @include media_template("sm") {
