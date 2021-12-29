@@ -5,33 +5,6 @@ $mdVerticalSpace: 40px;
 $lgVerticalSpace: 50px;
 $xlVerticalSpace: 60px;
 
-@mixin standardM_P($mod:(0, 0, 0, 0, 0), $type:"margin") {
-    @if($type="padding"or $type="margin") {}
-
-    #{$type}-left: $vsmVerticalSpace+nth($mod, 1);
-    #{$type}-right: $vsmVerticalSpace+nth($mod, 1);
-
-    @include media_template("sm") {
-        #{$type}-left: $vsmVerticalSpace+nth($mod, 2);
-        #{$type}-right: $vsmVerticalSpace+nth($mod, 2);
-    }
-
-    @include media_template("md") {
-        #{$type}-left: $vsmVerticalSpace+nth($mod, 3);
-        #{$type}-right: $vsmVerticalSpace+nth($mod, 3);
-    }
-
-    @include media_template("lg") {
-        #{$type}-left: $vsmVerticalSpace+nth($mod, 4);
-        #{$type}-right: $vsmVerticalSpace+nth($mod, 4);
-    }
-
-    @include media_template("xl") {
-        #{$type}-left: $vsmVerticalSpace+nth($mod, 5);
-        #{$type}-right: $vsmVerticalSpace+nth($mod, 5);
-    }
-}
-
 @function fillList($list, $n, $item) {
     @if($n>0) {
         @for $i from 1 through $n {
@@ -43,34 +16,46 @@ $xlVerticalSpace: 60px;
     @return $list;
 }
 
-@mixin responsiveVSpacing($type:"margin", $mod:(), $wideScreenWidth:null) {
-    $maxLen: 5;
-    $extra: $maxLen - length($mod);
-    $mod: fillList($mod, $extra, 0);
+@mixin standardresponsiveVSpacing($type:"margin") {
+    @include responsiveVSpacing($type, ($vsmVerticalSpace, $smVerticalSpace, $mdVerticalSpace, $lgVerticalSpace, $xlVerticalSpace))
+}
 
-    @if($type=="margin") {
-        @include standardM_P($mod);
+@mixin responsiveVSpacing($type, $values:()) {//$type:margin or padding
+    $extra: 5 - length($mod);
+    $mod: fillList($mod, $extra, null);
+
+    @if(nth($values, 1)) {
+        #{$type}-left: nth($values, 1);
+        #{$type}-right: nth($values, 1);
     }
 
-    @else if($type=="padding") {
-        @include standardM_P($mod, "padding");
-    }
-
-
-    @include media(">=xxlMin") {
-        margin-left: auto;
-        margin-right: auto;
-
-        @if($wideScreenWidth) {
-            width: $wideScreenWidth;
-
-        }
-
-        @else {
-            width: 2000px;
+    @else if(nth($values, 2)) {
+        @include media_template("sm") {
+            #{$type}-left: nth($values, 2);
+            #{$type}-right: nth($values, 2);
         }
     }
 
+    @else if(nth($values, 3)) {
+        @include media_template("md") {
+            #{$type}-left: nth($values, 3);
+            #{$type}-right: nth($values, 3);
+        }
+    }
+
+    @else if(nth($values, 4)) {
+        @include media_template("lg") {
+            #{$type}-left: nth($values, 4);
+            #{$type}-right: nth($values, 4);
+        }
+    }
+
+    @else if(nth($values, 5)) {
+        @include media_template("xl") {
+            #{$type}-left: nth($values, 5);
+            #{$type}-right: nth($values, 5);
+        }
+    }
 }
 
 
@@ -82,7 +67,7 @@ $lgFontSize:18px;
 @mixin responsiveFontsize($mod:(1em, 1em, 1em, 1em, 1em)) {
     $extra: 5 - length($mod);
     $mod: fillList($mod, $extra, 1em);
-    
+
     font-size: nth($mod, 1);
 
     @include media_template("sm") {
