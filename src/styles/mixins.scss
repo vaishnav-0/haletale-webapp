@@ -1,0 +1,10 @@
+@mixin clickable-text-btn {
+    color: $primary;
+    font-weight: 800;
+    background-color: inherit;
+    border: none;
+
+    &:hover {
+        color: adjust-color($primary, $lightness:-5%);
+    }
+}
