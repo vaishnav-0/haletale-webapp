@@ -8,22 +8,27 @@ $xlVerticalSpace: 60px;
 @mixin standardM_P($mod:(0, 0, 0, 0, 0), $type:"margin") {
     @if($type="padding"or $type="margin") {}
 
-    #{$type}: 0 $vsmVerticalSpace+nth($mod, 1);
+    #{$type}-left: $vsmVerticalSpace+nth($mod, 1);
+    #{$type}-right: $vsmVerticalSpace+nth($mod, 1);
 
     @include media_template("sm") {
-        #{$type}: 0 $smVerticalSpace+ +nth($mod, 2);
+        #{$type}-left: $vsmVerticalSpace+nth($mod, 2);
+        #{$type}-right: $vsmVerticalSpace+nth($mod, 2);
     }
 
     @include media_template("md") {
-        #{$type}: 0 $mdVerticalSpace+ +nth($mod, 3);
+        #{$type}-left: $vsmVerticalSpace+nth($mod, 3);
+        #{$type}-right: $vsmVerticalSpace+nth($mod, 3);
     }
 
     @include media_template("lg") {
-        #{$type}: 0 $lgVerticalSpace+ +nth($mod, 4);
+        #{$type}-left: $vsmVerticalSpace+nth($mod, 4);
+        #{$type}-right: $vsmVerticalSpace+nth($mod, 4);
     }
 
     @include media_template("xl") {
-        #{$type}: 0 $xlVerticalSpace+ +nth($mod, 5);
+        #{$type}-left: $vsmVerticalSpace+nth($mod, 5);
+        #{$type}-right: $vsmVerticalSpace+nth($mod, 5);
     }
 }
 
@@ -53,7 +58,8 @@ $xlVerticalSpace: 60px;
 
 
     @include media(">=xxlMin") {
-        margin: auto;
+        margin-left: auto;
+        margin-right: auto;
 
         @if($wideScreenWidth) {
             width: $wideScreenWidth;
