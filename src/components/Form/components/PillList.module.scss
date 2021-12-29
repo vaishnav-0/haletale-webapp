@@ -5,7 +5,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
-    @include responsiveFontsize(-2px);
+    font-size: 0.875em;
 
 }
 

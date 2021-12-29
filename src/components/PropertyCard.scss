@@ -21,7 +21,7 @@
     gap: 5px;
     & :nth-child(2) {
         color: #828282;
-        @include responsiveFontsize(-3px);
+        font-size: 0.8em;
 
     }
 
@@ -35,7 +35,7 @@
 
     >* {
         padding: 5px 0 5px 0;
-        font-size: $defaulFontSize - 2px;
+        font-size: 0.8em;
         display: flex;
         align-items: center;
     }

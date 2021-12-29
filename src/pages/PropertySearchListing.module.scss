@@ -23,7 +23,7 @@
     }
 
     & :nth-child(2) {
-        @include responsiveFontsize(-3px);
+        font-size: 0.95em;
         color: #828282;
 
     }
