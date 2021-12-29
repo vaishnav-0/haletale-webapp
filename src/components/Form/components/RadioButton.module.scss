@@ -3,6 +3,7 @@
 
 
 .radio-item {
+    position: relative;
     display: flex;
 }
 
@@ -14,9 +15,10 @@
 .radio-item label {
     display: block;
     position: relative;
-    padding-left: 0.8em;
+    padding-left: 1.5em;
     cursor: pointer;
     -webkit-transition: all 0.25s linear;
+    background-color: rgba($color: #000000, $alpha: 0);
 }
 
 .radio-item:hover label {
@@ -25,7 +27,9 @@
 
 .checked,
 .unchecked {
+    position: absolute;
     color: $primary;
+    height: 100%;
 }
 
 .checked {
