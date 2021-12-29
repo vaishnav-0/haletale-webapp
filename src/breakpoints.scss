@@ -16,7 +16,7 @@ $xlVerticalSpace: 60px;
     @return $list;
 }
 
-@mixin standardresponsiveVSpacing($type:"margin") {
+@mixin responsiveVSpacing_standard($type:"margin") {
     @include responsiveVSpacing($type, ($vsmVerticalSpace, $smVerticalSpace, $mdVerticalSpace, $lgVerticalSpace, $xlVerticalSpace))
 }
 
