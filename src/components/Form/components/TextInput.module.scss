@@ -1,0 +1,21 @@
+@import 'src/styles/mixins.scss';
+
+.textbox {
+    display: flex;
+    height: 3em;
+    background-color: white;
+    border-radius: 1.5em;
+    @include def-shadow;
+    padding: 0 0.8em;
+
+    button {
+        @include clickable-text-btn;
+    }
+
+    input {
+        flex: 1;
+        border-radius: inherit;
+        height: 100%;
+        width: 100%;
+    }
+}
