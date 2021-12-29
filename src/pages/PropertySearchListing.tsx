@@ -25,7 +25,9 @@ export default function (): JSX.Element {
                     </button>
                 </div>
                 <Openable className={style["sort-popup"]} open={[openSort, setOpenSort]} clickOutsideCloseException={[sortButtonRef]}>
-                    <RadioButton name="sort" values={["Default", "Recent"]} />
+                    <div className={style["sortradio-container"]}>
+                        <RadioButton name="sort" values={["Default", "Recent"]} />
+                    </div>
                 </Openable>
                 <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
                     <Openable className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>

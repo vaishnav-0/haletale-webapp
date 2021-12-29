@@ -103,3 +103,12 @@
     border-radius: 20px;
 
 }
+.sortradio-container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    &>div{
+        margin: 0.8em;
+        margin-left: 0.5em;
+    }
+}
