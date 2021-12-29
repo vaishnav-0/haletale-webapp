@@ -1,9 +1,9 @@
 //attempt to standarde spacings
 $vsmVerticalSpace: 15px;
-$smVerticalSpace: 20px;
+$smVerticalSpace: 30px;
 $mdVerticalSpace: 40px;
-$lgVerticalSpace: 50px;
-$xlVerticalSpace: 60px;
+$lgVerticalSpace: 60px;
+$xlVerticalSpace: 90px;
 
 @function fillList($list, $n, $item) {
     @if($n>0) {
