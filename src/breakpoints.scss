@@ -20,7 +20,8 @@ $xlVerticalSpace: 60px;
     @include responsiveVSpacing($type, ($vsmVerticalSpace, $smVerticalSpace, $mdVerticalSpace, $lgVerticalSpace, $xlVerticalSpace))
 }
 
-@mixin responsiveVSpacing($type, $values:()) {//$type:margin or padding
+@mixin responsiveVSpacing($type, $values:()) {
+    //$type:margin or padding
     $extra: 5 - length($mod);
     $mod: fillList($mod, $extra, null);
 
@@ -64,26 +65,37 @@ $defaulFontSize:14px;
 $smFontSize:16px;
 $lgFontSize:18px;
 
-@mixin responsiveFontsize($mod:(1em, 1em, 1em, 1em, 1em)) {
+@mixin responsiveFontsize($mod:()) {
     $extra: 5 - length($mod);
-    $mod: fillList($mod, $extra, 1em);
+    $mod: fillList($mod, $extra, null);
 
-    font-size: nth($mod, 1);
-
-    @include media_template("sm") {
-        font-size: nth($mod, 2);
+    @if(nth($mod, 1)) {
+        font-size: nth($mod, 1);
     }
 
-    @include media_template("md") {
-        font-size: nth($mod, 3);
+    @else if(nth($mod, 2)) {
+        @include media_template("sm") {
+            font-size: nth($mod, 2);
+        }
     }
 
-    @include media_template("lg") {
-        font-size: nth($mod, 4);
+    @else if(nth($mod, 3)) {
+        @include media_template("md") {
+            font-size: nth($mod, 3);
+        }
     }
 
-    @include media_template("xl") {
-        font-size: nth($mod, 5);
+    @else if(nth($mod, 4)) {
+        @include media_template("lg") {
+            font-size: nth($mod, 4);
+        }
+
+    }
+
+    @else if(nth($mod, 5)) {
+        @include media_template("xl") {
+            font-size: nth($mod, 5);
+        }
     }
 
 }
