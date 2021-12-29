@@ -22,36 +22,37 @@ $xlVerticalSpace: 60px;
 
 @mixin responsiveVSpacing($type, $values:()) {
     //$type:margin or padding
-    $extra: 5 - length($mod);
-    $mod: fillList($mod, $extra, null);
+    $extra: 5 - length($values);
+    $values: fillList($values, $extra, null);
 
     @if(nth($values, 1)) {
+        @debug nth($values, 1);
         #{$type}-left: nth($values, 1);
         #{$type}-right: nth($values, 1);
     }
 
-    @else if(nth($values, 2)) {
+    @if(nth($values, 2)) {
         @include media_template("sm") {
             #{$type}-left: nth($values, 2);
             #{$type}-right: nth($values, 2);
         }
     }
 
-    @else if(nth($values, 3)) {
+    @if(nth($values, 3)) {
         @include media_template("md") {
             #{$type}-left: nth($values, 3);
             #{$type}-right: nth($values, 3);
         }
     }
 
-    @else if(nth($values, 4)) {
+    @if(nth($values, 4)) {
         @include media_template("lg") {
             #{$type}-left: nth($values, 4);
             #{$type}-right: nth($values, 4);
         }
     }
 
-    @else if(nth($values, 5)) {
+    @if(nth($values, 5)) {
         @include media_template("xl") {
             #{$type}-left: nth($values, 5);
             #{$type}-right: nth($values, 5);
@@ -73,26 +74,26 @@ $lgFontSize:18px;
         font-size: nth($mod, 1);
     }
 
-    @else if(nth($mod, 2)) {
+    @if(nth($mod, 2)) {
         @include media_template("sm") {
             font-size: nth($mod, 2);
         }
     }
 
-    @else if(nth($mod, 3)) {
+    @if(nth($mod, 3)) {
         @include media_template("md") {
             font-size: nth($mod, 3);
         }
     }
 
-    @else if(nth($mod, 4)) {
+    @if(nth($mod, 4)) {
         @include media_template("lg") {
             font-size: nth($mod, 4);
         }
 
     }
 
-    @else if(nth($mod, 5)) {
+    @if(nth($mod, 5)) {
         @include media_template("xl") {
             font-size: nth($mod, 5);
         }
