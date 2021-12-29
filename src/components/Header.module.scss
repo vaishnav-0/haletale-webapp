@@ -138,6 +138,7 @@
   padding: 0px 55px 0px 20px;
   z-index: 1000;
   box-shadow: 0px 9px rgba($color: #000000, $alpha: 0.1);
+
   :nth-child(1) {
     margin-top: 10px;
   }
@@ -227,8 +228,13 @@
   background-color: white;
   border-radius: 20px;
   overflow: hidden;
-  margin-top: 30px;
   z-index: 50;
-  //width: 300px;
-  margin: 20px;
+  margin: 0 20px;
+  margin-top: 3em;
+
+  @include media(">smMin") {
+    width: 30em;
+    margin: auto;
+    margin-top: 6em;
+  }
 }
