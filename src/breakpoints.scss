@@ -32,11 +32,11 @@ $xlVerticalSpace: 60px;
     }
 }
 
-@function fillZero($list, $n) {
+@function fillList($list, $n, $item) {
     @if($n>0) {
         @for $i from 1 through $n {
 
-            $list: append($list, 0);
+            $list: append($list, $item);
         }
     }
 
@@ -46,7 +46,7 @@ $xlVerticalSpace: 60px;
 @mixin responsiveVSpacing($type:"margin", $mod:(), $wideScreenWidth:null) {
     $maxLen: 5;
     $extra: $maxLen - length($mod);
-    $mod: fillZero($mod, $extra);
+    $mod: fillList($mod, $extra, 0);
 
     @if($type=="margin") {
         @include standardM_P($mod);
