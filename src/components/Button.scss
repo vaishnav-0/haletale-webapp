@@ -3,11 +3,19 @@
     border: var(--teal-dark) solid 1px;
     color: var(--teal-dark);
     border-radius: 10px;
+    &:hover{
+        color: white;
+        background-color: var(--teal-dark);
+    }
 }
 
 .btn-smoothround-solid {
-    border: var(--teal-dark) solid 2px;
+    border: var(--teal-dark) solid 1px;
     color: white;
     background-color: var(--teal-dark);
     border-radius: 10px;
+    &:hover{
+        background-color: #00000000;
+        color: var(--teal-dark);
+    }
 }
