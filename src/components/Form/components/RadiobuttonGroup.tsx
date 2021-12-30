@@ -9,17 +9,17 @@ type props = {
 const RadioButtonGroup = function ({ name, values }: props): JSX.Element {
     let elements = [];
     if (Array.isArray(values))
-        elements = values.map(e => {
+        elements = values.map((e, i) => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <RadioButton name={name} value={e} />
+                <RadioButton key={i} name={name} value={e} />
             );
         });
     else
-        elements = Object.entries(values).map(([value, label]) => {
+        elements = Object.entries(values).map(([value, label], i) => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <RadioButton name={name} value={value} label={label} />
+                <RadioButton key={i} name={name} value={value} label={label} />
             );
         })
     return (<>

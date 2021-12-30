@@ -1,14 +1,15 @@
 import React from 'react';
 import style from './ToggleButtons.module.scss';
-type props = {
+interface props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     name: string
     value: string
     label?: string
+    type?: "radio" | "checkbox"
 }
-function ToggleButton({ name, value, label, type }: props & { type: "radio" | "checkbox" }): JSX.Element {
+function ToggleButton({ name, value, label, type, key }: props): JSX.Element {
     const id = Math.random().toString(36).substr(2, 5);
     return (
-        <div className={style["radio-item"]}>
+        <div key={key} className={style["radio-item"]}>
             {
                 type === "radio" ?
                     <input type="radio" id={id} name={name} value={value} />

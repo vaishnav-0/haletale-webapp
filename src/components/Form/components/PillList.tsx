@@ -11,7 +11,7 @@ export function PillList({ items }: props): JSX.Element {
         return (
             <div className={style["pill-list"]}>
                 {items.map((e, i) =>
-                    <div className={`${style["pill"]} ${activePills.includes(i) ? style["pill-active"] : ""}`}
+                    <div key={i} className={`${style["pill"]} ${activePills.includes(i) ? style["pill-active"] : ""}`}
                         onClick={() => {
                             let p = activePills.indexOf(i);
                             if (p == -1) {
