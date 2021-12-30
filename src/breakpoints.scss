@@ -158,19 +158,19 @@ $xxlMin: 2000px;
 
 @mixin media_template($arg) {
     @if $arg=="sm" {
-        @include media(">=smMin", "<mdMin") {
+        @include media(">=smMin", "<=mdMin") {
             @content;
         }
     }
 
     @else if $arg=="md" {
-        @include media(">=mdMin", "<lgMin") {
+        @include media(">=mdMin", "<=lgMin") {
             @content;
         }
     }
 
     @else if $arg=="lg" {
-        @include media(">=lgMin", "<xlMin") {
+        @include media(">=lgMin", "<=xlMin") {
             @content;
         }
     }
