@@ -20,7 +20,7 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                     Filters
                 </div>
                 <div className={style["filter-heading-top"]}>
-                    <img src={filterTop} />
+                    <img alt="" src={filterTop} />
                 </div>
                 <div className={style["filter-heading-icon"]}><i className="fas fa-sliders-h"></i></div>
 
