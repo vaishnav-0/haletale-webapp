@@ -3,15 +3,20 @@ import { clickOutsideEvent } from '../functions/domEvents';
 import { expand, collapse, zoomIn, zoomOut } from '../functions/animations';
 import styleSheet from './Openable.module.scss';
 
-type animation = "slide" | "zoom" | undefined;
+type animation = {
+    type: "slide" | "zoom";
+    duration?: string,
+    timing?: string;
+} | undefined
 
 function handleOpen(state: boolean, ref: React.MutableRefObject<HTMLElement>, animation: animation, animate: boolean = true) {
     if (!animation)
-        ref.current.style.display = !state ? "none" : "";
-    if (animation === "slide")
-        state ? expand(ref, {}, true, !animate) : collapse(ref, {}, true, !animate);
-    if (animation === "zoom")
-        state ? zoomIn(ref, {}, !animate) : zoomOut(ref, {}, !animate);
+        return ref.current.style.display = !state ? "none" : "";
+    const { type, ...config } = animation;
+    if (type === "slide")
+        state ? expand(ref, config, true, !animate) : collapse(ref, config, true, !animate);
+    else if (type === "zoom")
+        state ? zoomIn(ref, config, !animate) : zoomOut(ref, config, !animate);
 }
 interface OpenableProps extends React.HTMLAttributes<HTMLDivElement> {
     children?: React.ReactNode,
