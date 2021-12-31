@@ -176,7 +176,12 @@ $xxlMin: 2000px;
     }
 
     @else if $arg=="xl" {
-        @include media(">=xlMin") {
+        @include media(">=xlMin","<=xxlMin") {
+            @content;
+        }
+    }
+    @else if $arg=="xxl" {
+        @include media(">=xxlMin") {
             @content;
         }
     }
