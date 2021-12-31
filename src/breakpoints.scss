@@ -22,7 +22,7 @@ $xlVerticalSpace: 90px;
 
 @mixin responsiveVSpacing($type, $values:()) {
     //$type:margin or padding
-    $extra: 5 - length($values);
+    $extra: 6 - length($values);
     $values: fillList($values, $extra, null);
 
     @if(nth($values, 1)) {
@@ -58,6 +58,13 @@ $xlVerticalSpace: 90px;
             #{$type}-right: nth($values, 5);
         }
     }
+
+    @if(nth($values, 6)) {
+        @include media_template("xxl") {
+            #{$type}-left: nth($values, 6);
+            #{$type}-right: nth($values, 6);
+        }
+    }
 }
 
 
@@ -67,7 +74,7 @@ $smFontSize:16px;
 $lgFontSize:18px;
 
 @mixin responsiveFontsize($mod:()) {
-    $extra: 5 - length($mod);
+    $extra: 6 - length($mod);
     $mod: fillList($mod, $extra, null);
 
     @if(nth($mod, 1)) {
@@ -96,6 +103,12 @@ $lgFontSize:18px;
     @if(nth($mod, 5)) {
         @include media_template("xl") {
             font-size: nth($mod, 5);
+        }
+    }
+
+    @if(nth($mod, 6)) {
+        @include media_template("xxl") {
+            font-size: nth($mod, 6);
         }
     }
 
@@ -176,10 +189,11 @@ $xxlMin: 2000px;
     }
 
     @else if $arg=="xl" {
-        @include media(">=xlMin","<=xxlMin") {
+        @include media(">=xlMin", "<=xxlMin") {
             @content;
         }
     }
+
     @else if $arg=="xxl" {
         @include media(">=xxlMin") {
             @content;
