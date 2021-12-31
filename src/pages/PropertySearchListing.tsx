@@ -24,13 +24,19 @@ export default function (): JSX.Element {
 
                     </button>
                 </div>
-                <Openable className={style["sort-popup"]} open={[openSort, setOpenSort]} clickOutsideCloseException={[sortButtonRef]}>
+                <Openable className={style["sort-popup"]}
+                    open={[openSort, setOpenSort]}
+                    clickOutsideCloseException={[sortButtonRef]}>
                     <div className={style["sortradio-container"]}>
                         <RadioButtonGroup name="sort" values={["Default", "Recent"]} />
                     </div>
                 </Openable>
                 <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
-                    <Openable className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
+                    <Openable animation={{
+                        type: "zoom",
+                        duration: "0.3s"
+                    }}
+                        className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
                         <FilterModel onClose={() => {
                             setFilterOpen(false);
                         }} />
