@@ -1,0 +1,251 @@
+@import 'src/breakpoints.scss';
+@import 'src/colors.scss';
+@import 'src/styles/mixins.scss';
+
+.imageupload-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    resize: vertical;
+    overflow: hidden;
+    border-radius: 1em;
+    padding: 0.5em;
+    height: 18em;
+    @include def-shadow;
+}
+
+.imageupload-container-wrapper {
+    flex: 1;
+    position: relative;
+    background-color: $greyBackground;
+    overflow: hidden;
+    border-radius: 1em;
+    padding: 0.5em;
+
+
+}
+
+.imageupload-container {
+    overflow: hidden scroll;
+    height: 100%;
+
+    &.dragging {
+        filter: blur(4px);
+    }
+
+    &.empty::after {
+        content: "Click the button or drop here to add images";
+        color: $grey;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: max-content;
+        height: max-content;
+        margin: auto;
+    }
+}
+
+.imageupload-btn-container {
+    padding: 0.8em;
+
+    .add-btn,
+    .remove-btn {
+        height: 2em;
+        font-size: 0.9em;
+        margin: 0 1em;
+        border-radius: 0.5em;
+        transition: all 0.2s linear;
+
+    }
+
+    .add-btn {
+        background-color: #00000000;
+        border: $primary solid 1px;
+        color: $primary;
+
+        &:hover {
+            color: white;
+            background-color: $primary;
+        }
+    }
+
+    .remove-btn {
+        background-color: #00000000;
+        border: $dangerPrimary solid 1px;
+        color: $dangerPrimary;
+
+        &:hover {
+            color: white;
+            background-color: $dangerPrimary;
+        }
+    }
+}
+
+.drag-overlay {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: $transparentBlack_glass;
+    z-index: 20;
+
+    &::after {
+        content: "Drop here";
+        color: white;
+    }
+}
+
+.imagelist-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: row;
+    grid-auto-rows: 10em;
+    justify-items: stretch;
+    align-items: stretch;
+    gap: 1em;
+    padding: 1em;
+
+    @include media(">mdMin") {
+        grid-template-columns: 1fr 1fr 1fr;
+
+    }
+}
+
+.image-item {
+    display: flex;
+    @include def-shadow;
+    border-radius: 0.5em;
+    background-color: white;
+    overflow: hidden;
+}
+
+.image-item-error {
+    border: 1px solid $dangerPrimary;
+}
+
+.image-element {
+    position: relative;
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    img {
+        width: 100%;
+        object-fit: contain;
+        max-height: 100%;
+    }
+}
+
+.image-close-btn,
+.image-update-btn,
+.image-edit-btn,
+.image-editor-confirm-btn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.image-close-btn {
+    top: 0.3em;
+    right: 0.3em;
+    border: 0;
+    height: 1em;
+    width: 1em;
+    background-color: #fe5252;
+    color: white;
+
+    i {
+        font-size: 0.6em;
+    }
+}
+
+.image-editor-close-btn {
+    @extend .image-close-btn;
+    top: 1.2em;
+    right: 1.2em;
+}
+
+.image-update-btn,
+.image-edit-btn {
+    height: 1.5em;
+    width: 1.5em;
+    background-color: white;
+    border: 1px solid $grey;
+    @include def-shadow;
+
+    i {
+        font-size: 0.8em;
+    }
+}
+
+.image-update-btn {
+    bottom: 0.3em;
+    left: 0.3em;
+}
+
+.image-edit-btn {
+    bottom: 0.3em;
+    right: 0.3em;
+}
+
+.image-editor-confirm-btn {
+    bottom: 3em;
+    right: 3em;
+    border: 0;
+    height: 3em;
+    width: 3em;
+    background-color: adjust-color(white, $alpha:-0.4);
+    color: $primary;
+
+    i {
+        font-size: 1.5em;
+    }
+}
+
+.image-editor-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: $transparentBlack_glass;
+    z-index: 100;
+}
+
+.image-editor {
+    width: 90%;
+    max-height: 90%;
+    margin-top: 3em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.edit-tool-container {
+    position: absolute;
+    display: flex;
+    width: max-content;
+    margin: auto;
+    bottom: 1em;
+    left: 0;
+    right: 0;
+    background-color: $whiteGlass;
+    border-radius: 0.5em;
+
+    button {
+        background-color: #00000000;
+        padding: 0 1em;
+        border: 0;
+        height: 2em;
+        font-size: 0.7em;
+    }
+}
