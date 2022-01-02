@@ -1,21 +1,23 @@
+@import 'src/colors.scss';
+
 .btn-smoothround-hollow {
     background-color: #00000000;
-    border: var(--teal-dark) solid 1px;
-    color: var(--teal-dark);
+    border: $primary solid 1px;
+    color: $primary;
     border-radius: 10px;
     &:hover{
         color: white;
-        background-color: var(--teal-dark);
+        background-color:$primary;
     }
 }
 
 .btn-smoothround-solid {
-    border: var(--teal-dark) solid 1px;
+    border: $primary solid 1px;
     color: white;
-    background-color: var(--teal-dark);
+    background-color: $primary;
     border-radius: 10px;
     &:hover{
         background-color: #00000000;
-        color: var(--teal-dark);
+        color: $primary;
     }
 }

@@ -1,11 +1,11 @@
 import React from 'react';
 import "./Button.scss";
-interface propsType extends React.HTMLAttributes<HTMLButtonElement> {
+interface propsType extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
     label: string;
     onClick?: () => void;
     className?: string
 }
-export type ButtonComponentType = (props: propsType) => JSX.Element
+export type ButtonComponentType = React.FC<propsType>
 export const ButtonHollow: ButtonComponentType = function ({ label, onClick = () => { }, className = "", ...rest }) {
     return <button onClick={onClick} className={"btn-smoothround-hollow " + className} {...rest}> {label}</button >
 
