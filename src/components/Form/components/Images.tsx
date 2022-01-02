@@ -30,6 +30,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
     React.useEffect(() => {
+        const divRef_ = divRef.current;
         const drag = new Drag(divRef.current);
         const enterHandler = (e: Event) => {
             setDragging(true);
@@ -37,12 +38,12 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         const leaveHandler = (e: Event) => {
             setDragging(false);
         }
-        divRef.current.addEventListener("drag:enter", enterHandler)
-        divRef.current.addEventListener("drag:leave", leaveHandler)
+        divRef_.addEventListener("drag:enter", enterHandler)
+        divRef_.addEventListener("drag:leave", leaveHandler)
         return () => {
             drag.unsuscribe();
-            divRef.current.removeEventListener("drag:enter", enterHandler)
-            divRef.current.removeEventListener("drag:leave", leaveHandler)
+            divRef_.removeEventListener("drag:enter", enterHandler)
+            divRef_.removeEventListener("drag:leave", leaveHandler)
         }
     }, []);
     const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
