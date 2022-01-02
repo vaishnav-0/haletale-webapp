@@ -56,7 +56,6 @@ function Signup(): JSX.Element {
                     </div>
 
                 </div>
-                <PositionIndicator count={4} position={3} />
                 <ButtonSolid label='Sign Up' className={style["form-submit-btn"]} />
             </form>
         </Layout>
