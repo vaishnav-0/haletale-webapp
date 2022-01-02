@@ -1,4 +1,5 @@
 @import './breakpoints.scss';
+@import './colors.scss';
 
 html {
   box-sizing: border-box;
@@ -60,4 +61,28 @@ img {
   font-family: "HelveticaNeueRegular";
   font-weight: 400;
   src: url(assets/fonts/helvetica/HelveticaNeue-Medium.otf);
+}
+
+a {
+  color: inherit;
+}
+
+a:link {
+  text-decoration: underline;
+}
+
+a:visited {
+  color: $greyBlueTint;
+}
+
+a:focus {
+  border: 1px solid black;
+}
+
+a:hover {
+  color: $greyText;
+}
+
+a:active {
+  color: #c8a3a3;
 }
