@@ -41,6 +41,7 @@ export default function Header(): JSX.Element {
                                     animation={{
                                         type: "slide"
                                     }}
+                                    onClick={e => e.stopPropagation()}
                                 >
                                     <a href="#">Profile{dropdownOpen}</a>
                                     <a href="#">Change Password</a>
