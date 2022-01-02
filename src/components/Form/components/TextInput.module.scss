@@ -17,5 +17,8 @@
         border-radius: inherit;
         background-color: inherit;
         height: 100%;
+        &::placeholder{
+            font-size: 0.8em;
+        }
     }
 }
