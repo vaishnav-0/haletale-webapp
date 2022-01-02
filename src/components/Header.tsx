@@ -12,7 +12,7 @@ import { Openable } from './Openable';
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
-    const logedin = false;//temporary
+    const logedin = true;//temporary
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -38,7 +38,9 @@ export default function Header(): JSX.Element {
                                     open={[dropdownOpen, setDropdownOpen]}
                                     closeOnClickOutside={false}
                                     className={style["dropdown-box"]}
-                                    animation="slide"
+                                    animation={{
+                                        type: "slide"
+                                    }}
                                 >
                                     <a href="#">Profile{dropdownOpen}</a>
                                     <a href="#">Change Password</a>
