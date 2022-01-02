@@ -18,7 +18,7 @@ function handleOpen(state: boolean, ref: React.MutableRefObject<HTMLElement>, an
     else if (type === "zoom")
         state ? zoomIn(ref, config, !animate) : zoomOut(ref, config, !animate);
 }
-interface OpenableProps extends React.HTMLAttributes<HTMLDivElement> {
+interface OpenableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     children?: React.ReactNode,
     className?: string,
     style?: React.CSSProperties,
@@ -33,9 +33,6 @@ const Openable = function ({ children, className, style, open, clickOutsideClose
     closeOnClickOutside = true, animation, ...rest }: OpenableProps): JSX.Element {
     const ref = React.useRef<HTMLDivElement>(null!);
     const firstRender = React.useRef(true);
-    const renderCount = React.useRef(0);
-    renderCount.current++;
-    console.log("openable", renderCount);
     React.useEffect(() => {
         if (closeOnClickOutside)
             return clickOutsideEvent(ref, () => open[1](false), clickOutsideCloseException);
