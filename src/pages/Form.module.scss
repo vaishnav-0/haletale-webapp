@@ -1,0 +1,52 @@
+@import "src/breakpoints.scss";
+@import "src/colors.scss";
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    font-size: 1.1em;
+    margin-bottom: 4em;
+    @include responsiveVSpacing("margin", (0, 0, 4em, 6em));
+
+    @include media(">=xlMin") {
+        margin-left: auto;
+        margin-right: auto;
+        width: 900px;
+    }
+}
+
+.form-item-heading {
+    font-weight: 800;
+    margin-bottom: 1em;
+}
+
+.horizontal-list {
+    display: flex;
+    gap: 2em;
+}
+
+.radio-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em
+}
+
+.form-header {
+    display: flex;
+    justify-content: center;
+    font-size: 1.7em;
+    font-weight: 800;
+    margin: 1em 0;
+}
+
+.form-submit-btn {
+    width: 7em;
+    height: 2.5em;
+    right: 0;
+    border-radius: 1.2em;
+    align-self: flex-end;
+    @include media("<=mdMin"){
+        align-self: center;
+    }
+}
