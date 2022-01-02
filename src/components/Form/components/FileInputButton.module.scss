@@ -1,0 +1,43 @@
+@import 'src/colors.scss';
+
+.file-info {
+    display: flex;
+    margin: 0.3em;
+    font-size: 0.9em;
+    align-items: center;
+}
+
+.file-remove-btn {
+    background-color: #00000000;
+    border: $dangerPrimary solid 1px;
+    color: $dangerPrimary;
+    height: 0.9em;
+    width: 0.9em;
+    margin: 0 0.5em;
+    margin-top: 0.1em;
+    border-radius: 50%;
+    transition: all 0.2s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+        font-size: 0.55em;
+    }
+
+    &:hover {
+        color: white;
+        background-color: $dangerPrimary;
+    }
+}
+
+.file-name {
+    color: $greyText;
+}
+
+.file-btn {
+    width: 5.5em;
+    height: 2.3em;
+    border-radius: 1.2em;
+
+}
