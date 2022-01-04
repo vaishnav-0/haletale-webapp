@@ -7,5 +7,6 @@ $transparentBlack_glass:#0000009c;
 $whiteGlass:#ffffffac;
 
 $primary:#08ada7;
+$primaryBackground:adjust-color($primary, $lightness:58%);
 $secondary:#0A918B;
 $dangerPrimary:#ea3434;
