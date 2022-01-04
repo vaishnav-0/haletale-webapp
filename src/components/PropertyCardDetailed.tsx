@@ -6,24 +6,56 @@ import bedIcon from "../assets/icons/pro-details-icon1.png";
 import bathIcon from "../assets/icons/pro-details-icon2.png";
 import petIcon from "../assets/icons/pro-details-icon3.png";
 import sqftIcon from "../assets/icons/pro-details-icon4.png";
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import PositionIndicator from './PositionIndicator';
+
 export default function (): JSX.Element {
     const [fav, setFav] = React.useState(false);
+    const [currentImage, setCurrentImage] = React.useState(0);
     return (
         <div className={style["property-card"]}>
             <div className={style["property-card-container"]}>
-                <div className={style["image-slider"]}>
-                    <div className={style["image-slider-container"]}>
-                        <div>
-                            <img src={propertyImg1} />
+                <PositionIndicator onChange={(i) => setCurrentImage(i)}
+                    position={currentImage} className={style["position-indicator"]} count={2} />
+                {
 
+                    <Carousel
+                        showThumbs={false}
+                        showArrows={false}
+                        showIndicators={false}
+                        showStatus={false}
+                        emulateTouch={true}
+                        infiniteLoop={true}
+                        onChange={(i) => setCurrentImage(i)}
+                        selectedItem={currentImage}
+                    >
+                        <div className={style["image-slider"]}>
+                            <div className={style["image-slider-container"]}>
+                                <img src={propertyImg1} />
+                            </div>
                         </div>
-                        <div>
-                            <img src={propertyImg2} />
+                        <div className={style["image-slider"]}>
+                            <div className={style["image-slider-container"]}>
+                                <img src={propertyImg2} />
+                            </div>
+                        </div>
+                    </Carousel>
 
+                    /*<div className={style["image-slider"]}>
+                        <div className={style["image-slider-container"]}>
+                            <div>
+                                <img src={propertyImg1} />
+    
+                            </div>
+                            <div>
+                                <img src={propertyImg2} />
+    
+                            </div>
                         </div>
                     </div>
-
-                </div>
+    */
+                }
                 <div className={style["property-details"]}>
                     <div className={style["top-container"]}>
                         <div className={style["property-location"]}>
@@ -32,7 +64,7 @@ export default function (): JSX.Element {
                             <div>130 Clinton Street - Toronto, ON</div>
                         </div>
                         <div className={style["fav-icon"]}>
-                            <i onClick={() => setFav(!fav)} className={`${fav ? style.filled + " fas" : style.regular + " far"} far fa-heart`}></i>
+                            <i onClick={() => setFav(!fav)} className={`${fav ? style.filled + " fas" : style.regular + " far"} fa-heart`}></i>
                         </div>
                     </div>
                     <div className={style["bottom-container"]}>

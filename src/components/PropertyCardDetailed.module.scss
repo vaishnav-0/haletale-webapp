@@ -44,30 +44,15 @@
     img {
         object-fit: cover;
         width: 100%;
+        height: 100%;
     }
 
     .image-slider-container {
         display: flex;
+        align-items: center;
         position: absolute;
         height: 100%;
         width: 100%;
-        overflow-x: scroll;
-        scroll-snap-type: x mandatory;
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-
-        &::-webkit-scrollbar {
-            display: none;
-        }
-
-        div {
-            display: flex;
-            justify-content: center;
-            height: 100%;
-            width: 100%;
-            flex-shrink: 0;
-            scroll-snap-align: start;
-        }
     }
 }
 
@@ -146,4 +131,14 @@
         font-size: 0.95em;
 
     }
+}
+
+.position-indicator {
+    position: absolute;
+    z-index: 10;
+    bottom: 4.3em;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+
 }
