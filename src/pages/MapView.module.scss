@@ -1,0 +1,73 @@
+@import 'src/colors.scss';
+@import 'src/breakpoints.scss';
+
+.wrapper {
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+}
+
+.container {
+    z-index: 10;
+    display: flex;
+    overflow: scroll;
+    width: 100vw;
+    height: auto;
+}
+
+.filter-btn {
+    z-index: 20;
+    position: absolute;
+    border-radius: 50%;
+    background-color: $primary;
+    border: 0;
+    font-weight: 100;
+    width: 2.2em;
+    height: 2.2em;
+    margin: 0.5em;
+    color: white;
+    top: -10%;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+    &:hover {
+        background-color: $secondary;
+    }
+}
+
+.filter-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 50;
+    background-color: white;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 4em;
+    @include responsiveVSpacing("margin", (30px 50px 70px 140px));
+
+    @include media(">=xlMin") {
+        width: 1100px;
+        left: 50%;
+        margin-left: -550px;
+    }
+
+}
+
+.filter-background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: #000000b8;
+    z-index: 20;
+    top: 0;
+    left: 0;
+    margin: 0;
+}
+
+.map {
+    height: 100vh;
+    z-index: 5;
+}
