@@ -144,7 +144,7 @@ function AddProperty(): JSX.Element {
                     </div>
                     <TextArea rows={10} />
                 </div>
-                <ButtonSolid label='Next' className={style["form-submit-btn"]} />
+                <ButtonSolid className={style["form-submit-btn"]} >Next</ButtonSolid>
             </form>
         </Layout>
     );

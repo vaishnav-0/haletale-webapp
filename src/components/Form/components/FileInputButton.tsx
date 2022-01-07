@@ -50,7 +50,7 @@ export default function FileInput({ className, style, ButtonComponent }: propsTy
 
 export function FileInputButton(props: Omit<propsType, "ButtonComponent">): JSX.Element {
     return <FileInput
-        ButtonComponent={<ButtonSolid label='Upload' type="button" className={cssStyle["file-btn"]} />}
+        ButtonComponent={<ButtonSolid type="button" className={cssStyle["file-btn"]} >Upload</ButtonSolid>}
         {...props}
     />
 

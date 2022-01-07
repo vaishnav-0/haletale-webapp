@@ -40,7 +40,7 @@ function LoginModal({ onClose = () => { } }: props): JSX.Element {
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["signin-btn"]}>
-                        <ButtonSolid label='Sign In' />
+                        <ButtonSolid>Sign In</ButtonSolid>
                     </div>
                 </div>
                 <div className={style["modal-item"]}>
