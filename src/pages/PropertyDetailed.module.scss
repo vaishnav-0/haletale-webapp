@@ -1,0 +1,283 @@
+@import 'src/colors.scss';
+@import 'src/styles/mixins.scss';
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    margin: 2em 0;
+}
+
+.property-card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    @include def-shadow;
+    border-radius: 1em;
+
+
+}
+
+
+.property-feature {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    margin: 0.8em 0;
+    gap: 0.5em;
+}
+
+.image-slider {
+    border-radius: 1em;
+    overflow: hidden;
+}
+
+.bottom-panel,
+.rateinfo {
+    display: flex;
+    padding: 0.5em;
+    @include def-shadow;
+    border-radius: 2em;
+    justify-content: space-between;
+    align-items: center;
+    height: 3.6em;
+
+    @include media(">=smMin") {
+        width: 25em;
+        margin: auto;
+    }
+
+}
+
+.rateinfo {
+    border-radius: 1em;
+
+}
+
+.rateinfo-text {
+    position: relative;
+    display: flex;
+    align-items: center;
+    font-size: 0.9em;
+    color: $greyText;
+    font-weight: 900;
+    margin: 0 1em;
+
+    i {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 0.7em;
+        font-size: 0.55em;
+        background-color: $primary;
+        height: 2em;
+        width: 2em;
+        color: white;
+        border-radius: 50%;
+    }
+}
+
+.ratebreakdown {
+    z-index: 20;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1em;
+    @include def-shadow;
+    top: 150%;
+    left: 0;
+    gap: 0.4em;
+    background-color: white;
+    padding: 0.7em 1em;
+
+    @include media(">smMin") {
+        left: 90%;
+    }
+}
+
+.ratebreakdown-item {
+    &>div {
+        width: max-content;
+        color: $primary;
+    }
+
+    &>ul {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5em;
+        width: max-content;
+        padding: 0 0.5em;
+        list-style: none;
+    }
+}
+
+.rateinfo-rate {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2em;
+    background-color: $primary;
+    color: white;
+    margin-right: 0.4em;
+    height: 100%;
+    padding: 0 1em;
+}
+
+.bottom-panel-sendbtn {
+    flex-grow: 2;
+    border-radius: inherit;
+    height: 100%;
+    padding: 0 1.3em;
+}
+
+.bottom-panel-icon {
+    flex-grow: 1;
+    font-size: 1.1em;
+    color: $grey;
+    background-color: #00000000;
+    border: none;
+}
+
+.heartfilled {
+    color: $dangerPrimary;
+}
+
+.notifyfilled {
+    color: black;
+}
+
+.bottom-panel-shareicon {
+    flex-grow: 1;
+    background-color: #00000000;
+    border: none;
+    width: max-content;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.4em;
+}
+
+.slider-indicator {
+    bottom: 1.5em;
+    right: 1.5em;
+    margin: 0;
+}
+
+.seperator {
+    &::after {
+        content: "\2022";
+        display: flex;
+        align-items: center;
+        color: $primary;
+    }
+}
+
+.property-feature-row1,
+.property-feature-row2 {
+    display: flex;
+    width: max-content;
+    gap: 1em;
+    margin: 0 auto;
+
+    img {
+        margin-right: 0.5em;
+        height: 1em;
+    }
+}
+
+.top-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    z-index: 5;
+    top: 0.7em;
+    left: 0;
+    right: 0;
+    width: 93%;
+    margin: auto;
+}
+
+.property-map {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2.5em;
+    width: 2.5em;
+    border-radius: 50%;
+
+    &:hover {
+        background-color: $primary;
+        color: white;
+    }
+}
+
+.property-id {
+    background-color: $transparentBlack_glass;
+    padding: 0.3em 0.6em;
+    border-radius: 1em;
+    color: white;
+    font-size: 0.7em;
+    border: 0;
+}
+
+.feature-accordion-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5em 1em;
+    font-weight: 900;
+    font-size: 0.9em;
+    color: $greyText;
+
+    li {
+        margin: 0.5em 0;
+    }
+}
+
+.image-gallery-container {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: $transparentBlack_glass;
+    z-index: 100;
+    overflow: scroll;
+    @include responsiveVSpacing("padding", (0, 5em, 10em, 15em));
+
+    &>div {
+        width: 100%;
+
+        @include media(">xlMin") {
+            width: 1000px;
+            margin: auto;
+        }
+
+    }
+}
+
+.imagegallary-close-btn {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    z-index: 10;
+    top: 0.7em;
+    right: 0.7em;
+    border: 0;
+    height: 1.4em;
+    width: 1.4em;
+    background-color: #fe5252;
+    color: white;
+
+    i {
+        font-size: 0.8em;
+    }
+}
