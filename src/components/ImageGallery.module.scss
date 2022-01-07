@@ -1,0 +1,15 @@
+.image-container {
+    display: flex;
+    align-items: center;
+}
+
+.position-indicator {
+    position: absolute;
+    z-index: 10;
+    bottom: 8em;
+    right: 0;
+    left: 0;
+    margin: 0 auto;
+
+}
+
