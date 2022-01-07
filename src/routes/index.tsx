@@ -8,6 +8,9 @@ import HomePage from "../pages/Home";
 import PropertyListing from "../pages/PropertySearchListing";
 import AddProperty from '../pages/AddProperty';
 import Signup from "../pages/SignUp";
+import MapView from "../pages/MapView";
+import PropertyDetailed from '../pages/PropertyDetailed'
+import SendRequest from "../pages/SendRequest";
 
 export default function () {
     return (
@@ -17,6 +20,9 @@ export default function () {
                 <Route path="/properties" element={< PropertyListing />} />
                 <Route path="/addProperty" element={< AddProperty />} />
                 <Route path="/signup" element={< Signup />} />
+                <Route path="/propertiesMapView" element={< MapView />} />
+                <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
+                <Route path="/sendRequest" element={< SendRequest />} />
 
                 <Route
                     path="*"
