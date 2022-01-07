@@ -32,10 +32,7 @@ export default function (): JSX.Element {
                     </div>
                 </Openable>
                 <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
-                    <Openable animation={{
-                        type: "zoom",
-                        duration: "0.3s"
-                    }}
+                    <Openable
                         className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
                         <FilterModel onClose={() => {
                             setFilterOpen(false);
