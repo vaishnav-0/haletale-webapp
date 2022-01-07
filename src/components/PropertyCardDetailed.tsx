@@ -6,9 +6,8 @@ import bedIcon from "../assets/icons/pro-details-icon1.png";
 import bathIcon from "../assets/icons/pro-details-icon2.png";
 import petIcon from "../assets/icons/pro-details-icon3.png";
 import sqftIcon from "../assets/icons/pro-details-icon4.png";
-import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import PositionIndicator from './PositionIndicator';
+import ImageSlider from './ImageSlider';
 
 export default function (): JSX.Element {
     const [fav, setFav] = React.useState(false);
@@ -16,46 +15,8 @@ export default function (): JSX.Element {
     return (
         <div className={style["property-card"]}>
             <div className={style["property-card-container"]}>
-                <PositionIndicator onChange={(i) => setCurrentImage(i)}
-                    position={currentImage} className={style["position-indicator"]} count={2} />
-                {
+                <ImageSlider imgSrc={[propertyImg1, propertyImg2]} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
 
-                    <Carousel
-                        showThumbs={false}
-                        showArrows={false}
-                        showIndicators={false}
-                        showStatus={false}
-                        emulateTouch={true}
-                        infiniteLoop={true}
-                        onChange={(i) => setCurrentImage(i)}
-                        selectedItem={currentImage}
-                    >
-                        <div className={style["image-slider"]}>
-                            <div className={style["image-slider-container"]}>
-                                <img src={propertyImg1} />
-                            </div>
-                        </div>
-                        <div className={style["image-slider"]}>
-                            <div className={style["image-slider-container"]}>
-                                <img src={propertyImg2} />
-                            </div>
-                        </div>
-                    </Carousel>
-
-                    /*<div className={style["image-slider"]}>
-                        <div className={style["image-slider-container"]}>
-                            <div>
-                                <img src={propertyImg1} />
-    
-                            </div>
-                            <div>
-                                <img src={propertyImg2} />
-    
-                            </div>
-                        </div>
-                    </div>
-    */
-                }
                 <div className={style["property-details"]}>
                     <div className={style["top-container"]}>
                         <div className={style["property-location"]}>
