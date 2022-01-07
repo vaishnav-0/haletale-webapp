@@ -12,7 +12,7 @@ import { Openable } from './Openable';
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
-    const logedin = true;//temporary
+    const logedin = false;//temporary
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
