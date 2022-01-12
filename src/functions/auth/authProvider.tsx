@@ -27,7 +27,7 @@ const fakeAuthProvider = {
 
 import React from 'react';
 import { useAuth } from './useAuth';
-
+import authContext from './authContext';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
     let [user, setUser] = React.useState<any>(null);
@@ -53,6 +53,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signin, signout 
     };
 
-    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+    return <authContext.Provider value={value}>{children}</authContext.Provider>;
 
 }

@@ -5,4 +5,5 @@ import authContext, { AuthContextType } from "./authContext";
 // returns authContext
 // explicit type casting to React.Context<CT> to get Consumer Provider Types 
 
-export const useAuth = () => React.useContext(authContext) as unknown as React.Context<AuthContextType>;
+export const useAuth = () => React.useContext(authContext)
+// as unknown as React.Context<AuthContextType>;

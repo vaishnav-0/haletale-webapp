@@ -5,10 +5,10 @@ export enum Roles { 'tenant', 'landlord' };
 
 export interface AuthContextType {
     token?: string
-    userName?: string
-    tokenExpiry?: number
-    //provider?: string
+    tokenExpiry?: number 
+    provider?: string 
     role?: Roles
+    user?: string
     signin: (user: string, callback: VoidFunction) => void;
     signout: (callback: VoidFunction) => void;
 };

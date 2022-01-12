@@ -1,8 +1,8 @@
 import OAuth2Login from 'react-simple-oauth2-login';
-import googleLogo from '../assets/icons/google-logo.png';
-import fbLogo from '../assets/icons/fb_logo_color.png';
+import googleLogo from '../../assets/icons/google-logo.png';
+import fbLogo from '../../assets/icons/fb_logo_color.png';
 
-export const OAuth2 = ({ provider }: { provider: string }): JSX.Element => {
+const OAuth2 = ({ provider }: { provider: string }): JSX.Element => {
 
     return (
         <OAuth2Login
@@ -21,5 +21,7 @@ export const OAuth2 = ({ provider }: { provider: string }): JSX.Element => {
             }}
         />
     )
-}
+};
+
+export default OAuth2
 

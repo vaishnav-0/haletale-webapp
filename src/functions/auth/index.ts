@@ -1,55 +1,21 @@
-import jwtDecode, { JwtPayload } from "jwt-decode";
+// import { setToken } from "./token";
+// import OAuth2 from "./OAuth2";
 
-/**
- * 
- * @param token 
- * @returns expiry time of token
- */
-const getExpiry = (token: string): number => {
+// enum OAuth2Providers { 'Google' , 'FaceBook'};
+// enum LoginTypes { 'email_pass' , 'otp'}
 
-    let tokenDecoded = jwtDecode<JwtPayload>(token);
-    let exp: number = tokenDecoded.exp as number;
-    let expiry: number = new Date().valueOf() - new Date(exp * 1000).valueOf();
-    console.log(expiry)
-    return expiry;
-}
+// type authTypes = LoginTypes | OAuth2Providers ;
 
-/**
- * 
- * @returns true if token is valid
- */
+// function signIn(authType : authTypes ): string {
 
-const isTokenValid = (): boolean => {
+//     if(authType ===  )
+//     OAuth2(authType as unknown as string)
+//     // setToken()
+//     return 's'
+// };
+// declare function signOut(): VoidFunction;
 
-    let token = getToken();
-    if (token === null) {
-        return false;
-    }
 
-    let expiry: number = getExpiry(token)
-    if (expiry <= 0) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
-/**
- * 
- * @returns the token from local storage
- */
-const getToken = (): string | null => {
-    return localStorage.getItem('token');
-}
 
-/**
- * 
- * @param token 
- * 
- */
-const setToken = (token: string): void => {
-    localStorage.setItem('token', token);
-}
-
-export { isTokenValid, getExpiry }
+// export { signIn, signOut };
