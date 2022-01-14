@@ -33,7 +33,9 @@ const MapViewTile = React.forwardRef<HTMLDivElement, React.DetailedHTMLProps<Rea
 
             <div>130 Clinton Street - Toronto, ON</div>
         </div>
-        <ImageSlider imgSrc={[propertyImg1, propertyImg2]} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
+        <ImageSlider imgSrc={[propertyImg1, propertyImg2]} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]}
+            showIndicators={false} swipable={false}
+        />
     </div>
 
 });
