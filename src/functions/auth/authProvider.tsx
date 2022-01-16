@@ -12,6 +12,14 @@
 
 // //   export { AuthProvider };
 
+
+
+import React from 'react';
+import { useAuth } from './useAuth';
+import authContext from './authContext';
+
+
+
 const fakeAuthProvider = {
     isAuthenticated: false,
     signin(callback: VoidFunction) {
@@ -24,12 +32,7 @@ const fakeAuthProvider = {
     }
   };
 
-
-import React from 'react';
-import { useAuth } from './useAuth';
-import authContext from './authContext';
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export default function AuthProvider({ children }: { children: React.ReactNode }) {
     let [user, setUser] = React.useState<any>(null);
 
     const AuthContext = useAuth();

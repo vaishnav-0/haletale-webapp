@@ -3,7 +3,7 @@ import style from './LoginModal.module.scss';
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import { TextInput } from './Form/components/TextInput';
 import { ButtonSolid } from './Button';
-import { OAuth2 } from '../functions/auth/googleAuth';
+import OAuth2 from '../functions/auth/OAuth2';
 
 type props = {
     onClose: () => void;
