@@ -18,12 +18,36 @@ import bedIcon from '../assets/icons/bed.svg';
 import bathIcon from '../assets/icons/bath.svg';
 import ImageGallery from '../components/ImageGallery';
 
+const imageSliderClickHandler = (cb: () => void) => {
+    const delta = 6;
+    let startX: number;
+    let startY: number;
+    let handlers: { mousedown?: React.MouseEventHandler<HTMLDivElement>, mouseup?: React.MouseEventHandler<HTMLDivElement> } = {};
+    handlers.mousedown = function (event) {
+        startX = event.pageX;
+        startY = event.pageY;
+    }
+
+    handlers.mouseup = function (event) {
+        const diffX = Math.abs(event.pageX - startX);
+        const diffY = Math.abs(event.pageY - startY);
+
+        if (diffX < delta && diffY < delta) {
+            cb();
+        }
+    }
+    return handlers;
+}
 export default function Example() {
     const [fav, setFav] = React.useState(false);
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
     const [imageGalleryOpen, setImageGalleryOpen] = React.useState(false);
     const breakdownQuestionRef = React.useRef<HTMLElement>(null!);
+    const imageSliderClick = React.useMemo(() =>
+        imageSliderClickHandler(() => setImageGalleryOpen(true)),
+        [setImageGalleryOpen],
+    );
     React.useEffect(() => {
         const BQRef_ = breakdownQuestionRef.current;
         const mouseEnterHandler = () => {
@@ -59,7 +83,9 @@ export default function Example() {
                             Property ID: 1204412322
                         </button>
                     </div>
-                    <ImageSlider imgSrc={[propertyImg1, propertyImg2]} onClick={() => setImageGalleryOpen(true)} aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
+                    <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
+                        imgSrc={[propertyImg1, propertyImg2]}
+                        aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
                     <div className={style["property-feature"]}>
                         <div className={style["property-feature-row1"]}>
                             <div>
@@ -106,8 +132,8 @@ export default function Example() {
                     </div>
                     <div className={style["rateinfo-rate"]} >C$ 150</div>
                 </div>
-                <Accordion allowMultipleExpanded allowZeroExpanded>
-                    <AccordionItem>
+                <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0"]}>
+                    <AccordionItem uuid="0">
                         <AccordionItemHeading>
                             <AccordionItemButton>
                                 About the property

@@ -46,6 +46,10 @@
         width: 25em;
         margin: auto;
     }
+    @include media(">=lgMin") {
+        width: 35em;
+        margin: auto;
+    }
 
 }
 

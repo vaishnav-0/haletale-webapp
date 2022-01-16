@@ -3,11 +3,10 @@ import style from './ImageSlider.module.scss';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PositionIndicator from '../components/PositionIndicator';
-interface propType {
+interface propType extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     aspectRatio: number;
     indicatorClassName?: string;
     className?: string;
-    onClick?: () => void;
     imgSrc: string[];
     showArrows?: boolean;
     showIndicators?: boolean
@@ -15,21 +14,26 @@ interface propType {
     infiniteLoop?: boolean;
     onChange?: () => void;
     selectedItem?: number | undefined
+    swipable?: boolean
 }
 export default function ({ aspectRatio = 16 / 9, indicatorClassName = "",
-    showArrows = false, showIndicators = false, showStatus = false, infiniteLoop = true,
-    className = "", onChange = () => { }, onClick = () => { }, selectedItem = 0, imgSrc = [] }: propType) {
+    showArrows = false, showIndicators = true, showStatus = false, infiniteLoop = true, swipable = true,
+    className = "", onChange = () => { }, selectedItem = 0, imgSrc = [], ...rest }: propType) {
     const [currentImage, setCurrentImage] = React.useState(0);
     return (
-        <div onClick={onClick} className={style["slider-container"]}>
-            <PositionIndicator style={{ position: "absolute", zIndex: "10" }} className={indicatorClassName} onChange={(i) => setCurrentImage(i)}
-                position={currentImage} count={2} />
+        <div className={style["slider-container"]} {...rest}>
+            {
+                showIndicators &&
+                <PositionIndicator style={{ position: "absolute", zIndex: "10" }} className={indicatorClassName} onChange={(i) => setCurrentImage(i)}
+                    position={currentImage} count={2} />
+            }
             <Carousel
                 className={className}
                 showArrows={showArrows}
                 showThumbs={false}
-                showIndicators={showIndicators}
+                showIndicators={false}
                 showStatus={showStatus}
+                swipeable={swipable}
                 emulateTouch={true}
                 infiniteLoop={infiniteLoop}
                 onChange={(i) => setCurrentImage(i)}
