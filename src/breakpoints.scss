@@ -26,7 +26,6 @@ $xlVerticalSpace: 90px;
     $values: fillList($values, $extra, null);
 
     @if(nth($values, 1)) {
-        @debug nth($values, 1);
 
         @include media("<=smMin") {
             #{$type}-left: nth($values, 1);
