@@ -27,8 +27,12 @@ $xlVerticalSpace: 90px;
 
     @if(nth($values, 1)) {
         @debug nth($values, 1);
-        #{$type}-left: nth($values, 1);
-        #{$type}-right: nth($values, 1);
+
+        @include media("<=smMin") {
+            #{$type}-left: nth($values, 1);
+            #{$type}-right: nth($values, 1);
+        }
+
     }
 
     @if(nth($values, 2)) {
@@ -78,7 +82,9 @@ $lgFontSize:18px;
     $mod: fillList($mod, $extra, null);
 
     @if(nth($mod, 1)) {
-        font-size: nth($mod, 1);
+        @include media("<=smMin") {
+            font-size: nth($mod, 1);
+        }
     }
 
     @if(nth($mod, 2)) {
