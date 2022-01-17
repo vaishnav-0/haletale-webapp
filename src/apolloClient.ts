@@ -20,9 +20,10 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 });
 
 const logoutLink = onError(({ networkError }) => {
-    if (networkError && (networkError as ServerError).statusCode === 401)
-     //   logout(); to be implemented
-})
+    if (networkError && (networkError as ServerError).statusCode === 401) { }
+    //   logout(); to be implemented
+});
+
 
 
 const graphQLClient = () => new ApolloClient({
