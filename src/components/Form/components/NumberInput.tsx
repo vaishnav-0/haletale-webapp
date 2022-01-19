@@ -15,7 +15,7 @@ type props = {
     setValue?: changeFuncType,
 
 }
-export function NumberInput({ value, init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValue = () => { } }: props): JSX.Element {
+export function NumberInput({ value, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValue = () => { } }: props): JSX.Element {
     return (
         <div className={style["container"]}>
             <button type="button"
