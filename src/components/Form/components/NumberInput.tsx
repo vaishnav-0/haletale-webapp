@@ -3,16 +3,17 @@ import style from './NumberInput.module.scss';
 type props = {
     init?: number,
     min?: number,
-    max?: number | null
+    max?: number | null,
+    disabled?: (0 | 1)[]
 }
-export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabled = [] }: props): JSX.Element {
     const [count, setCount] = React.useState(0)
     return (
         <div className={style["container"]}>
             <button type="button"
-                className={count === min ? style["inactive"] : ""}
+                className={count === min || disabled.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
-                    count > min && setCount(count - 1);
+                    !disabled.includes(0) && count > min && setCount(count - 1);
                 }}>
                 <i className="fas fa-minus"></i>
             </button>
@@ -20,9 +21,9 @@ export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
                 {count}
             </div>
             <button type="button"
-                className={count === max ? style["inactive"] : ""}
+                className={count === max || disabled.includes(1) ? style["inactive"] : ""}
                 onClick={() => {
-                    (max != null && count == max) || setCount(count + 1)
+                    !disabled.includes(1) && ((max != null && count == max) || setCount(count + 1))
                 }}>
                 <i className="fas fa-plus"></i>
             </button>
