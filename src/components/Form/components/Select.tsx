@@ -16,7 +16,7 @@ export function Select({ values, ...inputProps }: props): JSX.Element {
                     })
                 }
             </select>
-            <i className='fas fa-chevron-down'/>
+            <i className={style["down"] + ' fas fa-chevron-down'} />
         </div >
     );
 }
