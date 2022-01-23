@@ -7,7 +7,7 @@ import { Drag } from '../../../functions/DragEvent';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
-interface props {
+export interface PropsType {
     max?: number,
     multiple?: boolean,
     acceptType?: string[],
@@ -15,12 +15,14 @@ interface props {
     resolutionType?: ResolutionType,
     resolutionWidth?: number
     resolutionHeight?: number
-    rejectOnResolutionError?: boolean
+    rejectOnResolutionError?: boolean,
+    onChange?: (value: ImageListType, addUpdatedIndex?: Array<number>) => void;
+    onBlur?: () => void
 }
 
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
     maxFileSize, resolutionType,
-    resolutionHeight, resolutionWidth, rejectOnResolutionError }: props): JSX.Element {
+    resolutionHeight, resolutionWidth, rejectOnResolutionError, onChange = () => { } }: PropsType): JSX.Element {
     const CUSTOM_DATA_URL = "dataUrl";
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
@@ -29,6 +31,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
+    const validating = React.useRef(false);
     React.useEffect(() => {
         const divRef_ = divRef.current;
         const drag = new Drag(divRef.current);
@@ -46,31 +49,42 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
             divRef_.removeEventListener("drag:leave", leaveHandler)
         }
     }, []);
-    const onChange = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
+    React.useEffect(() => {
+        if (validating.current === false)
+            onChange(images.filter((e, i) => !resErrors.has(i)));
+    }, [resErrors]);
+    const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
         if (!rejectOnResolutionError) {
-            addUpdateIndex?.forEach(async (i) => {
-                if (resolutionType) {
-                    const image = await getImage(imageList[i].file as File);
-                    const checkRes = isResolutionValid(
-                        image,
-                        resolutionType,
-                        resolutionWidth,
-                        resolutionHeight
-                    );
-                    if (!checkRes) {
-                        setResErrors(prev => (new Set(prev)).add(i));
+            if (addUpdateIndex) {
+                validating.current = true;
+                addUpdateIndex.forEach(async (i, ind) => {
+                    if (ind === addUpdateIndex.length - 1)
+                        validating.current = false;
+                    if (resolutionType) {
+                        const image = await getImage(imageList[i].file as File);
+                        const checkRes = isResolutionValid(
+                            image,
+                            resolutionType,
+                            resolutionWidth,
+                            resolutionHeight
+                        );
+                        if (!checkRes) {
+                            setResErrors(prev => (new Set(prev)).add(i));
+                        }
+                        else {
+                            if (resErrors.has(i))
+                                setResErrors(prev => {
+                                    const s = new Set(prev);
+                                    s.delete(i);
+                                    return s;
+                                });
+                        }
                     }
-                    else {
-                        if (resErrors.has(i))
-                            setResErrors(prev => {
-                                const s = new Set(prev);
-                                s.delete(i);
-                                return s;
-                            });
-                    }
-                }
-            });
+                });
+            }
         }
+        else
+            onChange(imageList);
         setImages(imageList);
     };
     const setEditedImage = (i: number) => {
@@ -87,7 +101,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                     img[CUSTOM_DATA_URL] = reader.result as string;
                     img.file = new File([blob], (images[i].file as File).name);
                     images[i] = img;
-                    onChange(images, [i]);
+                    onChange_(images, [i]);
                     setEditor(false);
                 }
             });
@@ -98,7 +112,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         <ImageUploading
             multiple={multiple}
             value={images}
-            onChange={onChange}
+            onChange={onChange_}
             maxNumber={max}
             dataURLKey={CUSTOM_DATA_URL}
             acceptType={acceptType}

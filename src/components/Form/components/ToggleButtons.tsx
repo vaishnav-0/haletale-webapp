@@ -1,21 +1,23 @@
 import React from 'react';
+import { InputPropsType } from './types';
 import style from './ToggleButtons.module.scss';
-interface props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
-    name: string
-    value: string
+
+export interface PropsType extends InputPropsType {
     label?: string
     type?: "radio" | "checkbox"
 }
-function ToggleButton({ name, value, label, type, key, children }: props): JSX.Element {
+
+const ToggleButton = React.forwardRef<HTMLInputElement, PropsType>(({ name, value, label, type, key, children, ...rest }: PropsType, ref) => {
+
     const id = Math.random().toString(36).substr(2, 5);
     return (
         <label htmlFor={id}>
             <div key={key} className={style["radio-item"]}>
                 {
                     type === "radio" ?
-                        <input type="radio" id={id} name={name} value={value} />
+                        <input {...rest} type="radio" id={id} name={name} value={value} ref={ref} />
                         :
-                        <input type="checkbox" id={id} name={name} value={value} />
+                        <input {...rest} type="checkbox" id={id} name={name} value={value} ref={ref} />
                 }
                 <div className={style["checked"]}>
                     <i className={`far ${type === "radio" ? "fa-dot-circle" : "fa-check-square"}`} />
@@ -29,10 +31,12 @@ function ToggleButton({ name, value, label, type, key, children }: props): JSX.E
             </div>
         </label>
     );
-}
-export function RadioButton(props: props): JSX.Element {
-    return <ToggleButton type="radio" {...props} />
-}
-export function CheckBox(props: props): JSX.Element {
-    return <ToggleButton type="checkbox" {...props} />
-}
+});
+export default ToggleButton;
+export const RadioButton = React.forwardRef<HTMLInputElement, PropsType>((props: PropsType, ref) => {
+    return <ToggleButton {...props} type="radio" ref={ref} />
+});
+
+export const CheckBox = React.forwardRef<HTMLInputElement, PropsType>((props: PropsType, ref) => {
+    return <ToggleButton {...props} type="checkbox" ref={ref} />
+});

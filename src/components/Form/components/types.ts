@@ -1,5 +1,3 @@
-import { FieldInputProps } from "formik";
-
-export interface InputPropsType extends FieldInputProps<any>, Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, "name" | "onBlur" | "onChange" | "value"> { }
-
-export type ExcludeFieldInput<T> = Omit<T, keyof FieldInputProps<any>> & { name: string, value: any };
+export type InputPropsType = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & { name: string }
+export type TextAreaPropsType = React.DetailedHTMLProps<React.TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> & { name: string }
+export type SelectPropsType = React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> & { name: string }

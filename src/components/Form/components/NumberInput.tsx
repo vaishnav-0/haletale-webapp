@@ -1,10 +1,8 @@
 import React from 'react';
-import PropertySearchListing from '../../../pages/PropertySearchListing';
 import style from './NumberInput.module.scss';
 
 type changeFuncType = (v: number) => void;
-type props = {
-    value: number
+export type PropsType = {
     init?: number,
     min?: number,
     max?: number | null,
@@ -12,33 +10,33 @@ type props = {
     onChange?: changeFuncType,
     onIncrement?: changeFuncType,
     onDecrement?: changeFuncType,
-    setValue?: changeFuncType,
-
+    onBlur?: () => void
 }
-export function NumberInput({ value, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValue = () => { } }: props): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement }: PropsType): JSX.Element {
+    const [count, setCount] = React.useState(init)
     return (
         <div className={style["container"]}>
             <button type="button"
-                className={value === min || disabled.includes(0) ? style["inactive"] : ""}
+                className={count === min || disabled.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
-                    if (!disabled.includes(0) && value > min) {
-                        onChange && onChange(value - 1);
-                        onDecrement && onDecrement(value - 1);
-                        setValue(value - 1);
+                    if (!disabled.includes(0) && count > min) {
+                        onChange && onChange(count - 1);
+                        onDecrement && onDecrement(count - 1);
+                        setCount(count - 1);
                     }
                 }}>
                 <i className="fas fa-minus"></i>
             </button>
             <div className={style["count"]}>
-                {value}
+                {count}
             </div>
             <button type="button"
-                className={value === max || disabled.includes(1) ? style["inactive"] : ""}
+                className={count === max || disabled.includes(1) ? style["inactive"] : ""}
                 onClick={() => {
-                    if (!disabled.includes(1) && (max == null || value != max)) {
-                        onChange && onChange(value + 1);
-                        onIncrement && onIncrement(value + 1);
-                        setValue(value + 1);
+                    if (!disabled.includes(1) && (max == null || count != max)) {
+                        onChange && onChange(count + 1);
+                        onIncrement && onIncrement(count + 1);
+                        setCount(count + 1);
                     }
                 }}>
                 <i className="fas fa-plus"></i>

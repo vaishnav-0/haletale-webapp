@@ -1,33 +1,36 @@
 import React from 'react';
 import style from './PillList.module.scss';
-type props = {
-    items: string[];
+export type PropsType = {
+    items: { [k: string]: string };
+    onChange?: (v: any) => void,
+    onBlur?: () => void
 }
-export function PillList({ items }: props): JSX.Element {
+export function PillList({ items, onChange }: PropsType): JSX.Element {
     const [activePills, setActivePills] = React.useState<number[]>([]);
-    if (!Array.isArray(items))
-        return <></>;
-    else
-        return (
-            <div className={style["pill-list"]}>
-                {items.map((e, i) =>
-                    <div key={i} className={`${style["pill"]} ${activePills.includes(i) ? style["pill-active"] : ""}`}
-                        onClick={() => {
-                            let p = activePills.indexOf(i);
-                            if (p == -1) {
-                                setActivePills([...activePills, i]);
-                            }
-                            else {
-                                let n = [...activePills];
-                                n.splice(p, 1);
-                                setActivePills(n);
-                            }
+    const setValue = (v: number[]) => {
+        setActivePills(v);
+        onChange && onChange(Object.keys(items).filter((e, i) => v.includes(i)));
+    }
+    return (
+        <div className={style["pill-list"]}>
+            {Object.values(items).map((e, i) =>
+                <div key={i} className={`${style["pill"]} ${activePills.includes(i) ? style["pill-active"] : ""}`}
+                    onClick={() => {
+                        let p = activePills.indexOf(i);
+                        if (p == -1) {
+                            setValue([...activePills, i]);
+                        }
+                        else {
+                            let n = [...activePills];
+                            n.splice(p, 1);
+                            setValue(n);
+                        }
 
-                        }}
-                    >
-                        {e}
-                    </div>
-                )}
-            </div>
-        );
+                    }}
+                >
+                    {e}
+                </div>
+            )}
+        </div>
+    );
 }

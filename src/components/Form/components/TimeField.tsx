@@ -1,12 +1,13 @@
 import React from 'react';
 import style from './TextInput.module.scss';
-interface props extends React.HTMLAttributes<HTMLInputElement> {
+import { InputPropsType } from './types';
+export interface PropsType extends InputPropsType {
     type: "date" | "month" | "week" | "time" | "datetime-local";
 }
-export function TimeField(inputProps: props): JSX.Element {
+export const TimeField = React.forwardRef<HTMLInputElement, PropsType>((inputProps: PropsType, ref) => {
     return (
         <div className={style["textbox"]}>
-            <input {...inputProps} />
+            <input {...inputProps} ref={ref} />
         </div>
     );
-}
+});
