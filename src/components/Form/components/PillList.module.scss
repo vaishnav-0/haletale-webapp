@@ -13,6 +13,7 @@
     padding: 0.2em 0.6em 0.2em 0.6em;
     border-radius: 0.9em;
     border: 1px solid black;
+    cursor: pointer;
 }
 
 .pill-active {
@@ -20,7 +21,14 @@
     background-color: $primary;
     color: white;
 }
+
 .pill-inactive {
     border: 1px solid $grey;
     color: $grey;
+    cursor: not-allowed;
+
+    &.pill-active {
+        color: white;
+        background-color: $grey;
+    }
 }
