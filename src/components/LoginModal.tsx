@@ -1,75 +1,80 @@
 import React from 'react';
 import style from './LoginModal.module.scss';
 import haletaleLogo from "../assets/images/logo_png_big.png";
-import { TextInput } from './Form/components/TextInput';
+import { TextInput } from './Form/';
 import { ButtonSolid } from './Button';
 import OAuth2 from '../functions/auth/OAuth2';
+import { useForm, FormProvider } from 'react-hook-form';
 
 type props = {
     onClose: () => void;
 }
 function LoginModal({ onClose = () => { } }: props): JSX.Element {
+    const methods = useForm();
     return (
-        <div className={style["modal-container"]}>
-            <div className={style["modal-header"]}>
-                <button onClick={onClose} className={style["modal-close-btn"]}>
-                    <i className="fas fa-times" />
-                </button>
-                <div className={style["modal-title"]}>
-                    <img src={haletaleLogo} />
-                </div>
-            </div>
-            <div className={style["modal-item-list"]}>
-                <div className={style["modal-item"]}>
-                    <div className={style["modal-item-heading"]}>
-                        Email address
-                    </div>
-                    <TextInput type="text" />
-                </div>
-                <div className={style["modal-item"]}>
-                    <div className={style["modal-item-heading"]}>
-                        Password
-                    </div>
-                    <TextInput type="password">
-                        <button>
-                            Forgot?
-                        </button>
-                    </TextInput>
-                </div>
-                <div className={style["modal-item"]}>
-                    <div className={style["signin-btn"]}>
-                        <ButtonSolid>Sign In</ButtonSolid>
+        <FormProvider {...methods}>
+
+            <form className={style["modal-container"]}>
+                <div className={style["modal-header"]}>
+                    <button onClick={onClose} className={style["modal-close-btn"]}>
+                        <i className="fas fa-times" />
+                    </button>
+                    <div className={style["modal-title"]}>
+                        <img src={haletaleLogo} />
                     </div>
                 </div>
-                <div className={style["modal-item"]}>
-                    <div className={style["other-methods-message"]}>
-                        <div className={style["line"]} />
-                        <div>
-                            Sign in with
+                <div className={style["modal-item-list"]}>
+                    <div className={style["modal-item"]}>
+                        <div className={style["modal-item-heading"]}>
+                            Email address
                         </div>
-                        <div className={style["line"]} />
+                        <TextInput name="email" type="text" />
                     </div>
-                    <div className={style["other-methods-btn"]}>
-                        <OAuth2 provider="google"></OAuth2>
-                        <button>
-                            {/* <img className={style["fb-btn"]} src={fbLogo} /> */}
-                        </button>
-                    </div>
-                </div>
-                <div className={style["modal-item"]}>
-                    <div className={style["signup-message"]}>
-                        Don't have an account?
-                        <span>
+                    <div className={style["modal-item"]}>
+                        <div className={style["modal-item-heading"]}>
+                            Password
+                        </div>
+                        <TextInput name="password" type="password">
                             <button>
-                                Sign Up
+                                Forgot?
                             </button>
-                        </span>
+                        </TextInput>
+                    </div>
+                    <div className={style["modal-item"]}>
+                        <div className={style["signin-btn"]}>
+                            <ButtonSolid>Sign In</ButtonSolid>
+                        </div>
+                    </div>
+                    <div className={style["modal-item"]}>
+                        <div className={style["other-methods-message"]}>
+                            <div className={style["line"]} />
+                            <div>
+                                Sign in with
+                            </div>
+                            <div className={style["line"]} />
+                        </div>
+                        <div className={style["other-methods-btn"]}>
+                            <OAuth2 provider="Google"></OAuth2>
+                            <button>
+                                {/* <img className={style["fb-btn"]} src={fbLogo} /> */}
+                            </button>
+                        </div>
+                    </div>
+                    <div className={style["modal-item"]}>
+                        <div className={style["signup-message"]}>
+                            Don't have an account?
+                            <span>
+                                <button>
+                                    Sign Up
+                                </button>
+                            </span>
+                        </div>
+
                     </div>
 
                 </div>
-
-            </div>
-        </div>
+            </form>
+        </FormProvider>
     );
 }
 
