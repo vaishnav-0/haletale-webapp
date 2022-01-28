@@ -1,10 +1,15 @@
 import React from 'react';
 import style from './TextArea.module.scss';
+import { TextAreaPropsType } from './types';
+export interface PropsType extends TextAreaPropsType {
+    rows?: number,
+    cols?: number
+}
 
-export function TextArea(inputProps: React.TextareaHTMLAttributes<HTMLTextAreaElement>): JSX.Element {
+export const TextArea = React.forwardRef<HTMLTextAreaElement, PropsType>((inputProps: PropsType, ref) => {
     return (
         <div className={style["textbox"]}>
-            <textarea {...inputProps} />
+            <textarea {...inputProps} ref={ref}/>
         </div>
     );
-}
+});

@@ -1,18 +1,29 @@
 import React from 'react';
 import style from './NumberInput.module.scss';
-type props = {
+
+type changeFuncType = (v: number) => void;
+export type PropsType = {
     init?: number,
     min?: number,
-    max?: number | null
+    max?: number | null,
+    disabled?: (0 | 1)[],
+    onChange?: changeFuncType,
+    onIncrement?: changeFuncType,
+    onDecrement?: changeFuncType,
+    onBlur?: () => void
 }
-export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
-    const [count, setCount] = React.useState(0)
+export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement }: PropsType): JSX.Element {
+    const [count, setCount] = React.useState(init)
     return (
         <div className={style["container"]}>
             <button type="button"
-                className={count === min ? style["inactive"] : ""}
+                className={count === min || disabled.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
-                    count > min && setCount(count - 1);
+                    if (!disabled.includes(0) && count > min) {
+                        onChange && onChange(count - 1);
+                        onDecrement && onDecrement(count - 1);
+                        setCount(count - 1);
+                    }
                 }}>
                 <i className="fas fa-minus"></i>
             </button>
@@ -20,9 +31,13 @@ export function NumberInput({ init = 0, min = 0, max }: props): JSX.Element {
                 {count}
             </div>
             <button type="button"
-                className={count === max ? style["inactive"] : ""}
+                className={count === max || disabled.includes(1) ? style["inactive"] : ""}
                 onClick={() => {
-                    (max != null && count == max) || setCount(count + 1)
+                    if (!disabled.includes(1) && (max == null || count != max)) {
+                        onChange && onChange(count + 1);
+                        onIncrement && onIncrement(count + 1);
+                        setCount(count + 1);
+                    }
                 }}>
                 <i className="fas fa-plus"></i>
             </button>

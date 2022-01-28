@@ -1,25 +1,27 @@
 import React from 'react';
 import style from './RadioButton.module.scss';
 import { RadioButton } from './ToggleButtons';
+import { InputPropsType } from './types';
 
-type props = {
+export interface PropsType extends InputPropsType {
     name: string
     values: string[] | { [index: string]: string }
 }
-const RadioButtonGroup = function ({ name, values }: props): JSX.Element {
+
+const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, values, type, ...rest }: PropsType, ref) => {
     let elements = [];
     if (Array.isArray(values))
         elements = values.map((e, i) => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <RadioButton key={i} name={name} value={e} />
+                <RadioButton key={i} name={name} {...rest} value={e} ref={ref} />
             );
         });
     else
         elements = Object.entries(values).map(([value, label], i) => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <RadioButton key={i} name={name} value={value} label={label} />
+                <RadioButton key={i} name={name} {...rest} value={value} label={label} ref={ref} />
             );
         })
     return (<>
@@ -28,6 +30,6 @@ const RadioButtonGroup = function ({ name, values }: props): JSX.Element {
         }
     </>
     );
-}
+});
 
 export default RadioButtonGroup;

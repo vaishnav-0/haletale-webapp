@@ -2,7 +2,6 @@ import React from 'react';
 import "./Button.scss";
 interface propsType extends React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
     label?: string;
-    onClick?: () => void;
     className?: string
 }
 export type ButtonComponentType = React.FC<propsType>

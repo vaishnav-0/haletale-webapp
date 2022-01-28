@@ -1,15 +1,18 @@
 import React from 'react';
 import style from './TextInput.module.scss';
-interface props extends React.HTMLAttributes<HTMLInputElement> {
-    type: "text" | "password";
+import { InputPropsType } from './types';
+export interface PropsType extends InputPropsType {
+    type: "text" | "password" | "number";
 }
-export function TextInput({ children, ...inputProps }: props): JSX.Element {
+
+export const TextInput = React.forwardRef<HTMLInputElement, PropsType>(({ children, ...inputProps }: PropsType, ref) => {
+    console.log("textInput");
     return (
         <div className={style["textbox"]}>
-            <input {...inputProps} />
+            <input {...inputProps} ref={ref} />
             {
                 children
             }
         </div>
     );
-}
+});

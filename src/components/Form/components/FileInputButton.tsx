@@ -2,14 +2,19 @@ import React from 'react';
 import cssStyle from './FileInputButton.module.scss';
 import { useFileUpload } from '../../../functions/hooks/useFileUpload'
 import { ButtonSolid } from '../../Button';
+import { InputPropsType } from './types';
+import { TextInput } from '..';
+import { PropType } from './Range';
 
-type propsType = {
+export interface PropsType extends InputPropsType {
     className?: string;
     style?: React.CSSProperties
     ButtonComponent: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>
     | JSX.Element;
 }
-export default function FileInput({ className, style, ButtonComponent }: propsType): JSX.Element {
+export type FileInputButtonPropsType = Omit<PropsType,"ButtonComponent">
+
+export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className, style, ButtonComponent }: PropsType, ref) => {
     const {
         files,
         fileNames,
@@ -24,7 +29,13 @@ export default function FileInput({ className, style, ButtonComponent }: propsTy
     } = useFileUpload();
     const inputRef = React.useRef<HTMLInputElement>(null!);
     return <div className={cssStyle["btn-container"] + " " + className ?? ""} style={style}>
-        <input ref={inputRef} type="file" style={{ display: 'none' }} onChange={(e) => setFiles(e, 'w')} />
+        <input type="file" style={{ display: 'none' }} onChange={(e) => setFiles(e, 'w')}
+            ref={e => {
+                inputRef.current = e as HTMLInputElement;
+                if (ref)
+                    typeof ref === 'function' ? ref(e) : ref.current = e as HTMLInputElement;
+            }}
+        />
         {
             typeof ButtonComponent === "function" ?
                 <ButtonComponent onClick={() => inputRef.current.click()} type="button" />
@@ -46,12 +57,11 @@ export default function FileInput({ className, style, ButtonComponent }: propsTy
             </div>
         }
     </div>
-}
-
-export function FileInputButton(props: Omit<propsType, "ButtonComponent">): JSX.Element {
+});
+export const FileInputButton = React.forwardRef<HTMLInputElement, Omit<PropsType, "ButtonComponent">>((props, ref) => {
     return <FileInput
-        ButtonComponent={<ButtonSolid type="button" className={cssStyle["file-btn"]} >Upload</ButtonSolid>}
         {...props}
+        ref={ref}
+        ButtonComponent={<ButtonSolid type="button" className={cssStyle["file-btn"]} >Upload</ButtonSolid>}
     />
-
-}
+});
