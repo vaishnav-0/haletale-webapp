@@ -1,55 +1,50 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
 
-/**
- * 
- * @param token 
- * @returns expiry time of token
- */
-const getExpiry = (token: string): number => {
+class Token {
+    constructor() { }
 
-    let tokenDecoded = jwtDecode<JwtPayload>(token);
-    let exp: number = tokenDecoded.exp as number;
-    let expiry: number = new Date().valueOf() - new Date(exp * 1000).valueOf();
-    console.log(expiry)
-    return expiry;
-}
+    private getExpiry = (token: string): number => {
 
-/**
- * 
- * @returns true if token is valid
- */
+        let tokenDecoded = jwtDecode<JwtPayload>(token);
+        let exp: number = tokenDecoded.exp as number;
+        let expiry: number = new Date().valueOf() - new Date(exp * 1000).valueOf();
 
-const isTokenValid = (): boolean => {
-
-    let token = getToken();
-    if (token === null) {
-        return false;
+        ///consollleee
+        console.log(expiry);
+        return expiry;
     }
 
-    let expiry: number = getExpiry(token)
-    if (expiry <= 0) {
-        return true;
+    isValid = (): boolean => {
+
+        let token = this.get();
+        if (token === null) {
+            return false;
+        }
+
+        let expiry: number = this.getExpiry(token);
+        if (expiry <= 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
-    else {
-        return false;
+
+
+    get = (): string | null => {
+        return localStorage.getItem('token');
     }
+
+  
+    set = (token: string): void => {
+        localStorage.setItem('token', token);
+    }
+
+    remove = () : void =>{
+        localStorage.removeItem('token');
+    }
+
 }
 
-/**
- * 
- * @returns the token from local storage
- */
-const getToken = (): string | null => {
-    return localStorage.getItem('token');
-}
 
-/**
- * 
- * @param token 
- * 
- */
-const setToken = (token: string): void => {
-    localStorage.setItem('token', token);
-}
-
-export { isTokenValid, getExpiry ,setToken ,getToken }
+export default Token;

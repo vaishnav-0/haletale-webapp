@@ -4,7 +4,7 @@ export enum Roles { 'tenant', 'landlord' };
 
 
 export interface AuthContextType {
-    token?: string
+    token?: string | null
     tokenExpiry?: number 
     provider?: string 
     role?: Roles
