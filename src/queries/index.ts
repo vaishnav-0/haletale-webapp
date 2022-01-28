@@ -1,6 +1,6 @@
-import Property from './properties';
+import PropertyQuery from './property.query';
 
 
 
 
-export { Property }
+export { PropertyQuery }
