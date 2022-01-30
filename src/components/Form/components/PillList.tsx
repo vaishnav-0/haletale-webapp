@@ -2,7 +2,7 @@ import React from 'react';
 import { number, string } from 'yup';
 import style from './PillList.module.scss';
 import { useMemoized } from '../../../functions/hooks/useMemoized'
-import { count } from 'console';
+
 type ItemType = { [k: string]: string } | string[];
 export type PropsType = {
     items: ItemType,
