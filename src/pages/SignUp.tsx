@@ -39,6 +39,18 @@ function Signup(): JSX.Element {
                     </div>
                     <div className={style["form-item"]}>
                         <div className={style["form-item-heading"]}>
+                            Password
+                        </div>
+                        <TextInput name="password" placeholder='Enter password' type="password" />
+                    </div>
+                    <div className={style["form-item"]}>
+                        <div className={style["form-item-heading"]}>
+                            Confirm Password
+                        </div>
+                        <TextInput name="password-confirm" placeholder='Confirm your password' type="password" />
+                    </div>
+                    <div className={style["form-item"]}>
+                        <div className={style["form-item-heading"]}>
                             Date of birth
                         </div>
                         <TimeField name="dob" type="date" />

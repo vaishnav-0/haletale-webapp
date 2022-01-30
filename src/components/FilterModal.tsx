@@ -4,7 +4,7 @@ import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './Form/components/PillList';
 import pillStyle from './Form/components/PillList.module.scss';
 import { NumberInput } from './Form/components/NumberInput';
-import Range from './Form/components/Range';
+import { Range } from './Form/components/Range';
 
 type props = {
     onClose: () => void;
@@ -105,3 +105,4 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
 }
 
 export default FilterModel;
+

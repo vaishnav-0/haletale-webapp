@@ -24,7 +24,7 @@ function AddProperty(): JSX.Element {
                     <div className={style["form-item-heading"]}>
                         Address
                     </div>
-                    <TextInput placeholder='Enter property address' type="text" />
+                    <TextInput name="address" placeholder='Enter property address' type="text" />
                 </div>
                 <div className={style["form-item"]}>
                     <div className={style["form-item-heading"]}>
