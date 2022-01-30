@@ -8,7 +8,6 @@ export const isResolutionValid = (
   resolutionWidth: number = 0,
   resolutionHeight: number = 1
 ): boolean => {
-  console.log(Math.round(resolutionWidth * 100 / resolutionHeight) / 100, Math.round(image.width * 100 / image.height) / 100);
   if (!resolutionWidth || !resolutionHeight || !image.width || !image.height)
     return true;
   switch (resolutionType) {
