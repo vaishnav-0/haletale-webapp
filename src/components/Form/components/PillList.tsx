@@ -1,6 +1,7 @@
 import React from 'react';
-import { number } from 'yup';
+import { number, string } from 'yup';
 import style from './PillList.module.scss';
+import { useMemoized } from '../../../functions/hooks/useMemoized'
 
 type ItemType = { [k: string]: string } | string[];
 export type PropsType = {
@@ -12,7 +13,8 @@ export type PropsType = {
     disabledActivatableKeys?: (number | string)[],
     defaultValues?: (number | string)[],
     disabled?: boolean,
-    maxActive?: number
+    maxActive?: number,
+    className?: string,
 }
 function getKeyPosition(obj: object, key: string) {
     return Object.keys(obj).indexOf(key);
@@ -25,7 +27,7 @@ function keyArrayToPositionArray(keyArray: Array<number | string>, obj: object) 
     }, []);
 }
 
-export function PillList({ items, onChange, disabledKeys = [], disabled,
+export function PillList({ items, onChange, disabledKeys = [], disabled, className: pillClassname = "",
     maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { } }: PropsType): JSX.Element {
     const defaultValues_ = React.useMemo(() => {
         if (defaultValues.length > 0) {
@@ -49,7 +51,7 @@ export function PillList({ items, onChange, disabledKeys = [], disabled,
     }, [items])
     const disabledKeys_ = React.useMemo(() => {
         if (disabled)
-            return Array.from({ length: Object.keys(items).length }, (_, i) => i + 1)
+            return Object.keys(items).map((_, i) => i);
         if (disabledKeys.length > 0) {
             return keyArrayToPositionArray(disabledKeys, items);
         }
@@ -64,7 +66,7 @@ export function PillList({ items, onChange, disabledKeys = [], disabled,
         <div className={style["pill-list"]}>
             {Object.entries(items_).map(([k, e], i) =>
                 <div key={i}
-                    className={`${style["pill"]} ${disabledKeys_.includes(i) ?
+                    className={`${pillClassname} ${style["pill"]} ${disabledKeys_.includes(i) ?
                         style["pill-inactive"] : ""} ${activePills.includes(i) ?
                             style["pill-active"] : disabledActivatableKeys_.includes(i) ? style["pill-inactive"] : ""}`}
                     onClick={() => {
@@ -115,29 +117,36 @@ interface usePillCollectionProps {
             limit?: number
         }[]
     },
-    onChange?: (v: any) => void,
+    pillProps?: Omit<PropsType, "items" | "onClick">;
 }
+type GroupType = { [k: string]: React.FC<Omit<PropsType, "items">> }
+type CollectionChildrenFnType = ({ List, Groups }:
+    { List: React.FC<Omit<PropsType, "items">>, Groups: GroupType }
+) => JSX.Element;
 type LimitType = { [k: string]: number };
-const Wrapper = function (props: Omit<PropsType, "items"> & { children: (a: any) => JSX.Element }) {
-    return props.children(props)
-}
-export function usePillCollection({ items }: usePillCollectionProps) {
-    const listLimits: LimitType = {};
-    const [listRemaining, setListRemaining] = React.useState<LimitType>({});
-    const listRemaining_ = React.useRef(listRemaining)
-    const [groupRemaining, setgroupRemaining] = React.useState<LimitType>({});
-    const groupRemaining_ = React.useRef(listRemaining)
-    const [disabledItems, setDisabledItems] = React.useState<string[]>([]);
+
+export function usePillCollection({ items, pillProps = {} }: usePillCollectionProps) {
+    const value = React.useRef<string[]>([]);
+    const listRemaining = React.useRef<LimitType>({});
+    const disabledItems = React.useRef<string[]>([]);
+    const groupsRemaining = React.useRef<LimitType>({});
+    const disabledGroups = React.useRef<string[]>([]);
     const pillListItems: ItemType = React.useMemo(() => {
         if (items.single) {
-            return (items.single)?.reduce((obj, curr) => {
-                curr.limit && (listLimits[curr.name] = curr.limit)
+            return (items.single).reduce((obj, curr) => {
+                curr.limit && (listRemaining.current[curr.name] = curr.limit)
                 return Object.assign(obj, { [curr.name]: curr.value ?? curr.name });
             }, {});
         }
         return {};
     }, [items]);
-    const disabledItems_ = React.useRef(disabledItems);
+    React.useEffect(() => {
+        if (items.group) {
+            groupsRemaining.current =
+                Object.fromEntries(items.group.filter(e => !!e.limit).map(e => [e.name, e.limit as number]));
+        }
+    }, []);
+    //Fns to update List Component
     const updateListComponentFns = React.useRef<React.Dispatch<React.SetStateAction<boolean>>[]>([]);
     const addListUpdateFn = (fn: React.Dispatch<React.SetStateAction<boolean>>) => {
         updateListComponentFns.current.push(fn);
@@ -145,41 +154,79 @@ export function usePillCollection({ items }: usePillCollectionProps) {
     const updateListComponent = () => {
         updateListComponentFns.current.forEach(e => e(p => !p));
     }
-    React.useEffect(() => {
-        setListRemaining(listLimits);
-    }, []);
-    React.useEffect(() => {
-        console.log(disabledItems);
-        disabledItems_.current = disabledItems;
-        updateListComponent();
-    }, [disabledItems]);
-    React.useEffect(() => {
-        console.log(listRemaining)
-        listRemaining_.current = listRemaining;
-        setDisabledItems(Object.entries(listRemaining).filter((e) => e[1] === 0).map(e => e[0]))
-    }, [listRemaining]);
-    console.log(listRemaining);
-    const onClick_ = (k: string, clickType: boolean) => {
-        if (listRemaining_.current[k] !== undefined) {
-            setListRemaining(p => { return { ...p, [k]: p[k] - (clickType ? 1 : -1) } });
+    //Fns to update group Component
+    const updateGroupComponentFns = React.useRef<{ [k: string]: React.Dispatch<React.SetStateAction<boolean>>[] }>({});
+    const addGroupUpdateFn = (fn: React.Dispatch<React.SetStateAction<boolean>>, k: string) => {
+        updateGroupComponentFns.current[k] = updateGroupComponentFns.current[k] ? [...updateGroupComponentFns.current[k], fn] : [fn];
+    }
+    const updateGroupComponent = (k: string) => {
+        updateGroupComponentFns.current[k]?.forEach(e => e(p => !p));
+    }
+    const onClickGen = (type: "list" | "group") => {
+        const isList = type === "list";
+        const remainingItems = isList ? listRemaining : groupsRemaining;
+        const disabled = isList ? disabledItems : disabledGroups;
+        const updateFn = isList ? (k: string) => updateListComponent() : updateGroupComponent;
+        return (k: string, clickType: boolean) => {
+            if (remainingItems.current[k] !== undefined) {
+                let foundIndex = disabled.current.indexOf(k);
+                if (!(remainingItems.current[k] - (clickType ? 1 : -1)) === !(foundIndex + 1)) {
+                    let ret = [...disabled.current];
+                    clickType ? ret.push(k) :
+                        ret.splice(foundIndex, 1);
+                    disabled.current = ret;
+                    updateFn(k);
+                }
+                remainingItems.current = { ...remainingItems.current, [k]: remainingItems.current[k] - (clickType ? 1 : -1) };
+            };
         }
     }
-    return {
-        Collection: React.useMemo(() => function A({ children, ...props }: { children: ({ List, Groups }: { List?: JSX.Element, Groups?: JSX.Element[] }) => JSX.Element } & Omit<PropsType, "items">) {
-            const [, updateList] = React.useState<boolean>(false);
-            React.useEffect(() => {
-                addListUpdateFn(updateList);
-            }, []);
-            return children({
-                List: < PillList items={pillListItems}
-                    onClick={(k, t) => {
-                        onClick_(k, t);
-                        props.onClick && props.onClick(k, t)
-                    }}
-                    disabledActivatableKeys={disabledItems_.current}
-                />
-            }
-            )
-        }, [])
-    }
+    const listOnClick = onClickGen("list");
+    const groupOnClick = onClickGen("group");
+    const List = useMemoized(() => function P_List({ onClick, ...props }: Omit<PropsType, "items" | "disabledActivatableKeys">) {
+        const [, updateList] = React.useState<boolean>(false);
+        React.useEffect(() => {
+            addListUpdateFn(updateList);
+        }, []);
+
+        return < PillList items={pillListItems}
+            onClick={(k, t) => {
+                listOnClick(k, t);
+                onClick && onClick(k, t)
+            }}
+            disabledActivatableKeys={disabledItems.current}
+            {...{ ...props, ...pillProps }}
+        />
+    }, []);
+    const Groups: GroupType = useMemoized(() => {
+        return !items.group ?
+            {} :
+            items.group.reduce((obj, e) =>
+                Object.assign(obj, {
+                    [e.name]:
+                        function P_Group({ onClick, ...props }: Omit<PropsType, "items" | "disabledActivatableKeys">) {
+                            const [, updateList] = React.useState<boolean>(false);
+                            const indices = Object.keys(e.items).map((_, i) => i);
+                            React.useEffect(() => {
+                                addGroupUpdateFn(updateList, e.name);
+                            }, []);
+
+                            return < PillGroup items={e.items}
+                                onClick={(k, t) => {
+                                    groupOnClick(e.name, t);
+                                    onClick && onClick(k, t)
+                                }}
+                                disabledActivatableKeys={disabledGroups.current.includes(e.name) ? indices : []}
+                                {...{ ...props, ...pillProps }}
+                            />
+                        }
+                }), {})
+    }, [])
+    return { List: List, Groups: Groups };
+}
+
+export function PillCollection({ items, children = null }: usePillCollectionProps & { children?: CollectionChildrenFnType | never[] | null }
+) {
+    const C = usePillCollection({ items: items });
+    return children && (children as CollectionChildrenFnType)(C);
 }
