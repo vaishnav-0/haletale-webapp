@@ -32,4 +32,4 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, 
     );
 });
 
-export default RadioButtonGroup;
+export {RadioButtonGroup};
