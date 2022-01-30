@@ -3,7 +3,7 @@ import PropertyCardDetailed from '../components/PropertyCardDetailed';
 import FilterModel from '../components/FilterModal';
 import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
-import RadioButtonGroup from '../components/Form/components/RadiobuttonGroup';
+import {RadioButtonGroup} from '../components/Form/components/RadiobuttonGroup';
 import { Openable } from '../components/Openable';
 
 export default function (): JSX.Element {

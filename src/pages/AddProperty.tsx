@@ -3,7 +3,7 @@ import style from './Form.module.scss';
 import Layout from './Layout';
 import { TextInput } from '../components/Form/';
 import { NumberInput } from '../components/Form/';
-import RadioButtonGroup from '../components/Form/components/RadiobuttonGroup';
+import {RadioButtonGroup} from '../components/Form/components/RadiobuttonGroup';
 import { PillList } from '../components/Form/';
 import { CheckBox } from '../components/Form/';
 import { TimeField } from '../components/Form/components/TimeField';
