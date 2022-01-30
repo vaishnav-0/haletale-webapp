@@ -23,7 +23,7 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, 
             const id = Math.random().toString(36).substr(2, 5);
             return (
                 <RadioButton key={i} name={name} {...rest} value={value} label={label} ref={ref}
-                    {...defaultValue === value ? { checked: true } : {}}
+                    {...defaultValue === value ? { defaultChecked: true } : {}}
                 />
             );
         })
