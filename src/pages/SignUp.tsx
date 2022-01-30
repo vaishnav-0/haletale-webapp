@@ -11,7 +11,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 
 function Signup(): JSX.Element {
     const methods = useForm();
-    const handleSubmit = methods.handleSubmit(d => console.log(d), d => console.log(d));
+    const onSubmit = (d: any) => {
+        console.log(d);
+
+    }
+    const handleSubmit = methods.handleSubmit(onSubmit, d => console.log(d));
     return (
         <Layout>
             <FormProvider {...methods}>
