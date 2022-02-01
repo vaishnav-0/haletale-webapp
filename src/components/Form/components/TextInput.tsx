@@ -6,7 +6,6 @@ export interface PropsType extends InputPropsType {
 }
 
 export const TextInput = React.forwardRef<HTMLInputElement, PropsType>(({ children, ...inputProps }: PropsType, ref) => {
-    console.log("textInput");
     return (
         <div className={style["textbox"]}>
             <input {...inputProps} ref={ref} />
