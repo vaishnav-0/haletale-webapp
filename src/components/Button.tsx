@@ -17,3 +17,16 @@ export const ButtonSolid: ButtonComponentType = function ({ children, onClick = 
     </button>
 
 }
+
+export const ButtonSolidWithIndicator = function ({ children, indicator, ...props }: PropsType & { indicator: JSX.Element }) {
+    return <div className={style["indicator-wrapper"]}>
+        <div className={style["indicator"]}>
+            {indicator}
+        </div>
+        <ButtonSolid {...props}>
+            {children}
+        </ButtonSolid>
+    </div>
+
+
+}
