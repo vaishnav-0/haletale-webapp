@@ -1,0 +1,123 @@
+@import 'src/colors.scss';
+@import 'src/breakpoints.scss';
+@import 'src/styles/mixins.scss';
+
+.wrapper {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.properties-list {
+    display: grid;
+    grid-auto-flow: row;
+    align-items: start;
+    gap: 1em;
+
+    @include media(">=mdMin") {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.properties-list-card {
+    grid-column-end: span 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding: 1em;
+    border-radius: 0.8em;
+
+    &>:nth-child(1),
+    &>:nth-child(2) {
+        gap: 1.5em;
+    }
+
+    &>div {
+        display: flex;
+    }
+
+    @include def-shadow;
+}
+
+.properties-card-info,
+.properties-card-status {
+    flex: 1;
+}
+
+.properties-card-price {
+    background-color: $primaryBackground;
+    color: $primary;
+    border-radius: 1.6em;
+    display: flex;
+    align-items: center;
+    padding: 0.3em 1em;
+    height: fit-content;
+}
+
+.properties-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+
+    :nth-child(2) {
+        font-size: 0.9em;
+        color: $greyText;
+    }
+}
+
+.property-card-edit-btn {
+    padding: 0.7em 1.8em;
+    border-radius: 1.6em;
+}
+
+.properties-card-status {
+    background-color: $primaryBackground;
+    border-radius: 1.6em;
+    display: flex;
+    align-items: center;
+    padding: 0 0.8em;
+}
+
+.key {
+    font-weight: 900;
+}
+
+.property-card-metadata {
+    flex-wrap: wrap;
+    gap: 0.7em;
+
+    &>div {
+        padding: 0.4em 0.6em;
+        border-radius: 0.6em;
+        @include def-shadow;
+    }
+}
+
+.btn-container {
+    display: flex;
+    gap: 1em;
+    flex-direction: column;
+    @include media(">=mdMin") {
+        flex-direction: row;
+        gap:2em;
+    }
+    & button{
+        padding: 0.8em 1.1em;
+        border-radius: 1.5em;
+    }
+}
+
+.btn-indicator{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: $dangerPrimary;
+    border-radius: 50%;
+    width: 1.3em;
+    height: 1.3em;
+    padding: 0.1em;
+    font-size: 0.8em;
+    color:white;
+    transform: translate(-60%,40%);
+}
