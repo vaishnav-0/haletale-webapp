@@ -35,16 +35,23 @@ class Token {
         return localStorage.getItem('token');
     }
 
-  
+    getData = (): object | null => {
+        let token = this.get() as string;
+        if (token)
+            return jwtDecode<JwtPayload>(token);
+        else
+            return null;
+    }
+
+
     set = (token: string): void => {
         localStorage.setItem('token', token);
     }
 
-    remove = () : void =>{
+    remove = (): void => {
         localStorage.removeItem('token');
     }
 
 }
-
 
 export default Token;

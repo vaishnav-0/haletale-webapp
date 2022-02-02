@@ -2,25 +2,30 @@ import Token from "./token";
 import OAuth2 from "./OAuth2";
 import { useNavigate } from "react-router";
 import { useAuth } from './useAuth';
+import { authTypes } from "./types";
 
-enum OAuth2Providers { 'Google', 'FaceBook' };
-enum LoginTypes { 'email_pass', 'otp' }
 
-type authTypes = LoginTypes | OAuth2Providers;
 
 const token = new Token();
 
 const navigate = useNavigate();
 const auth = useAuth();
 
-function signIn(authType: authTypes): JSX.Element | void {
+function signIn(authType: authTypes, data?: object): JSX.Element | void | Function {
 
     if (token.isValid()) {
         // set context
         auth.token = token.get();
         return navigate('/');
     }
-    else return <OAuth2 provider={authType as unknown as string}></OAuth2>
+
+    else {
+        if (authType === authTypes.OAuth2Providers)
+            return <OAuth2 provider={authType as unknown as string}></OAuth2>
+        else
+
+    }
+    
 }
 
 

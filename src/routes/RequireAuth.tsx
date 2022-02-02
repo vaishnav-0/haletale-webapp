@@ -1,7 +1,7 @@
 import React from "react";
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../functions/auth/useAuth";
-import { Roles } from "../functions/auth/authContext";
+import { Roles } from "../functions/auth/types";
  
 
 /**

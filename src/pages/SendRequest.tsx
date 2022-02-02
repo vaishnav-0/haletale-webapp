@@ -9,11 +9,11 @@ import { TimeField } from '../components/Form/components/TimeField';
 import { ButtonSolid } from '../components/Button';
 import PositionIndicator from '../components/PositionIndicator';
 import { NumberInput } from '../components/Form/components/NumberInput';
-import useListState from '../functions/hooks/useListState';
+//import useListState from '../functions/hooks/useListState';
 import { useForm, FormProvider } from 'react-hook-form';
 
 function SendRequest(): JSX.Element {
-    const { list, add, remove } = useListState<any>([]);
+    // const { list, add, remove } = useListState<any>([]);
     const methods = useForm();
     return (
         <Layout>
@@ -34,7 +34,7 @@ function SendRequest(): JSX.Element {
                         </div>
                         <NumberInput
                             onIncrement={(v) => {
-                                add(v);
+                             //   add(v);
                             }}
                             disabled={[0]}
                         />
@@ -48,7 +48,7 @@ function SendRequest(): JSX.Element {
                         />
                     </div>
                     <div className={`${style["form-item"]}`}>
-                        {
+                        {/* {
                             list.map((e, i) => {
                                 return <div key={i} className={style["form-item"]}>
                                     <div className={style["horizontal-list"]}>
@@ -68,8 +68,8 @@ function SendRequest(): JSX.Element {
                                         <CheckBox name="addToLease" value='Add to lease' />
                                     </div>
                                 </div>
-                            })
-                        }
+                            }) */}
+                        {/* } */}
                     </div>
                     <ButtonSolid className={style["form-submit-btn"]}>
                         Send Request
