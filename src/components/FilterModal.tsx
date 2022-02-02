@@ -4,7 +4,7 @@ import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './Form/components/PillList';
 import pillStyle from './Form/components/PillList.module.scss';
 import { NumberInput } from './Form/components/NumberInput';
-import Range from './Form/components/Range';
+import {Range} from './Form/components/Range';
 
 type props = {
     onClose: () => void;
@@ -32,7 +32,7 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                     </div>
                     <div className={style["filter-item-content"]}>
                         <PillList
-                            items={["Condos", "Houses", "Apartments", "Duplex", "Cottage"]}
+                            items={{ condos: "Condos", house: "Houses", apartment: "Apartments", duplex: "Duplex", cottage: "Cottage" }}
                         />
                     </div>
 
@@ -63,7 +63,7 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                     </div>
                     <div className={style["filter-item-content"]}>
                         <PillList
-                            items={["Pets", "Heating", "Furniture"]}
+                            items={{ pets: "Pets", heating: "Heating", furniture: "Furniture" }}
                         />
                     </div>
 
@@ -74,7 +74,7 @@ function FilterModel({ onClose = () => { } }: props): JSX.Element {
                     </div>
                     <div className={style["filter-item-content"]}>
                         <PillList
-                            items={["AC", "Fireplace", "Pool"]}
+                            items={{ AC: "AC", fireplace: "Fireplace", pool: "Pool" }}
                         />
                     </div>
 
