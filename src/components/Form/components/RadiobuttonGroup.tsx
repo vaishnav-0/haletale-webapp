@@ -5,10 +5,11 @@ import { InputPropsType } from './types';
 
 export interface PropsType extends InputPropsType {
     name: string
-    values: string[] | { [index: string]: string }
+    values: string[] | { [index: string]: string },
+    defaultValue?: string,
 }
 
-const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, values, type, ...rest }: PropsType, ref) => {
+const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, values, type, defaultValue, ...rest }: PropsType, ref) => {
     let elements = [];
     if (Array.isArray(values))
         elements = values.map((e, i) => {
@@ -21,7 +22,9 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, 
         elements = Object.entries(values).map(([value, label], i) => {
             const id = Math.random().toString(36).substr(2, 5);
             return (
-                <RadioButton key={i} name={name} {...rest} value={value} label={label} ref={ref} />
+                <RadioButton key={i} name={name} {...rest} value={value} label={label} ref={ref}
+                    {...defaultValue === value ? { defaultChecked: true } : {}}
+                />
             );
         })
     return (<>
@@ -32,4 +35,4 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, 
     );
 });
 
-export default RadioButtonGroup;
+export { RadioButtonGroup };

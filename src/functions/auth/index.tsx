@@ -14,21 +14,30 @@ enum LoginTypes {
     otp = 'otp'
 }
 
+<<<<<<< HEAD
 export type authTypes = (typeof OAuth2Providers) & (typeof LoginTypes);
+=======
+export type OAuth2ProvidersType = 'Google' | 'Facebook' | 'email_pass' | 'otp'
+>>>>>>> 9b041425749744d112a1e2cf129f1eacc4712675
 
 
 const token = new Token();
 
-const navigate = useNavigate();
-const auth = useAuth();
+//const navigate = useNavigate();
+//const auth = useAuth();
 
+<<<<<<< HEAD
 function signIn(authType: authTypes, data?: TSignInObject): JSX.Element | void | Function {
+=======
+function signIn(authType: OAuth2ProvidersType): JSX.Element | void {
+>>>>>>> 9b041425749744d112a1e2cf129f1eacc4712675
 
     if (token.isValid()) {
         // set context
-        auth.token = token.get();
-        return navigate('/');
+       // auth.token = token.get();
+        //return navigate('/');
     }
+<<<<<<< HEAD
 
     else {
         if (authType === OAuth2Providers)
@@ -37,6 +46,10 @@ function signIn(authType: authTypes, data?: TSignInObject): JSX.Element | void |
             return cognitoSignin(data!, signInCallback)
         }
     }
+=======
+    else
+        OAuth2({ provider: authType }).login();
+>>>>>>> 9b041425749744d112a1e2cf129f1eacc4712675
 }
 
 

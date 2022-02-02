@@ -3,7 +3,9 @@ import style from './LoginModal.module.scss';
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import { TextInput } from './Form/';
 import { ButtonSolid } from './Button';
-import OAuth2 from '../functions/auth/OAuth2';
+import { signIn } from '../functions/auth/index';
+import googleLogo from '../assets/icons/google-logo.png';
+import fbLogo from '../assets/icons/fb_logo_color.png';
 import { useForm, FormProvider } from 'react-hook-form';
 
 type props = {
@@ -54,10 +56,15 @@ function LoginModal({ onClose = () => { } }: props): JSX.Element {
                             <div className={style["line"]} />
                         </div>
                         <div className={style["other-methods-btn"]}>
-                            <OAuth2 provider="Google"></OAuth2>
-                            <button>
-                                {/* <img className={style["fb-btn"]} src={fbLogo} /> */}
+                            <button type='button' onClick={() => signIn('Google')}>
+                                <img src={googleLogo} />
+
                             </button>
+                            <button type='button' onClick={() => signIn('Facebook')}>
+                                <img src={fbLogo} />
+
+                            </button>
+
                         </div>
                     </div>
                     <div className={style["modal-item"]}>
