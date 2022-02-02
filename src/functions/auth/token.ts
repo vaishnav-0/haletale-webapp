@@ -1,7 +1,9 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
+import { useAuth } from './useAuth';
+
 
 class Token {
-    constructor() { }
+
 
     private getExpiry = (token: string): number => {
 

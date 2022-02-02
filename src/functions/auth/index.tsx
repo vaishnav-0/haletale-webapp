@@ -2,8 +2,19 @@ import Token from "./token";
 import OAuth2 from "./OAuth2";
 import { useNavigate } from "react-router";
 import { useAuth } from './useAuth';
-import { authTypes } from "./types";
+import { cognitoSignUp, cognitoSignin } from "./cognito";
+import { TSignInObject } from './types';
 
+enum OAuth2Providers {
+    google = "Google",
+    facebook = "FaceBook"
+};
+enum LoginTypes {
+    email = 'email_pass',
+    otp = 'otp'
+}
+
+export type authTypes = (typeof OAuth2Providers) & (typeof LoginTypes);
 
 
 const token = new Token();
@@ -11,7 +22,7 @@ const token = new Token();
 const navigate = useNavigate();
 const auth = useAuth();
 
-function signIn(authType: authTypes, data?: object): JSX.Element | void | Function {
+function signIn(authType: authTypes, data?: TSignInObject): JSX.Element | void | Function {
 
     if (token.isValid()) {
         // set context
@@ -20,23 +31,28 @@ function signIn(authType: authTypes, data?: object): JSX.Element | void | Functi
     }
 
     else {
-        if (authType === authTypes.OAuth2Providers)
+        if (authType === OAuth2Providers)
             return <OAuth2 provider={authType as unknown as string}></OAuth2>
-        else
-
+        else {
+            return cognitoSignin(data!, signInCallback)
+        }
     }
-    
 }
 
 
 
 
-function signInCallback(response: object): void {
+function signInCallback(response: any): void {
 
 
-    // if(response.status === "success")
-    // token.set(bearerToken);
-    // authcontext.
+    if (response.status === "success") {
+        token.set(response.idToken);
+        let data = token.getData();
+    }
+
+    else {
+        console.log(response.error)
+    }
 
 }
 
@@ -46,4 +62,4 @@ function signOut(): void {
 
 
 
-export { signIn, signOut, signInCallback };
+export { signIn, signOut };
