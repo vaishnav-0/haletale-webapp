@@ -12,7 +12,7 @@ import Signup from "../pages/SignUp";
 import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
-
+import LandloardDashboard from '../pages/LandlordDashboard'
 
 
 
@@ -27,6 +27,7 @@ export default function () {
                 <Route path="/propertiesMapView" element={< MapView />} />
                 <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
                 <Route path="/sendRequest" element={< SendRequest />} />
+                <Route path="/dashboard" element={< LandloardDashboard />} />
 
                 <Route
                     path="*"
