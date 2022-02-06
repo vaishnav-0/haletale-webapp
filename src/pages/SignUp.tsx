@@ -69,7 +69,7 @@ function Signup(): JSX.Element {
                     </div>
                     <div className={style["form-item"]}>
                         <div style={{ display: "flex" }}>
-                            <CheckBox value='true' label="" name="privacyAgree" />
+                            <CheckBox label="" name="privacyAgree" />
                             <div>
                                 By creating your account you agree to our <a href='#'>terms and condtions</a>
                             </div>

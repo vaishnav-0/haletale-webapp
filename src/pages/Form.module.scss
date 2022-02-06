@@ -55,6 +55,13 @@
     font-weight: 800;
     margin: 1em 0;
 }
+.form-section-heading{
+    background-color: $primaryBackground;
+    font-size: 1.3em;
+    padding: 0.5em;
+    color: $greyText;
+    border-radius: 0.5em;
+}
 
 .form-submit-btn {
     width: max-content;

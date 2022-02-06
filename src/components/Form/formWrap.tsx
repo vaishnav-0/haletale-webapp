@@ -9,7 +9,6 @@ export function NativeWrapper<ComponentPropType extends { name: string }>({ Comp
         props: ComponentPropType,
         custom?: boolean
     }): JSX.Element {
-    console.log("Wrapper");
     const formContext = useFormContext();
     if (!formContext)
         throw new Error("No form context found.")
@@ -23,7 +22,6 @@ export function CustomWrapper<ComponentPropType extends { name: string }>({ Comp
         Component: CustomWrapperComponentType<ComponentPropType>,
         props: ComponentPropType,
     }): JSX.Element {
-    console.log("CustomWrapper");
     const formContext = useFormContext();
 
     if (!formContext)

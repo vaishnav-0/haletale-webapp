@@ -5,9 +5,10 @@
     border: $primary solid 1px;
     color: $primary;
     border-radius: 10px;
-    &:hover{
+
+    &:hover {
         color: white;
-        background-color:$primary;
+        background-color: $primary;
     }
 }
 
@@ -16,8 +17,25 @@
     color: white;
     background-color: $primary;
     border-radius: 10px;
-    &:hover{
+
+    &:hover {
         background-color: #00000000;
         color: $primary;
     }
+}
+
+.indicator-wrapper {
+    position: relative;
+    display: flex;
+    &>button{
+        height: 100%;
+        width: 100%;
+    }
+}
+
+.indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
 }

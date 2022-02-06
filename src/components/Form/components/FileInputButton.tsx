@@ -12,9 +12,9 @@ export interface PropsType extends InputPropsType {
     ButtonComponent: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>
     | JSX.Element;
 }
-export type FileInputButtonPropsType = Omit<PropsType,"ButtonComponent">
+export type FileInputButtonPropsType = Omit<PropsType, "ButtonComponent">
 
-export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className, style, ButtonComponent }: PropsType, ref) => {
+export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className = "", style, ButtonComponent }: PropsType, ref) => {
     const {
         files,
         fileNames,
@@ -28,8 +28,8 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         removeFile,
     } = useFileUpload();
     const inputRef = React.useRef<HTMLInputElement>(null!);
-    return <div className={cssStyle["btn-container"] + " " + className ?? ""} style={style}>
-        <input type="file" style={{ display: 'none' }} onChange={(e) => setFiles(e, 'w')}
+    return <div className={className} style={style}>
+        <input type="file" style={{ display: 'none' }} onChange={(e) => { setFiles(e, 'w'); console.log(e) }}
             ref={e => {
                 inputRef.current = e as HTMLInputElement;
                 if (ref)
@@ -51,7 +51,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
                 <div className={cssStyle["file-name"]}>
                     {fileNames[0]}
                 </div>
-                <button type="button" onClick={() => removeFile(0)} className={cssStyle["file-remove-btn"]}>
+                <button type="button" onClick={() => { removeFile(0); inputRef.current.value = ""; }} className={cssStyle["file-remove-btn"]}>
                     <i className="fas fa-times" />
                 </button>
             </div>

@@ -12,8 +12,13 @@ import Signup from "../pages/SignUp";
 import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
+<<<<<<< HEAD
 
 import { Roles } from "../functions/auth/types";
+=======
+import LandloardDashboard from '../pages/LandlordDashboard'
+
+>>>>>>> 69c7d1480c665dd681c7fcce720b731d5db8a513
 
 
 export default function () {
@@ -29,6 +34,7 @@ export default function () {
                 <Route path="/propertiesMapView" element={< MapView />} />
                 <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
                 <Route path="/sendRequest" element={< SendRequest />} />
+                <Route path="/dashboard" element={< LandloardDashboard />} />
 
                 <Route
                     path="*"
