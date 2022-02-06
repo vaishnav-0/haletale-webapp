@@ -39,10 +39,12 @@ function cognitoSignUp(params: TSignUpObject): void {
     userPool.signUp(params.email, params.password, attributes, [], (err, result) => {
         if (err) {
             alert(err.message || JSON.stringify(err));
+
             return;
         }
         let cognitoUser = result!.user;
         console.log('user name is ' + cognitoUser.getUsername() + cognitoUser);
+        //callback
 
     });
 
@@ -66,7 +68,6 @@ function cognitoSignin(params: TSignInObject , callback : Function): void {
     cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result: any) {
             var accessToken = result.getAccessToken().getJwtToken();
-
             console.log(result)
             callback(result);
         },

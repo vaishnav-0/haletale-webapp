@@ -8,7 +8,7 @@ import Searchbar from '../components/Searchbar';
 
 // 
 
-import {createPresignedUrl} from '../functions/image/src/presignedurl'
+import { createPresignedUrl } from '../functions/image/src/presignedurl'
 // 
 function HomePage(): JSX.Element {
     return (
@@ -20,7 +20,7 @@ function HomePage(): JSX.Element {
             <div style={{ marginTop: 60, marginBottom: 60 }}>
                 <MinimalPropertyList title="Popular properties" />
                 <MinimalPropertyList title="Newly listed properties" />
-                <button onClick={()=> createPresignedUrl()} />
+                <button onClick={() => createPresignedUrl()} />
             </div>
         </Layout>
     );

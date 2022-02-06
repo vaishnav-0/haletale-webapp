@@ -13,7 +13,7 @@ import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
 
-
+import { Roles } from "../functions/auth/types";
 
 
 export default function () {
@@ -22,7 +22,9 @@ export default function () {
             <Routes>
                 <Route path="/" element={< HomePage />} />
                 <Route path="/properties" element={< PropertyListing />} />
-                <Route path="/addProperty" element={< AddProperty />} />
+                <Route path="/addProperty" element={<RequireAuth role={Roles.landlord}>
+                    < AddProperty />
+                </RequireAuth>} />
                 <Route path="/signup" element={< Signup />} />
                 <Route path="/propertiesMapView" element={< MapView />} />
                 <Route path="/PropertyDetailed" element={< PropertyDetailed />} />

@@ -20,17 +20,17 @@ import authContext from './authContext';
 
 
 
-const fakeAuthProvider = {
-    isAuthenticated: false,
-    signin(callback: VoidFunction) {
-      fakeAuthProvider.isAuthenticated = true;
-      setTimeout(callback, 100); // fake async
-    },
-    signout(callback: VoidFunction) {
-      fakeAuthProvider.isAuthenticated = false;
-      setTimeout(callback, 100);
-    }
-  };
+// const fakeAuthProvider = {
+//     isAuthenticated: false,
+//     signin(callback: VoidFunction) {
+//       fakeAuthProvider.isAuthenticated = true;
+//       setTimeout(callback, 100); // fake async
+//     },
+//     signout(callback: VoidFunction) {
+//       fakeAuthProvider.isAuthenticated = false;
+//       setTimeout(callback, 100);
+//     }
+//   };
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
     let [user, setUser] = React.useState<any>(null);

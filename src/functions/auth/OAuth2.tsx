@@ -1,7 +1,6 @@
 import OAuth2Login from '../../libs/react-simple-oauth2-login-master/src/OAuth2Login';
 
-import { OAuth2ProvidersType } from '.';
-const OAuth2 = ({ provider }: { provider: OAuth2ProvidersType }) => {
+const OAuth2 = (provider: string, callback: Function) => {
     return new OAuth2Login({
         authorizationUrl: "https://haletale-web1.auth.ca-central-1.amazoncognito.com/oauth2/authorize",
         responseType: "token",

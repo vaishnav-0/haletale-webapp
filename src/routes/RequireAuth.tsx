@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from "../functions/auth/useAuth";
 import { Roles } from "../functions/auth/types";
- 
+
 
 /**
  * @description Redirect user to / if the user is not logged in and opens the login modal
@@ -10,7 +10,7 @@ import { Roles } from "../functions/auth/types";
  * @param role 
  * @returns 
  */
-export const RequireAuth = ({ children }: { children: JSX.Element }, role: Roles) => {
+export const RequireAuth = ({ children, role }: { children: JSX.Element, role: Roles }) => {
 
   let auth = useAuth();
   let location = useLocation();
@@ -21,7 +21,7 @@ export const RequireAuth = ({ children }: { children: JSX.Element }, role: Roles
 
   }
 
-  if (auth.role !== role) return;
+  if (auth.role !== role) return null;
 
   return children;
 }
