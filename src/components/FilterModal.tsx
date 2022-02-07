@@ -4,11 +4,7 @@ import filterTop from '../assets/icons/filterTop.svg';
 import { PillList } from './Form/components/PillList';
 import pillStyle from './Form/components/PillList.module.scss';
 import { NumberInput } from './Form/components/NumberInput';
-<<<<<<< HEAD
 import { Range } from './Form/components/Range';
-=======
-import {Range} from './Form/components/Range';
->>>>>>> 69c7d1480c665dd681c7fcce720b731d5db8a513
 
 type props = {
     onClose: () => void;
