@@ -85,6 +85,19 @@ function SendRequest(): JSX.Element {
                             values={{ "less1": "Less than 1 year", "1": "1 year", "more1": "More than 1 year" }}
                         />
                     </div>
+                    <div className={style["form-item"]}>
+                        <div className={style["form-item-heading"]}>
+                            Are you going to live with other tenants?
+                        </div>
+                        <div className={style["horizontal-list"]}>
+                            <UnwrappedRadio
+                                name='withOthers'
+                                values={["Yes", "No"]}
+                                defaultValue="No"
+                                onChange={(e) => setWithOthers(e.target.value === "Yes")}
+                            />
+                        </div>
+                    </div>
                     {
                         withOthers && <>
                             <div className={style["form-section-heading"]}>
@@ -110,12 +123,13 @@ function SendRequest(): JSX.Element {
 
                                         {fields.map((e, i) => {
                                             console.log(e);
-                                            return <div key={e.id} className={style["form-item"]}>
+                                            return <><div key={e.id} className={style["form-item"]}>
                                                 <div className={style["horizontal-list"]}>
                                                     <div>Member {i + 1}</div>
                                                     <button type="button" className={style["remove-btn"]}
+                                                        onClick={() => {
                                                             console.log("clicked");
-                                                            setCountRef.current(fields.length - 1)
+                                                            setCountRef.current(fields.length - 1);
                                                             remove(i);
                                                         }}
                                                     >
@@ -127,10 +141,13 @@ function SendRequest(): JSX.Element {
                                                     <CheckBox name={`members[${i}].addToLease`} label='Add to lease' />
                                                 </div>
                                             </div>
+                                            </>
+
                                         })
                                         }
                                     </div>
                                 </>
+
                                 }
                             </FieldArrayWrapper>
                         </>
@@ -180,7 +197,7 @@ function SendRequest(): JSX.Element {
                     </ButtonSolid>
                 </form>
             </FormProvider>
-        </Layout>
+        </Layout >
     );
 }
 
