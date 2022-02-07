@@ -52,7 +52,7 @@ function cognitoSignUp(params: TSignUpObject): void {
 }
 
 
-function cognitoSignin(params: TSignInObject , callback : Function): void {
+function cognitoSignin(params: TSignInObject, callback: Function): void {
 
     let authenticationDetails = new AuthenticationDetails({
         Username: params.email,
@@ -69,12 +69,12 @@ function cognitoSignin(params: TSignInObject , callback : Function): void {
         onSuccess: function (result: any) {
             var accessToken = result.getAccessToken().getJwtToken();
             console.log(result)
-            callback(result);
+            callback(null, result);
         },
 
-        onFailure: function (err: any) {
+        onFailure: function (err: Error) {
             console.log(err)
-            callback(err)
+            callback(err);
         },
     });
 }

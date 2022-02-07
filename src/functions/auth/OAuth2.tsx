@@ -8,8 +8,8 @@ const OAuth2 = (provider: string, callback: Function) => {
         redirectUri: "http://localhost:3000/auth",
         scope: "email openid phone",
         extraParams: { identity_provider: provider },
-        onSuccess: (o: { [k: string]: any }) => console.log(o),
-        onFailure: (o: { [k: string]: any }) => console.log(o),
+        onSuccess: (o: { [k: string]: any }) => callback(null,o),
+        onFailure: (o: { [k: string]: any }) => callback(o),
     })
 }
 
