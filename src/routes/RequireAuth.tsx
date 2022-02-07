@@ -15,13 +15,13 @@ export const RequireAuth = ({ children, role }: { children: JSX.Element, role: R
   let auth = useAuth();
   let location = useLocation();
 
-  if (auth.token === null) {
+  if (auth.user === null) {
 
     return <Navigate to="/" state={{ from: location, openLoginModel: true }} replace />;
 
   }
 
-  if (auth.role !== role) return null;
+  if (auth.user.role !== role) return null;
 
   return children;
 }
