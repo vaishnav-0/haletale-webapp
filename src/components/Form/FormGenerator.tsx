@@ -27,9 +27,9 @@ import { PropType as RangePropsType } from "./components/Range";
 import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { ButtonSolid } from '../Button';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, UseFormGetValues, FieldValues } from 'react-hook-form';
 import FieldArrayWrapper from './FieldArrayWrapper';
-
+import * as yup from 'yup';
 type ItemType<T, P> = {
     type: T,
     props: Omit<P, "name">
@@ -61,6 +61,7 @@ type FormValueType = string | number | { [k: string]: string } | string[] | bool
 type TItemCommon = {
     title?: string,
     name: string,
+    validationSchema?: yup.AnySchema,
     isOptional?: {    //field toggling
         title: string,
         value: [string, string];
@@ -90,9 +91,9 @@ type TItem = TItemCommon & TItemDiscriminated;
 export interface SchemaType {
     heading: string,//Form heading
     items: TItem[],
-    validationSchema?: any,
-    submitButton: string | (() => JSX.Element),
-    onSubmit: (data: any) => void
+    submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
+    onSubmit: (data: any) => void,
+    onError?: (e: any) => void,
 }
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: JSX.Element;
@@ -264,7 +265,7 @@ function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'],
 
 export default function FormGenerator({ schema }: { schema: SchemaType }) {
     const methods = useForm();
-    const handleSubmit = methods.handleSubmit(schema.onSubmit, d => console.log(d));
+    const handleSubmit = methods.handleSubmit(schema.onSubmit, schema.onError);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
@@ -282,7 +283,7 @@ export default function FormGenerator({ schema }: { schema: SchemaType }) {
                     typeof schema.submitButton === "string" ?
                         <ButtonSolid className={style["form-submit-btn"]} >{schema.submitButton}</ButtonSolid>
                         :
-                        schema.submitButton()
+                        schema.submitButton(methods.getValues)
 
                 }
             </form>
