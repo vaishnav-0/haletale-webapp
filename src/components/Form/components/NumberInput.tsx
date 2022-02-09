@@ -11,14 +11,16 @@ export type PropsType = {
     onIncrement?: changeFuncType,
     onDecrement?: changeFuncType,
     onBlur?: () => void,
-    setValueRef?: React.MutableRefObject<((v: number) => void) | undefined>
+    setValueRef?: React.MutableRefObject<((v: number) => void) | undefined>,
+    key?: React.Attributes["key"]
+
 }
-export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValueRef }: PropsType): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValueRef, key }: PropsType): JSX.Element {
     const [count, setCount] = React.useState(init);
     if (setValueRef)
         setValueRef.current = setCount;
     return (
-        <div className={style["container"]}>
+        <div key={key} className={style["container"]}>
             <button type="button"
                 className={count === min || disabled.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
