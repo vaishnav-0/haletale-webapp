@@ -1,0 +1,116 @@
+@import "src/breakpoints.scss";
+@import "src/colors.scss";
+@import "src/styles/mixins.scss";
+
+.form-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5em;
+    font-size: 1.1em;
+    margin-bottom: 4em;
+    &>div {
+        grid-column: 1 / span 2;
+    }
+
+    @include responsiveVSpacing("margin", (0, 0, 4em, 6em));
+
+    @include media(">=xlMin") {
+        margin-left: auto;
+        margin-right: auto;
+        width: 900px;
+    }
+}
+
+.col1 {
+    grid-column: span 1 !important;
+
+}
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.form-item-heading {
+    font-weight: 800;
+}
+
+.horizontal-list {
+    display: flex;
+    gap: 2em;
+    align-items: center;
+}
+
+.radio-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em
+}
+
+.form-header {
+    display: flex;
+    justify-content: center;
+    font-size: 1.7em;
+    font-weight: 800;
+    margin: 1em 0;
+}
+.form-section-heading{
+    background-color: $primaryBackground;
+    font-size: 1.3em;
+    padding: 0.5em;
+    color: $greyText;
+    border-radius: 0.5em;
+}
+
+.form-submit-btn {
+    width: max-content;
+    height: 2.5em;
+    right: 0;
+    border-radius: 1.2em;
+    padding: 0 1em;
+    align-self: flex-end;
+    align-self: center;
+}
+
+.paper {
+    border-radius: 1em;
+    @include def-shadow;
+    padding: 1.4em 1.6em;
+    display: flex;
+    gap: 1em;
+    justify-self: stretch;
+    width: 100%;
+    flex-direction: column;
+
+    &.center {
+        align-items: center;
+    }
+
+    &.fit {
+        width: max-content;
+        padding: 1.5em 2.5em;
+    }
+}
+
+.remove-btn{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 1.1em;
+        height: 1.1em;
+        border-radius: 50%;
+        border: 1px solid $dangerPrimary;
+        background-color: white;
+        color: $dangerPrimary;
+        &:hover{
+            border: 1px solid $dangerPrimary;
+            background-color: $dangerPrimary;
+            color: white;
+        }
+
+        i {
+            font-size: 0.45em;
+
+        }
+}
