@@ -1,12 +1,14 @@
 import React from 'react';
 import style from './Images.module.scss';
-import ImageUploading, { ImageListType, ResolutionType } from "../../../libs/react-images-uploading/src";
+import ImageUploading, { ImageListType, ResolutionType, ErrorsType } from "../../../libs/react-images-uploading/src";
 import { isResolutionValid } from '../../../libs/react-images-uploading/src/validation';
 import { getImage } from '../../../libs/react-images-uploading/src/utils';
 import { Drag } from '../../../functions/DragEvent';
+import { MessageBox } from '../../MessageBox';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-
+import { usePillCollection } from './PillList';
+import { toast } from 'react-toastify';
 export interface PropsType {
     max?: number,
     multiple?: boolean,
@@ -17,21 +19,33 @@ export interface PropsType {
     resolutionHeight?: number
     rejectOnResolutionError?: boolean,
     onChange?: (value: ImageListType, addUpdatedIndex?: Array<number>) => void;
-    onBlur?: () => void
+    onBlur?: () => void,
+    key?: React.Attributes["key"]
+
+}
+const tagItems = {
+    single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", limit: 3, value: "a" }],
+    group: [{ name: "roomtype", items: ["bedroom", "bathroom"], limit: 5 }]
 }
 
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
     maxFileSize, resolutionType,
-    resolutionHeight, resolutionWidth, rejectOnResolutionError, onChange = () => { } }: PropsType): JSX.Element {
+    resolutionHeight, resolutionWidth, rejectOnResolutionError, onChange = () => { }, key }: PropsType): JSX.Element {
     const CUSTOM_DATA_URL = "dataUrl";
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
-    const [resErrors, setResErrors] = React.useState<Set<number>>(new Set());
+    const resErrors = React.useRef<Set<number>>(new Set());
     const [editor, setEditor] = React.useState<number | false>(false);
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
     const validating = React.useRef(false);
+    const Tags = usePillCollection({
+        items: tagItems,
+        pillProps: {
+            className: style["tag"]
+        }
+    })
     React.useEffect(() => {
         const divRef_ = divRef.current;
         const drag = new Drag(divRef.current);
@@ -50,16 +64,13 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         }
     }, []);
     React.useEffect(() => {
-        if (validating.current === false)
-            onChange(images.filter((e, i) => !resErrors.has(i)));
-    }, [resErrors]);
+        onChange(images);
+    }, [images]);
     const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
         if (!rejectOnResolutionError) {
             if (addUpdateIndex) {
                 validating.current = true;
                 addUpdateIndex.forEach(async (i, ind) => {
-                    if (ind === addUpdateIndex.length - 1)
-                        validating.current = false;
                     if (resolutionType) {
                         const image = await getImage(imageList[i].file as File);
                         const checkRes = isResolutionValid(
@@ -68,23 +79,20 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                             resolutionWidth,
                             resolutionHeight
                         );
-                        if (!checkRes) {
-                            setResErrors(prev => (new Set(prev)).add(i));
-                        }
-                        else {
-                            if (resErrors.has(i))
-                                setResErrors(prev => {
-                                    const s = new Set(prev);
-                                    s.delete(i);
-                                    return s;
-                                });
-                        }
+                        if (!checkRes)
+                            resErrors.current.add(i);
+                        else
+                            if (resErrors.current.has(i))
+                                resErrors.current.delete(i);
+
                     }
+                    console.log(resErrors.current)
+                    //if (ind === addUpdateIndex.length - 1)
+                    //  setImages(imageList);//filter((e, i) => !resErrors.current.has(i)));
                 });
             }
         }
-        else
-            onChange(imageList);
+        //else
         setImages(imageList);
     };
     const setEditedImage = (i: number) => {
@@ -100,14 +108,38 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                 reader.onload = () => {
                     img[CUSTOM_DATA_URL] = reader.result as string;
                     img.file = new File([blob], (images[i].file as File).name);
-                    images[i] = img;
-                    onChange_(images, [i]);
+                    setImages(p => {
+                        const newImgList = p.map((e, k) => k === i ? img : e);
+                        onChange_(newImgList, [i]);
+                        return newImgList;
+                    });
                     setEditor(false);
                 }
             });
         }
     }
+    const onError = (errors: ErrorsType, files?: ImageListType) => {
+        errors && Object.entries(errors).forEach(([k, e]) => {
+            if (e) {
+                if (k === "maxFileSize") {
+                    toast.warn("maxFileSize");
+                }
+                else if (k === "maxNumber") {
+                    toast.warn("maxNumber");
+
+                } else if (k === "acceptType") {
+                    toast.warn("acceptType");
+
+                } else if (k === "resolution") {
+                    toast.warn("resolution");
+
+
+                }
+            }
+        })
+    }
     console.log(resErrors);
+    console.log(images);
     return (
         <ImageUploading
             multiple={multiple}
@@ -117,6 +149,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
             dataURLKey={CUSTOM_DATA_URL}
             acceptType={acceptType}
             maxFileSize={maxFileSize}
+            onError={onError}
             {...rejectOnResolutionError ?
                 {
                     resolutionType,
@@ -135,8 +168,9 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                 dragProps,
                 errors
             }) => {
+                console.log(imageList);
                 return (
-                    <div ref={divRef} className={style["imageupload-wrapper"]}>
+                    <div key={key} ref={divRef} className={style["imageupload-wrapper"]}>
                         <div className={style["imageupload-container-wrapper"]}>
                             <div onDrop={dragProps.onDrop}
                                 onDragOver={dragProps.onDragOver} className={style["drag-overlay"]} style={{ display: dragging ? "" : "none" }} />
@@ -147,11 +181,11 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                 <div className={style["imagelist-container"]}>
                                     {imageList.map((image, index) => (
                                         <div key={index}
-                                            className={`${style["image-item"]} ${(!rejectOnResolutionError && resErrors.has(index)) ? style["image-item-error"] : ""}`}>
+                                            className={`${style["image-item"]} ${(!rejectOnResolutionError && resErrors.current.has(index)) ? style["image-item-error"] : ""}`}>
                                             <div key={index} className={style["image-element"]}>
                                                 <img ref={el => imgRefs.current[index] = el as HTMLImageElement}
                                                     src={image[CUSTOM_DATA_URL]} alt="" />
-                                                <button type="button" onClick={() => onImageRemove(index)} className={style["image-close-btn"]}>
+                                                <button type="button" onClick={() => { console.log(index); onImageRemove(index) }} className={style["image-close-btn"]}>
                                                     <i className="fas fa-times" />
                                                 </button>
                                                 <button type="button" onClick={() => onImageUpdate(index)} className={style["image-update-btn"]}>
@@ -161,6 +195,21 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                                     <i className="far fa-edit" />
                                                 </button>
                                             </div>
+                                            <div className={style["tag-container"]}>
+                                                <div className={style["tag-list-container"]}>
+                                                    <Tags.List />
+                                                </div>
+                                                {
+                                                    Object.keys(Tags.Groups).map(k => {
+                                                        const Group = Tags.Groups[k];
+                                                        return <div className={style["tag-group-container"]}>
+                                                            <div className={style["tag-heading"]}>{k}</div>
+                                                            <Group />
+                                                        </div>
+                                                    })
+                                                }
+                                            </div>
+
                                         </div>
                                     ))}
                                     {(editor !== false) &&
@@ -202,7 +251,13 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                 </div>
                             </div>
                         </div>
-
+                        <div className={style["imageupload-message-container"]}>
+                            <MessageBox labelComponent={<i className="fas fa-info-circle" />}>
+                                <div className={style["message-box"]} >
+                                    info
+                                </div>
+                            </MessageBox>
+                        </div>
                         <div className={style["imageupload-btn-container"]}>
                             <button
                                 type="button"
