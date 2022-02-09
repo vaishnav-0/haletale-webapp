@@ -93,8 +93,6 @@ export interface SchemaType {
     heading: string,//Form heading
     items: TItem[],
     submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
-    onSubmit: (data: any) => void,
-    onError?: (e: any) => void,
 }
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: JSX.Element;
@@ -276,11 +274,17 @@ function generateYupSchema(items: TItem[]) {
         }, {} as any)
     )
 }
-export default function FormGenerator({ schema }: { schema: SchemaType }) {
+export function getYupSchema(schema: SchemaType) {
+    return generateYupSchema(schema.items)
+}
+export default function FormGenerator({ schema, onSubmit, onError }: {
+    schema: SchemaType, onSubmit: (data: any) => void,
+    onError?: (e: any) => void,
+}) {
     const yupSchema = generateYupSchema(schema.items);
     console.log(yupSchema)
     const methods = useForm({ resolver: yupResolver(yupSchema) });
-    const handleSubmit = methods.handleSubmit(schema.onSubmit, schema.onError);
+    const handleSubmit = methods.handleSubmit(onSubmit, onError);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
