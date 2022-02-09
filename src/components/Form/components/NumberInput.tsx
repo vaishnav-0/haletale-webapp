@@ -15,10 +15,11 @@ export type PropsType = {
     key?: React.Attributes["key"]
 
 }
-export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange, onIncrement, onDecrement, setValueRef, key }: PropsType): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange = () => { }, onIncrement, onDecrement, setValueRef, key }: PropsType): JSX.Element {
     const [count, setCount] = React.useState(init);
     if (setValueRef)
         setValueRef.current = setCount;
+    React.useEffect(() => onChange(init), []);
     return (
         <div key={key} className={style["container"]}>
             <button type="button"
