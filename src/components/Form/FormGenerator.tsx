@@ -28,6 +28,7 @@ import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
 import * as yup from 'yup';
 type ItemType<T, P> = {
@@ -61,7 +62,6 @@ type FormValueType = string | number | { [k: string]: string } | string[] | bool
 type TItemCommon = {
     title?: string,
     name: string,
-    validationSchema?: yup.AnySchema,
     isOptional?: {    //field toggling
         title: string,
         value: [string, string];
@@ -74,7 +74,8 @@ type TSingleItem = {
     wrapperClassname?: string,
     wrapperStyle?: React.CSSProperties,
     defaultValue?: FormValueType,
-    isArray?: false
+    isArray?: undefined,
+    validationSchema?: yup.AnySchema,
 } & ItemTypes
 type TArrayItem = {
     items: (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
@@ -83,7 +84,7 @@ type TArrayItem = {
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
         sectionHeading?: string
-    }
+    },
 }
 
 type TItemDiscriminated = TSingleItem | TArrayItem;
@@ -232,6 +233,7 @@ function FormComponent(item: TItem) {
     else
         return SingleComponent(item);
 }
+
 function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element) {
     const [open, setOpen] = React.useState<boolean>(optionalProps.default);
     return (
@@ -262,9 +264,22 @@ function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'],
         </>
     )
 }
-
+function generateYupSchema(items: TItem[]) {
+    return yup.object(
+        items.reduce((schema, item) => {
+            console.log(schema, item)
+            if (!item.isArray)
+                item.validationSchema && (schema[item.name] = item.validationSchema);
+            else
+                schema[item.name] = yup.array().of(generateYupSchema(item.items))
+            return schema;
+        }, {} as any)
+    )
+}
 export default function FormGenerator({ schema }: { schema: SchemaType }) {
-    const methods = useForm();
+    const yupSchema = generateYupSchema(schema.items);
+    console.log(yupSchema)
+    const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(schema.onSubmit, schema.onError);
     return (
         <FormProvider {...methods}>
