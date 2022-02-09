@@ -7,10 +7,13 @@ export type PropType = {
     min?: number,
     step?: number,
     onChange?: (v: number[] | number) => void,
-    defaultValue?: number | number[]
+    defaultValue?: number | number[],
+    key?:React.Attributes["key"]
+    ,
 }
-export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, defaultValue, onChange }: PropType): JSX.Element {
+export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, defaultValue, onChange, key }: PropType): JSX.Element {
     return <ReactSlider
+        key={key}
         className="range-slider"
         max={max}
         min={min}

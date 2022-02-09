@@ -15,6 +15,7 @@ export type PropsType = {
     disabled?: boolean,
     maxActive?: number,
     className?: string,
+    key?:React.Attributes["key"]
 }
 function getKeyPosition(obj: object, key: string) {
     return Object.keys(obj).indexOf(key);
@@ -28,7 +29,7 @@ function keyArrayToPositionArray(keyArray: Array<number | string>, obj: object) 
 }
 
 export function PillList({ items, onChange, disabledKeys = [], disabled, className: pillClassname = "",
-    maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { } }: PropsType): JSX.Element {
+    maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { },key }: PropsType): JSX.Element {
     const defaultValues_ = React.useMemo(() => {
         if (defaultValues.length > 0) {
             return keyArrayToPositionArray(defaultValues, items);
@@ -63,7 +64,7 @@ export function PillList({ items, onChange, disabledKeys = [], disabled, classNa
         onChange && onChange(Object.keys(items_).filter((e, i) => v.includes(i)));
     }
     return (
-        <div className={style["pill-list"]}>
+        <div key={key} className={style["pill-list"]}>
             {Object.entries(items_).map(([k, e], i) =>
                 <div key={i}
                     className={`${pillClassname} ${style["pill"]} ${disabledKeys_.includes(i) ?
@@ -104,7 +105,7 @@ export function PillGroup(props: Omit<PropsType, "maxActive">): JSX.Element {
             maxActive={1} />
     );
 }
-interface usePillCollectionProps {
+export interface usePillCollectionProps {
     items: {
         single?: {
             name: string,
