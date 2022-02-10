@@ -188,7 +188,8 @@
     transition: color 0.7s ease;
     white-space: nowrap;
     text-decoration: none;
-
+    outline: none;
+    border: none;
     &:hover {
       color: black;
     }
