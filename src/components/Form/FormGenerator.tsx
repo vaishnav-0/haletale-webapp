@@ -99,59 +99,13 @@ export interface SchemaType {
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: JSX.Element;
-    if (item.type === 'text') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'radio') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'checkbox') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'radioGroup') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'time') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'textarea') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'select') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'pillList') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'pillGroup') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'number') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'range') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'file') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'image') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    return inputComponent;
+    Object.entries(componentMap).forEach(([type, component]) => {
+        if (item.type === type) {
+            let Component = component as any;
+            inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
+        }
+    })
+return inputComponent;
 }
 function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
     const inputComponent = getInputComponent(item);
