@@ -40,9 +40,11 @@ type props = {
     signUpUrl: string,
     onClose: () => void;
 }
-function onSubmit(d: any) {
+function onSubmit(d: any, SuccessAction: Function) {
     auth.emailPasswordSignIn({ email: d.email, password: d.password },
-        (err: any) => {
+        (err: any, data: any) => {
+            if (data)
+                SuccessAction();
             err?.code === "NotAuthorizedException" && toast.error('Incorrect username or password.', {
                 position: "bottom-center",
                 autoClose: 4000,
@@ -67,7 +69,7 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
             </div>
             <div className={style["modal-item-list"]} style={{ paddingTop: "1em" }}>
                 <div className={style["modal-item"]}>
-                    <FormGenerator onSubmit={onSubmit} schema={schema} />
+                    <FormGenerator onSubmit={(d) => onSubmit(d, () => onClose())} schema={schema} />
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["other-methods-message"]}>
