@@ -27,10 +27,11 @@ import { PropType as RangePropsType } from "./components/Range";
 import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { ButtonSolid } from '../Button';
-import { useForm, FormProvider, UseFormGetValues, FieldValues } from 'react-hook-form';
+import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
 import * as yup from 'yup';
+import { error } from "console";
 type ItemType<T, P> = {
     type: T,
     props: Omit<P, "name">
@@ -150,7 +151,7 @@ function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     }
     return inputComponent;
 }
-function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
+function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
     const inputComponent = getInputComponent(item);
     return <div className={style["form-item"]}>
         <div className={style["form-item-heading"]}>
@@ -166,15 +167,17 @@ function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
                     }
                 </div>
         }
+        {
+            error && <div className={style["field-error"]}>{error}</div>
+        }
     </div>;
 }
-function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
+function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[]) {
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
     return <>
         <FieldArrayWrapper name={item.name}>
             {({ fields, append, remove }) => <>
-
                 <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
                     <div className={style["form-item-heading"]}>
                         {item.isArray.controlHeading}
@@ -182,7 +185,6 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                     <NumberInput
                         name={item.name + "_count"}
                         onIncrement={(v) => {
-                            console.log(defValues);
                             append(defValues);
                         }}
                         disabled={[0]}
@@ -192,7 +194,6 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                 <div className={`${style["form-item"]}`}>
                     {
                         fields.map((e, i) => {
-                            console.log(e);
                             return <div key={e.id} className={style["form-item"]}>
                                 <div className={style["horizontal-list"]}>
                                     <div>
@@ -203,16 +204,22 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                                     </div>
                                     <button type="button" className={style["remove-btn"]}
                                         onClick={() => {
-                                            console.log("clicked");
                                             setCountRef.current(fields.length - 1);
                                             remove(i);
                                         }}
                                     >
                                         <i className="fas fa-minus" /></button>
                                 </div>
-                                <div className={style["horizontal-list"]}>
+                                <div className={style["horizontal-list"]} style={{ alignItems: "start" }}>
                                     {
-                                        item.items.map((_item, k) => <div key={k}>{getInputComponent({ ..._item, name: `${item.name}[${i}].${_item.name}` })}</div>)
+                                        item.items.map((_item, k) => <div key={k}>{
+                                            SingleComponent(
+                                                {
+                                                    ..._item, name: `${item.name}[${i}].${_item.name}`,
+                                                    wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
+                                                },
+                                                errors?.[i]?.[_item.name]?.message)
+                                        }</div>)
                                     }
                                 </div>
                             </div>
@@ -225,11 +232,11 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
         </FieldArrayWrapper>
     </>
 }
-function FormComponent(item: TItem) {
+function FormComponent(item: TItem, errors?: FieldErrors) {
     if (item.isArray)
-        return ArrayComponent(item);
+        return ArrayComponent(item, errors?.[item.name]);
     else
-        return SingleComponent(item);
+        return SingleComponent(item, errors?.[item.name]?.message);
 }
 
 function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element) {
@@ -265,7 +272,6 @@ function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'],
 function generateYupSchema(items: TItem[]) {
     return yup.object(
         items.reduce((schema, item) => {
-            console.log(schema, item)
             if (!item.isArray)
                 item.validationSchema && (schema[item.name] = item.validationSchema);
             else
@@ -274,28 +280,29 @@ function generateYupSchema(items: TItem[]) {
         }, {} as any)
     )
 }
-export function getYupSchema(schema: SchemaType) {
-    return generateYupSchema(schema.items)
-}
+
 export default function FormGenerator({ schema, onSubmit, onError }: {
     schema: SchemaType, onSubmit: (data: any) => void,
     onError?: (e: any) => void,
 }) {
     const yupSchema = generateYupSchema(schema.items);
-    console.log(yupSchema)
     const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
+    const errors = methods.formState.errors;
+    console.log(methods.formState.errors);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
-                <div className={style["form-header"]}>
-                    {schema.heading}
-                </div>
+                {
+                    schema.heading && <div className={style["form-header"]}>
+                        {schema.heading}
+                    </div>
+                }
                 {
                     schema.items.map(item => {
                         return item.isOptional ?
-                            ToggleWrapper(item.name, item.isOptional, FormComponent(item)) :
-                            FormComponent(item);
+                            ToggleWrapper(item.name, item.isOptional, FormComponent(item, errors)) :
+                            FormComponent(item, errors);
                     })
                 }
                 {
