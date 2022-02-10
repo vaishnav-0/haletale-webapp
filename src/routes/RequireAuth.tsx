@@ -18,10 +18,9 @@ export const RequireAuth = ({ children, role }: { children: JSX.Element, role: R
   console.log(auth);
   if (auth === null)
     return null;
-  if (auth.user === null) {
+  if (auth.user === null || !role.some(e => auth.user?.role.includes(e))) {
     return <Navigate to="/" state={{ from: location, openLoginModel: true }} replace />;
   } else {
-    if (!role.some(e => auth.user?.role.includes(e))) return null;
     return children;
   }
 }
