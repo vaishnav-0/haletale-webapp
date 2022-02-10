@@ -14,7 +14,7 @@ import {
 
 const token = new Token();
 function toUser(token: Token) {
-    const data:any = token.getData();
+    const data: any = token.getData();
     return data && {
         token: token.get(),
         role: JSON.parse(data["https://hasura.io/jwt/claims"])["x-hasura-allowed-roles"],
@@ -29,14 +29,18 @@ class Auth {
     constructor() {
         this.signObservers = [];
         this.signErrorObservers = [];
-        this.user = token.isValid() ? toUser(token) as IUser : null;
+        this.setUserFromToken();
     }
-    set user(u: IUser | null) {
-        this._user = u;
-        this.signObserverNotify(u);
-    }
+    set user(u) { }
     get user() {
         return this._user;
+    }
+    private setUserFromToken() {
+        this.setUser(token.isValid() ? toUser(token) : null);
+    }
+    private setUser(u: IUser | null) {
+        this._user = u;
+        this.signObserverNotify(u);
     }
     private signObserverNotify(u: IUser | null) {
         this.signObservers.forEach(fn => fn(u));
@@ -48,15 +52,24 @@ class Auth {
         if (!err) {
             console.log(data);
             token.set(data!.id_token);
-            this.user = toUser(token);
+            this.setUserFromToken();
         }
         else {
             this.signErrorObserverNotify(err);
             console.log(err)
         }
     }
+    signUpCallback(err: Error | null, data?: any): void {
+        if (!err) {
+            console.log(data);
+        }
+        else {
+            console.log(err)
+        }
+    }
     onAuthStateChange: TOnAuthStateChange = (successCB, signErrorCB) => {
         this.signObservers.push(successCB);
+        successCB(this.user);
         signErrorCB && this.signErrorObservers.push(signErrorCB);
         return () => {
             this.signErrorObservers.splice(this.signErrorObservers.length - 1, 1)
@@ -72,7 +85,7 @@ class Auth {
     }
 
     emailPasswordSignUp(data: TSignUpObject) {
-        return cognitoSignUp(data);
+        return cognitoSignUp(data, this.signUpCallback);
     }
 
     signOut = function (): void {

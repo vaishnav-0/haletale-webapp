@@ -1,6 +1,4 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
-
-
 class Token {
 
 
@@ -15,7 +13,7 @@ class Token {
         return expiry;
     }
 
-    isValid = (): boolean => {
+    isValid(): boolean {
 
         let token = this.get();
         if (token === null) {
@@ -54,5 +52,4 @@ class Token {
     }
 
 }
-
 export default Token;
