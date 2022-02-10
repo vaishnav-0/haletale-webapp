@@ -24,7 +24,8 @@ export default function () {
                 <Route path="/" element={< HomePage />} />
                 <Route path="/properties" element={< PropertyListing />} />
                 <Route path="/addProperty" element={
-                    <RequireAuth role={Roles['tenant']}>< AddProperty /></RequireAuth>} />
+                    //role for testing purpose
+                    <RequireAuth role={[Roles['landlord']]}>< AddProperty /></RequireAuth>} />
                 <Route path="/signup" element={< Signup />} />
                 <Route path="/propertiesMapView" element={< MapView />} />
                 <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
