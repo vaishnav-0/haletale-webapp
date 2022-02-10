@@ -30,6 +30,7 @@ import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
+import { DeepReadonly } from '../../functions/utils'
 import * as yup from 'yup';
 import { error } from "console";
 type ItemType<T, P> = {
@@ -51,7 +52,7 @@ const componentMap = {
     range: Range,
     file: FileInputButton,
     image: ImageUpload
-}
+} as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
     ItemType<"checkbox", RadioButtonPropsType> | ItemType<"radioGroup", RadioButtonGroupPropsType> |
     ItemType<"time", TimeFieldPropsType> | ItemType<"textarea", TextAreaPropsType> |
@@ -92,9 +93,10 @@ type TItemDiscriminated = TSingleItem | TArrayItem;
 type TItem = TItemCommon & TItemDiscriminated;
 export interface SchemaType {
     heading: string,//Form heading
-    items: TItem[],
+    items: readonly TItem[],
     submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
 }
+export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: JSX.Element;
     if (item.type === 'text') {
@@ -269,7 +271,7 @@ function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'],
         </>
     )
 }
-function generateYupSchema(items: TItem[]) {
+function generateYupSchema(items: readonly TItem[]) {
     return yup.object(
         items.reduce((schema, item) => {
             if (!item.isArray)
