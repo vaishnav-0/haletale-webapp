@@ -9,10 +9,14 @@ import style from "./Header.module.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { Openable } from './Openable';
+import { useAuth } from '../functions/auth/useAuth';
+import auth from '../functions/auth';
+import { Link } from "react-router-dom";
+
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
-    const logedin = false;//temporary
+    const logedin = useAuth();//temporary
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -23,7 +27,7 @@ export default function Header(): JSX.Element {
                 </div>
                 <div className={style["topnav-right-container"]}>
 
-                    {logedin ?
+                    {logedin?.user ?
                         <div className={style["profile-container"]}>
                             <img src={userPlaceholder} />
                             <Openable                           //seems hacky
@@ -43,15 +47,15 @@ export default function Header(): JSX.Element {
                                     }}
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    <a href="#">Profile{dropdownOpen}</a>
-                                    <a href="#">Change Password</a>
-                                    <a href="#">Account</a>
-                                    <a href="#">Notifications</a>
-                                    <a href="#">Your Bookings</a>
-                                    <a href="#">Wishlist</a>
-                                    <a href="#">Settings</a>
-                                    <a href="#">Help</a>
-                                    <a href="#">Logout</a>
+                                    <Link to="#">Profile</Link>
+                                    <Link to="#">Change Password</Link>
+                                    <Link to="#">Account</Link>
+                                    <Link to="#">Notifications</Link>
+                                    <Link to="#">Your Bookings</Link>
+                                    <Link to="#">Wishlist</Link>
+                                    <Link to="#">Settings</Link>
+                                    <Link to="#">Help</Link>
+                                    <Link to="/signout" onClick={()=>auth.signOut()}>Logout</Link>
                                 </Openable>
                             </Openable>
                         </div>
@@ -63,7 +67,7 @@ export default function Header(): JSX.Element {
                             <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
 
                                 <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
-                                    <LoginModal onClose={() => {
+                                    <LoginModal signUpUrl="/signUp" onClose={() => {
                                         setloginModalOpen(false);
                                     }} />
 
