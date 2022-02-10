@@ -1,7 +1,10 @@
 export type TSignUpObject = {
     email: string,
     phone?: string,
-    password: string
+    password: string,
+    name:string,
+    date_of_birth?:string,
+    gender?:string
 }
 
 export type TSignInObject = {
@@ -22,7 +25,8 @@ export enum Roles { tenant = 'tenant', landlord = 'landlord' };
 
 
 export interface AuthContextType {
-    user?: IUser
+    user: IUser | null,
+    initialized:boolean
 }
 
 
@@ -30,7 +34,7 @@ export type authTypes = 'email_pass' | 'otp' | 'Google' | 'FaceBook'
 export interface IUser {
     token: string | null
     tokenExpiry: Date
-    role: Roles
+    role: Roles[]
     username: string
 }
 export type TSignSuccessCB = (user: IUser | null) => void
