@@ -4,7 +4,7 @@ import { ServerError } from "@apollo/client/link/utils";
 import Token from "./functions/auth/token";
 
 
-const token = new Token();
+const token = new Token("id");
 
 
 const httpLink = new HttpLink({
