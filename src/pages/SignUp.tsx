@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './Form.module.scss';
 import Layout from './Layout';
-import FormGenerator, { SchemaType } from '../components/Form/FormGenerator';
+import FormGenerator, { SchemaType, FormDataShape } from '../components/Form/FormGenerator';
 import * as yup from 'yup';
 import auth from '../functions/auth';
 //Example
@@ -130,7 +130,7 @@ import auth from '../functions/auth';
 // }
 // !schema.items[0].isArray && schema.items[0].type:
 
-const schema: SchemaType = {
+const schema = {
     heading: "Sign Up",
     items: [
         {
@@ -193,7 +193,7 @@ const schema: SchemaType = {
                         placeholder: "name",
                     },
                     defaultValue: "",
-                    validationSchema:yup.string().required("aa aaaaaaaaaaaaa aaaaa")
+                    validationSchema: yup.string().required("aa aaaaaaaaaaaaa aaaaa")
                 },
                 {
                     name: "relation",
@@ -235,7 +235,7 @@ const schema: SchemaType = {
         {
             name: "TCagree",
             type: "checkbox",
-            wrapperRender: (C) => <div style={{ display: "flex" }}>
+            wrapperRender: (C: JSX.Element) => <div style={{ display: "flex" }}>
                 {C}
                 <div>
                     By creating your account you agree to our <a href='#'>terms and condtions</a>
@@ -245,14 +245,16 @@ const schema: SchemaType = {
             }
         }],
     submitButton: "Sign Up",
-}
-const onSubmit = (d: any) => {
+} as const;
+type FormData = FormDataShape<typeof schema>;
+//type Extractor<T extends sch["items"]> = T extends any?T["name"] 
+const onSubmit = (d: FormData) => {
     auth.emailPasswordSignUp({ email: d.email, password: d.password, name: d.firstname });
 }
 function Signup(): JSX.Element {
     return (
         <Layout>
-            <FormGenerator schema={schema} onError={(e) => console.log(e)}
+            <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
                 onSubmit={onSubmit} />
         </Layout>
     );
