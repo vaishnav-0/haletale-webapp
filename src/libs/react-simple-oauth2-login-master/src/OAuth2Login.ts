@@ -5,6 +5,7 @@ import Base64 from 'crypto-js/enc-base64url';
 import Utf8 from 'crypto-js/enc-utf8'
 import cryptoRandomString from '../../../functions/crypto/randomStringGenerator'
 import { onError } from '@apollo/client/link/error';
+import { WordArray } from 'amazon-cognito-identity-js';
 const responseTypeLocationKeys = {
   code: 'search',
   token: 'hash',
@@ -14,7 +15,6 @@ const responseTypeDataKeys = {
   code: 'code',
   token: 'access_token',
 };
-
 class OAuth2Login {
   props: PropsType;
   popup?: PopupWindow;
@@ -72,9 +72,9 @@ class OAuth2Login {
     };
     if (responseType === 'code' && this.config) {
       this.code_verifier = cryptoRandomString({ length: 100, type: "url-safe" })
-      this.code_challenge = Base64.stringify(Utf8.parse(sha256(this.code_verifier).toString()));
-      //payload.code_challenge_method = "S256";
-      //payload.code_challenge = this.code_challenge;
+      this.code_challenge = Base64.stringify(sha256(this.code_verifier));
+      payload.code_challenge_method = "S256";
+      payload.code_challenge = this.code_challenge;
     }
     console.log(payload)
     const search = toQuery(payload);
@@ -116,7 +116,13 @@ class OAuth2Login {
           scope: scope,
           redirect_uri: redirectUri,
           code: code,
-          //code_verifier: Base64.stringify(Utf8.parse(this.code_verifier!)),
+          //https://aws.amazon.com/blogs/mobile/understanding-amazon-cognito-user-pool-oauth-2-0-grants/
+          // code_verifier (optional, is required if a code_challenge was specified in the original request) – 
+          // The *base64 URL-encoded* representation of the unhashed, random string that was used to generate the 
+          // PKCE code_challenge in the original request.
+          //conflict with https://datatracker.ietf.org/doc/html/rfc7636#section-4.5
+          //So base64 URL-encoded code_verifier not needed as per aws blog
+          code_verifier: this.code_verifier!,
         })
       }).then(res => res.json()).then(d => onSuccess(d)).catch(e => onFailure(e));
     } else {
