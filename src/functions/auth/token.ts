@@ -1,7 +1,9 @@
 import jwtDecode, { JwtPayload } from "jwt-decode";
 class Token {
-
-
+    private type;
+    constructor(type: "id" | "refresh") {
+        this.type = type;
+    }
     private getExpiry = (token: string): number => {
 
         let tokenDecoded = jwtDecode<JwtPayload>(token);
@@ -31,7 +33,7 @@ class Token {
 
 
     get = (): string | null => {
-        return localStorage.getItem('token');
+        return localStorage.getItem(this.type);
     }
 
     getData = (): object | null => {
@@ -44,11 +46,11 @@ class Token {
 
 
     set = (token: string): void => {
-        localStorage.setItem('token', token);
+        localStorage.setItem(this.type, token);
     }
 
     remove = (): void => {
-        localStorage.removeItem('token');
+        localStorage.removeItem(this.type);
     }
 
 }

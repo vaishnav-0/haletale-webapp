@@ -75,7 +75,11 @@ function cognitoSignin(params: TSignInObject, callback: Function): void {
         onSuccess: function (result: any) {
             let accessToken = result.getAccessToken().getJwtToken();
             console.log(result)
-            callback(null, result);
+            callback(null, {
+                access_token: result.getAccessToken().getJwtToken(),
+                id_token: result.getIdToken().getJwtToken(),
+                refresh_token: result.getRefreshToken().getToken(),
+            });
         },
 
         onFailure: function (err: Error) {

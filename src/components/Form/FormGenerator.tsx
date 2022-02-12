@@ -27,10 +27,12 @@ import { PropType as RangePropsType } from "./components/Range";
 import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { ButtonSolid } from '../Button';
-import { useForm, FormProvider, UseFormGetValues, FieldValues } from 'react-hook-form';
+import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
+import { DeepReadonly } from '../../functions/utils'
 import * as yup from 'yup';
+import { error } from "console";
 type ItemType<T, P> = {
     type: T,
     props: Omit<P, "name">
@@ -50,7 +52,7 @@ const componentMap = {
     range: Range,
     file: FileInputButton,
     image: ImageUpload
-}
+} as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
     ItemType<"checkbox", RadioButtonPropsType> | ItemType<"radioGroup", RadioButtonGroupPropsType> |
     ItemType<"time", TimeFieldPropsType> | ItemType<"textarea", TextAreaPropsType> |
@@ -91,66 +93,21 @@ type TItemDiscriminated = TSingleItem | TArrayItem;
 type TItem = TItemCommon & TItemDiscriminated;
 export interface SchemaType {
     heading: string,//Form heading
-    items: TItem[],
+    items: readonly TItem[],
     submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
 }
+export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: JSX.Element;
-    if (item.type === 'text') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'radio') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'checkbox') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'radioGroup') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'time') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'textarea') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'select') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'pillList') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'pillGroup') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'number') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'range') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'file') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    else if (item.type === 'image') {
-        let Component = componentMap[item.type];
-        inputComponent = <Component {...{ ...item.props, name: item.name }} />
-    }
-    return inputComponent;
+    Object.entries(componentMap).forEach(([type, component]) => {
+        if (item.type === type) {
+            let Component = component as any;
+            inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
+        }
+    })
+return inputComponent;
 }
-function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
+function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
     const inputComponent = getInputComponent(item);
     return <div className={style["form-item"]}>
         <div className={style["form-item-heading"]}>
@@ -166,15 +123,17 @@ function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
                     }
                 </div>
         }
+        {
+            error && <div className={style["field-error"]}>{error}</div>
+        }
     </div>;
 }
-function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
+function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[]) {
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
     return <>
         <FieldArrayWrapper name={item.name}>
             {({ fields, append, remove }) => <>
-
                 <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
                     <div className={style["form-item-heading"]}>
                         {item.isArray.controlHeading}
@@ -182,7 +141,6 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                     <NumberInput
                         name={item.name + "_count"}
                         onIncrement={(v) => {
-                            console.log(defValues);
                             append(defValues);
                         }}
                         disabled={[0]}
@@ -192,7 +150,6 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                 <div className={`${style["form-item"]}`}>
                     {
                         fields.map((e, i) => {
-                            console.log(e);
                             return <div key={e.id} className={style["form-item"]}>
                                 <div className={style["horizontal-list"]}>
                                     <div>
@@ -203,16 +160,22 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
                                     </div>
                                     <button type="button" className={style["remove-btn"]}
                                         onClick={() => {
-                                            console.log("clicked");
                                             setCountRef.current(fields.length - 1);
                                             remove(i);
                                         }}
                                     >
                                         <i className="fas fa-minus" /></button>
                                 </div>
-                                <div className={style["horizontal-list"]}>
+                                <div className={style["horizontal-list"]} style={{ alignItems: "start" }}>
                                     {
-                                        item.items.map((_item, k) => <div key={k}>{getInputComponent({ ..._item, name: `${item.name}[${i}].${_item.name}` })}</div>)
+                                        item.items.map((_item, k) => <div key={k}>{
+                                            SingleComponent(
+                                                {
+                                                    ..._item, name: `${item.name}[${i}].${_item.name}`,
+                                                    wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
+                                                },
+                                                errors?.[i]?.[_item.name]?.message)
+                                        }</div>)
                                     }
                                 </div>
                             </div>
@@ -225,11 +188,11 @@ function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>) {
         </FieldArrayWrapper>
     </>
 }
-function FormComponent(item: TItem) {
+function FormComponent(item: TItem, errors?: FieldErrors) {
     if (item.isArray)
-        return ArrayComponent(item);
+        return ArrayComponent(item, errors?.[item.name]);
     else
-        return SingleComponent(item);
+        return SingleComponent(item, errors?.[item.name]?.message);
 }
 
 function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element) {
@@ -262,10 +225,9 @@ function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'],
         </>
     )
 }
-function generateYupSchema(items: TItem[]) {
+function generateYupSchema(items: readonly TItem[]) {
     return yup.object(
         items.reduce((schema, item) => {
-            console.log(schema, item)
             if (!item.isArray)
                 item.validationSchema && (schema[item.name] = item.validationSchema);
             else
@@ -274,28 +236,29 @@ function generateYupSchema(items: TItem[]) {
         }, {} as any)
     )
 }
-export function getYupSchema(schema: SchemaType) {
-    return generateYupSchema(schema.items)
-}
+
 export default function FormGenerator({ schema, onSubmit, onError }: {
     schema: SchemaType, onSubmit: (data: any) => void,
     onError?: (e: any) => void,
 }) {
     const yupSchema = generateYupSchema(schema.items);
-    console.log(yupSchema)
     const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
+    const errors = methods.formState.errors;
+    console.log(methods.formState.errors);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
-                <div className={style["form-header"]}>
-                    {schema.heading}
-                </div>
+                {
+                    schema.heading && <div className={style["form-header"]}>
+                        {schema.heading}
+                    </div>
+                }
                 {
                     schema.items.map(item => {
                         return item.isOptional ?
-                            ToggleWrapper(item.name, item.isOptional, FormComponent(item)) :
-                            FormComponent(item);
+                            ToggleWrapper(item.name, item.isOptional, FormComponent(item, errors)) :
+                            FormComponent(item, errors);
                     })
                 }
                 {

@@ -2,7 +2,8 @@
 import {
     BrowserRouter,
     Routes,
-    Route
+    Route,
+    Navigate
 } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import HomePage from "../pages/Home";
@@ -14,7 +15,6 @@ import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
 import { Roles } from "../functions/auth/types";
 import LandlordDashboard from '../pages/LandlordDashboard'
-
 
 
 export default function () {
@@ -31,7 +31,7 @@ export default function () {
                 <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
                 <Route path="/sendRequest" element={< SendRequest />} />
                 <Route path="/dashboard" element={< LandlordDashboard />} />
-
+                <Route path="/signout" element={<Navigate to="/" replace />} />
                 <Route
                     path="*"
                     element={

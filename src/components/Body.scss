@@ -3,6 +3,7 @@
 .body {
     flex: 1;
     @include responsiveVSpacing_standard;
+    padding-bottom: 4em;
     @include media(">=xlMin") {
         width: 1000px;
         margin: auto;

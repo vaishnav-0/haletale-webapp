@@ -2,7 +2,7 @@ import Token from "./token";
 import OAuth2 from "./OAuth2";
 import { cognitoSignUp, cognitoSignin, } from "./cognito";
 import {
-    TSignUpResponseObject,
+    TSignInResponseObject,
     TSignInObject,
     authTypes,
     TSignUpObject,
@@ -12,7 +12,8 @@ import {
     TSignErrorCB
 } from './types';
 
-const token = new Token();
+const idToken = new Token("id");
+const refreshToken = new Token("refresh");
 function toUser(token: Token) {
     const data: any = token.getData();
     return data && {
@@ -30,13 +31,15 @@ class Auth {
         this.signObservers = [];
         this.signErrorObservers = [];
         this.setUserFromToken();
+        this.signInCallback = this.signInCallback.bind(this)
+        this.signInCallback = this.signInCallback.bind(this)
     }
     set user(u) { }
     get user() {
         return this._user;
     }
     private setUserFromToken() {
-        this.setUser(token.isValid() ? toUser(token) : null);
+        this.setUser(idToken.isValid() ? toUser(idToken) : null);
     }
     private setUser(u: IUser | null) {
         this._user = u;
@@ -48,10 +51,11 @@ class Auth {
     private signErrorObserverNotify(err: Error) {
         this.signErrorObservers.forEach(fn => fn(err));
     }
-    signInCallback(err: Error | null, data?: TSignUpResponseObject): void {
+    signInCallback(err: Error | null, data?: TSignInResponseObject): void {
         if (!err) {
             console.log(data);
-            token.set(data!.id_token);
+            data?.id_token && idToken.set(data.id_token);
+            data?.refresh_token && refreshToken.set(data.refresh_token);
             this.setUserFromToken();
         }
         else {
@@ -76,21 +80,21 @@ class Auth {
             this.signObservers.splice(this.signObservers.length - 1, 1)
         }
     }
-    emailPasswordSignIn(data: TSignInObject) {
-        return cognitoSignin(data, this.signInCallback.bind(this));
+    emailPasswordSignIn(data: TSignInObject, callback?: Function) {
+        return cognitoSignin(data, callback ? (err: any, result: any) => { this.signInCallback(err, result); callback(err, result); } : this.signInCallback);
     }
 
     oauth(provider: authTypes) {
-        OAuth2(provider, this.signInCallback.bind(this)).login();
+        OAuth2(provider, this.signInCallback).login();
     }
 
     emailPasswordSignUp(data: TSignUpObject) {
-        return cognitoSignUp(data, this.signUpCallback);
+        cognitoSignUp(data, this.signUpCallback);
     }
 
-    signOut = function (): void {
-        token.remove();
-
+    signOut() {
+        idToken.remove();
+        this.setUserFromToken();
     }
 
 }
