@@ -8,8 +8,10 @@ import Searchbar from '../components/Searchbar';
 
 // 
 
-import { createPresignedUrl } from '../functions/image/src/presignedurl'
+//import { createPresignedUrl } from '../functions/image/src/presignedurl'
 // 
+
+import { s3PostUrl } from '../functions/image/index'
 function HomePage(): JSX.Element {
     return (
         <Layout footer={true}>
@@ -20,7 +22,7 @@ function HomePage(): JSX.Element {
             <div style={{ marginTop: 60, marginBottom: 60 }}>
                 <MinimalPropertyList title="Popular properties" />
                 <MinimalPropertyList title="Newly listed properties" />
-                <button onClick={() => createPresignedUrl()} />
+                <button onClick={() => s3PostUrl({ key: "sfdsfsdf", type: "jpeg" })} />
             </div>
         </Layout>
     );
