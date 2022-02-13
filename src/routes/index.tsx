@@ -16,31 +16,33 @@ import SendRequest from "../pages/SendRequest";
 import { Roles } from "../functions/auth/types";
 import LandlordDashboard from '../pages/LandlordDashboard'
 import SelectRole from "../pages/SelectRole";
-
+import Wrapper from "./wrapper";
 export default function () {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={< HomePage />} />
-                <Route path="/properties" element={< PropertyListing />} />
-                <Route path="/addProperty" element={
-                    //role for testing purpose
-                    <RequireAuth role={[Roles['landlord']]}>< AddProperty /></RequireAuth>} />
-                <Route path="/signup" element={< Signup />} />
-                <Route path="/propertiesMapView" element={< MapView />} />
-                <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
-                <Route path="/sendRequest" element={< SendRequest />} />
-                <Route path="/dashboard" element={< LandlordDashboard />} />
-                <Route path="/signout" element={<Navigate to="/" replace />} />
+                <Route path="/" element={<Wrapper />}>
+                    <Route index element={< HomePage />} />
+                    <Route path="/properties" element={< PropertyListing />} />
+                    <Route path="/addProperty" element={
+                        //role for testing purpose
+                        <RequireAuth role={[Roles['landlord']]}>< AddProperty /></RequireAuth>} />
+                    <Route path="/signup" element={< Signup />} />
+                    <Route path="/propertiesMapView" element={< MapView />} />
+                    <Route path="/PropertyDetailed" element={< PropertyDetailed />} />
+                    <Route path="/sendRequest" element={< SendRequest />} />
+                    <Route path="/dashboard" element={< LandlordDashboard />} />
+                    <Route path="/signout" element={<Navigate to="/" replace />} />
+                    <Route
+                        path="*"
+                        element={
+                            <main style={{ padding: "1rem" }}>
+                                <p>There's nothing here!</p>
+                            </main>
+                        }
+                    />
+                </Route>
                 <Route path="/pickRole" element={< SelectRole />} />
-                <Route
-                    path="*"
-                    element={
-                        <main style={{ padding: "1rem" }}>
-                            <p>There's nothing here!</p>
-                        </main>
-                    }
-                />
             </Routes>
         </BrowserRouter>
 
