@@ -6,10 +6,13 @@ import {
     ICognitoUserPoolData
 } from 'amazon-cognito-identity-js';
 import { TSignUpObject, TSignInObject } from './types';
+import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
+
+const provider = new CognitoIdentityProvider({ region: 'ca-central-1' });
 
 const poolData: ICognitoUserPoolData = {
     UserPoolId: "ca-central-1_iO0qMcotb",
-    ClientId: "7qn7vujd2vnafig3494ktacae1"
+    ClientId: "2msia8lds7enqe1cqutubt1l4s"
 }
 
 const userPool = new CognitoUserPool(poolData);
@@ -17,43 +20,20 @@ const userPool = new CognitoUserPool(poolData);
 
 function cognitoSignUp(params: TSignUpObject, callback: (err: Error | null, data?: any) => void): void {
 
-    let attributes: Array<CognitoUserAttribute> = [];
-    let attributeEmail = new CognitoUserAttribute({
-        Name: 'email',
-        Value: params.email,
-    });
-    attributes.push(attributeEmail);
-
-    if (params.name) {
-        let attributePhoneNumber = new CognitoUserAttribute({
-            Name: 'name',
-            Value: params.name,
-        });
-        attributes.push(attributePhoneNumber);
-    }
-
-    if (params.phone) {
-        let attributePhoneNumber = new CognitoUserAttribute({
-            Name: 'phone_number',
-            Value: params.phone,
-        });
-        attributes.push(attributePhoneNumber);
-    }
-    userPool.signUp(params.email, params.password, attributes, [], (err, result) => {
-        if (err) {
-            console.log(err.message || JSON.stringify(err));
-            callback(err);
-            return;
+    const { password, ...attributesObj } = params;
+    const attributes = Object.entries(attributesObj).map(([k, v]) => Object.assign({}, { Name: k, Value: v }))
+    console.log(attributes);
+    provider.signUp({ ClientId: poolData.ClientId, Username: params.email, Password: params.password, UserAttributes: attributes },
+        (err: any, data: any) => {
+            if (err) {
+                console.log(err);
+                callback(err);
+            }
+            else {
+                callback(null, data)
+            }
         }
-        callback(null, result)
-        console.log(result)
-        let cognitoUser = result?.user;
-        console.log('user name is ' + cognitoUser?.getUsername() + cognitoUser);
-        //callback
-
-    });
-
-    return;
+    );
 }
 
 
@@ -89,5 +69,31 @@ function cognitoSignin(params: TSignInObject, callback: Function): void {
     });
 }
 
+function refreshSession(Rtoken: string, callback: Function) {
+    if (typeof Rtoken !== 'string')
+        throw new Error('Token must be a string')
+    provider.initiateAuth({ AuthFlow: "REFRESH_TOKEN_AUTH", AuthParameters: { REFRESH_TOKEN: Rtoken }, ClientId: poolData.ClientId },
+        (err: any, data: any) => {
+            if (err) {
+                console.log(err);
+                callback(err);
+            }
+            else {
+                callback(null, data)
+            }
+        });
 
-export { cognitoSignin, cognitoSignUp };
+}
+function revokeToken(token: string, callback: Function) {
+    provider.revokeToken({ ClientId: poolData.ClientId, Token: token },
+        (err: any, data: any) => {
+            if (err) {
+                console.log(err);
+                callback(err);
+            }
+            else {
+                callback(null, data)
+            }
+        });
+}
+export { cognitoSignin, cognitoSignUp, refreshSession };

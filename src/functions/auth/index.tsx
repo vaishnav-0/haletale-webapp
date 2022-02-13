@@ -1,6 +1,6 @@
 import Token from "./token";
 import OAuth2 from "./OAuth2";
-import { cognitoSignUp, cognitoSignin, } from "./cognito";
+import { cognitoSignUp, cognitoSignin, refreshSession as cognitoRefreshSession } from "./cognito";
 import {
     TSignInResponseObject,
     TSignInObject,
@@ -30,7 +30,7 @@ class Auth {
     constructor() {
         this.signObservers = [];
         this.signErrorObservers = [];
-        this.setUserFromToken();
+        this.initAuth();
         this.signInCallback = this.signInCallback.bind(this)
         this.signInCallback = this.signInCallback.bind(this)
     }
@@ -38,8 +38,27 @@ class Auth {
     get user() {
         return this._user;
     }
-    private setUserFromToken() {
-        this.setUser(idToken.isValid() ? toUser(idToken) : null);
+    private initAuth() {
+        if (refreshToken.get())
+            this.refreshSession().then((res: any) => {
+                const authResult = res.AuthenticationResult;
+                authResult?.id_token && idToken.set(authResult.id_token);
+                console.log(res);
+                this.setUserFromIdToken();
+            }).catch(err => {
+                this.signErrorObserverNotify(err);
+                console.log(err);
+            })
+        else {
+            this.setUser(null);
+        }
+    }
+    private removeTokens() {
+        refreshToken.remove();
+        idToken.remove();
+    }
+    private setUserFromIdToken() {
+        this.setUser(toUser(idToken));
     }
     private setUser(u: IUser | null) {
         this._user = u;
@@ -56,7 +75,7 @@ class Auth {
             console.log(data);
             data?.id_token && idToken.set(data.id_token);
             data?.refresh_token && refreshToken.set(data.refresh_token);
-            this.setUserFromToken();
+            this.setUserFromIdToken();
         }
         else {
             this.signErrorObserverNotify(err);
@@ -91,10 +110,26 @@ class Auth {
     emailPasswordSignUp(data: TSignUpObject) {
         cognitoSignUp(data, this.signUpCallback);
     }
+    refreshSession() {
+        return new Promise((res, rej) => {
+            const RT = refreshToken.get();
+            if (RT)
+                cognitoRefreshSession(RT,
+                    (err: any, data: any) => {
+                        if (err)
+                            rej(err);
+                        else {
+                            res(data);
+                        }
+                    })
+            else
+                rej(new Error("No refresh token found"));
+        })
 
+    }
     signOut() {
         idToken.remove();
-        this.setUserFromToken();
+        this.setUserFromIdToken();
     }
 
 }

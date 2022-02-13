@@ -4,15 +4,20 @@ class Token {
     constructor(type: "id" | "refresh") {
         this.type = type;
     }
-    private getExpiry = (token: string): number => {
+    private getExpiry = (token: string): any => {
+        try {
+            console.log(token)
+            let tokenDecoded = jwtDecode<JwtPayload>(token);
+            let exp: number = tokenDecoded.exp as number;
+            let expiry: number = new Date().valueOf() - new Date(exp * 1000).valueOf();
 
-        let tokenDecoded = jwtDecode<JwtPayload>(token);
-        let exp: number = tokenDecoded.exp as number;
-        let expiry: number = new Date().valueOf() - new Date(exp * 1000).valueOf();
+            ///consollleee
+            console.log(expiry);
+            return expiry;
+        } catch (e) {
+            console.log(e)
+        }
 
-        ///consollleee
-        console.log(expiry);
-        return expiry;
     }
 
     isValid(): boolean {
