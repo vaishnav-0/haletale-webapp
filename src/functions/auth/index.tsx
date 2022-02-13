@@ -19,7 +19,7 @@ function toUser(token: Token) {
     return data && {
         token: token.get(),
         role: JSON.parse(data["https://hasura.io/jwt/claims"])["x-hasura-allowed-roles"],
-        username: JSON.parse(data["https://hasura.io/jwt/claims"])["x-hasura-user-id"]
+        user_id: JSON.parse(data["https://hasura.io/jwt/claims"])["x-hasura-user-id"]
 
     }
 }
@@ -27,6 +27,7 @@ class Auth {
     private signObservers: TSignSuccessCB[];
     private signErrorObservers: TSignErrorCB[];
     private _user: IUser | null;
+    private _initialized: boolean;
     constructor() {
         this.signObservers = [];
         this.signErrorObservers = [];
@@ -38,6 +39,7 @@ class Auth {
     get user() {
         return this._user;
     }
+
     private initAuth() {
         if (refreshToken.get())
             this.refreshSession().then((res: any) => {
@@ -45,12 +47,16 @@ class Auth {
                 authResult?.id_token && idToken.set(authResult.id_token);
                 console.log(res);
                 this.setUserFromIdToken();
+                this._initialized = true;
             }).catch(err => {
                 this.signErrorObserverNotify(err);
+                this.setUser(null);
                 console.log(err);
+                this._initialized = true;
             })
         else {
             this.setUser(null);
+            this._initialized = true;
         }
     }
     private removeTokens() {
@@ -92,7 +98,8 @@ class Auth {
     }
     onAuthStateChange: TOnAuthStateChange = (successCB, signErrorCB) => {
         this.signObservers.push(successCB);
-        successCB(this.user);
+        if (this._initialized)
+            successCB(this.user);
         signErrorCB && this.signErrorObservers.push(signErrorCB);
         return () => {
             this.signErrorObservers.splice(this.signErrorObservers.length - 1, 1)
