@@ -1,0 +1,15 @@
+@import '../breakpoints.scss';
+@import '../colors.scss';
+@import 'src/styles/mixins.scss';
+
+.loader-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: $transparentBlack_glass
+}
