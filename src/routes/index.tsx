@@ -15,7 +15,7 @@ import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
 import { Roles } from "../functions/auth/types";
 import LandlordDashboard from '../pages/LandlordDashboard'
-
+import SelectRole from "../pages/SelectRole";
 
 export default function () {
     return (
@@ -32,6 +32,7 @@ export default function () {
                 <Route path="/sendRequest" element={< SendRequest />} />
                 <Route path="/dashboard" element={< LandlordDashboard />} />
                 <Route path="/signout" element={<Navigate to="/" replace />} />
+                <Route path="/pickRole" element={< SelectRole />} />
                 <Route
                     path="*"
                     element={
