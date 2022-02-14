@@ -8,7 +8,7 @@ const token = new Token("id");
 
 
 const httpLink = new HttpLink({
-    uri: 'http://3.99.146.234:8080/v1/graphql',
+    uri: 'http://ec2-35-183-39-216.ca-central-1.compute.amazonaws.com:8080/v1/graphql',
 });
 
 
@@ -25,8 +25,8 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 
 const logoutLink = onError(({ networkError }) => {
     if (networkError && (networkError as ServerError).statusCode === 401)
-     //   logout(); to be implemented
-    return
+        //   logout(); to be implemented
+        return
 })
 
 
