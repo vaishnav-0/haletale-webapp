@@ -1,8 +1,8 @@
 import React from "react";
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from "../functions/auth/useAuth";
 import { Roles } from "../functions/auth/types";
-
+import { setLoader } from "../components/Loader";
 
 /**
  * @description Redirect user to / if the user is not logged in and opens the login modal
@@ -11,17 +11,14 @@ import { Roles } from "../functions/auth/types";
  * @returns 
  */
 
-export const RequireAuth = ({ children, role }: { children: JSX.Element, role: Roles[] }) => {
-
+export const RequireAuth = ({ role, redirect = "/" }: { role: Roles[] | [], redirect?: string }) => {
   let auth = useAuth();
   let location = useLocation();
-  console.log(auth);
   if (auth === null)  //auth initializing
     return null;
-  
-  if (auth.user === null || !role.some(e => auth.user?.role.includes(e))) {
-    return <Navigate to="/" state={{ from: location, openLoginModel: true }} replace />;
+  if (role.length && (auth.user === null || !role.some(e => auth.user?.role.includes(e)))) {
+    return <Navigate to={redirect} state={{ from: location, openLoginModel: true }} replace />;
   } else {
-    return children;
+    return <Outlet />;
   }
 }
