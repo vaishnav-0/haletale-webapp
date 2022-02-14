@@ -41,22 +41,24 @@ class Auth {
     }
 
     private initAuth() {
+        this.refreshSession(() => this._initialized = true)
+    }
+    private refreshSession(cb?: (err?: any) => void) {
         if (refreshToken.get())
-            this.refreshSession().then((res: any) => {
+            this._refreshSession().then((res: any) => {
                 const authResult = res.AuthenticationResult;
                 authResult?.id_token && idToken.set(authResult.id_token);
                 console.log(res);
                 this.setUserFromIdToken();
-                this._initialized = true;
+                cb && cb();
             }).catch(err => {
                 this.signErrorObserverNotify(err);
                 this.setUser(null);
-                console.log(err);
-                this._initialized = true;
-            })
+                cb && cb();
+            });
         else {
             this.setUser(null);
-            this._initialized = true;
+            cb && cb();
         }
     }
     private removeTokens() {
@@ -117,7 +119,7 @@ class Auth {
     emailPasswordSignUp(data: TSignUpObject) {
         cognitoSignUp(data, this.signUpCallback);
     }
-    refreshSession() {
+    private _refreshSession() {
         return new Promise((res, rej) => {
             const RT = refreshToken.get();
             if (RT)
