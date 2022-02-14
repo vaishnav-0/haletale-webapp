@@ -30,9 +30,27 @@ import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
-import { DeepReadonly } from '../../functions/utils'
+
 import * as yup from 'yup';
-import { error } from "console";
+
+
+
+//import { DeepReadonly } from '../../functions/utils'
+type DeepReadonly<T> =
+    T extends (infer R)[] ? DeepReadonlyArray<R> :
+    T extends Function ? T :
+    T extends object ? DeepReadonlyObject<T> :
+    T;
+
+interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
+
+type DeepReadonlyObject<T> = {
+    readonly [P in keyof T]: DeepReadonly<T[P]>;
+};
+
+
+
+
 type ItemType<T, P> = {
     type: T,
     props: Omit<P, "name">

@@ -22,7 +22,7 @@ function HomePage(): JSX.Element {
             <div style={{ marginTop: 60, marginBottom: 60 }}>
                 <MinimalPropertyList title="Popular properties" />
                 <MinimalPropertyList title="Newly listed properties" />
-                <button onClick={() => x()} />
+                <button onClick={async () => await x()} />
             </div>
         </Layout>
     );
