@@ -2,9 +2,16 @@ import React from 'react';
 import authContext from './authContext';
 import auth from './index';
 import { toast } from 'react-toastify';
+import { setLoader } from '../../components/Loader';
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   let [user, setUser] = React.useState<any>(null);
+  React.useEffect(() => {
+    if (user === null)
+      setLoader(true)
+    else
+      setLoader(false)
+  }, [user])
   React.useEffect(() => {
     return auth.onAuthStateChange(
       (u) => {
