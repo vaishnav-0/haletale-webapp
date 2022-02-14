@@ -11,5 +11,6 @@
     position: absolute;
     top: 0;
     left: 0;
-    background-color: $transparentBlack_glass
+    background-color: $transparentBlack_glass;
+    z-index: 1000;
 }
