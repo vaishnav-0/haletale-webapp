@@ -23,7 +23,7 @@ export type TSignInResponseObject = {
 }
 
 
-export enum Roles { tenant = 'tenant', landlord = 'landlord' };
+export enum Roles { tenant = 'tenant', landlord = 'landlord', user = 'user' };
 
 
 export interface AuthContextType {
@@ -36,7 +36,7 @@ export interface IUser {
     token: string | null
     tokenExpiry: Date
     role: Roles[]
-    username: string
+    user_id: string
 }
 export type TSignSuccessCB = (user: IUser | null) => void
 export type TSignErrorCB = (err: Error) => void
