@@ -16,6 +16,8 @@ export default function SelectRole() {
             console.log(d,"asdasdasd");
             auth.refreshSession();
         }).catch(e => console.log(e))
+
+        console.log(setRoleMutation)
     }
     React.useEffect(() => {
         auth.onAuthStateChange((user) => {
