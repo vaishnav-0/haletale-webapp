@@ -32,7 +32,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
 import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
-import { error } from "console";
+
+
+
+
 type ItemType<T, P> = {
     type: T,
     props: Omit<P, "name">

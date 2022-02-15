@@ -97,4 +97,4 @@ export function revokeToken(token: string, callback: Function) {
             }
         });
 }
-export { cognitoSignin, cognitoSignUp, refreshSession };
+export { cognitoSignin, cognitoSignUp, refreshSession, revokeToken };

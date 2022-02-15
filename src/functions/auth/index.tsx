@@ -145,8 +145,10 @@ class Auth {
                 console.log(data)
         })
         this.setUserFromIdToken();
+        revokeToken(refreshToken.get() as string, this.signoutCb);
     }
 
+    signoutCb() { return }
 }
 
 

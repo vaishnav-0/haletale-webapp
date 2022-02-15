@@ -8,21 +8,34 @@ import { userMutation } from '../queries';
 import { useMutation } from '@apollo/client';
 import { useAuth } from '../functions/auth/useAuth';
 export default function SelectRole() {
-    const authData = useAuth()
-    const [setRoleMutation, { data }] = useMutation(userMutation.UPDATE_USER_ROLE)
+    const authData = useAuth();
     const navigate = useNavigate();
-    const setRole = (role: number) => {
-        setRoleMutation({ variables: { id: authData?.user!.user_id, role_id: role } }).then(d => {
-            console.log(d,"asdasdasd");
-            auth.refreshSession();
-        }).catch(e => console.log(e))
-    }
+
+    const [setRoleMutation, { data, loading, error }] = useMutation(userMutation.UPDATE_USER_ROLE)
+
     React.useEffect(() => {
         auth.onAuthStateChange((user) => {
             if (user && user?.role[0] as any !== 'user')
                 navigate("/");
+
         })
     }, [])
+
+
+    if (data) {
+        console.log(data)
+        auth.refreshSession();
+    }
+    if (loading) console.log('Submitting...');
+    if (error) console.log(`Submission error! ${error.message}`);
+
+    const setRole = (role: number) => {
+        setRoleMutation({ variables: { id: authData?.user!.user_id, role_id: role } },
+        )
+
+        
+    }
+
     return <div className={style["container"]}>
         <div className={style["role-container"]}>
             <div className={style["role-item"]}>
@@ -40,6 +53,8 @@ export default function SelectRole() {
                 <div className={style["role-name"]}>
                     Tenant
                 </div>
+
+
             </div>
         </div>
     </div>
