@@ -47,7 +47,7 @@ class Auth {
         if (refreshToken.get())
             this._refreshSession().then((res: any) => {
                 const authResult = res.AuthenticationResult;
-                authResult?.id_token && idToken.set(authResult.id_token);
+                authResult?.IdToken && idToken.set(authResult.IdToken);
                 console.log(res);
                 this.setUserFromIdToken();
                 cb && cb();

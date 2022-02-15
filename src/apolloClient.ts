@@ -1,8 +1,7 @@
-import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from } from "@apollo/client";
+import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from, fromPromise } from "@apollo/client";
 import { onError } from '@apollo/client/link/error';
 import { ServerError } from "@apollo/client/link/utils";
 import Token from "./functions/auth/token";
-import { Observable } from "@apollo/client";
 import { RetryLink } from "@apollo/client/link/retry"
 import auth from './functions/auth'
 
@@ -17,24 +16,13 @@ const retryLink = new RetryLink({
     },
     attempts: {
         max: 5,
-        retryIf: async (error, _operation) => {
+        retryIf: (error, _operation) => {
             console.log(error)
             return false;
         }
     }
 });
-const promiseToObservable = (promise: Promise<any>) =>
-    new Observable((subscriber: any) => {
-        promise.then(
-            value => {
-                console.log(subscriber);
-                if (subscriber.closed) return;
-                subscriber.next(value);
-                subscriber.complete();
-            },
-            err => subscriber.error(err)
-        );
-    });
+
 
 const httpLink = new HttpLink({
     uri: 'http://ec2-35-183-39-216.ca-central-1.compute.amazonaws.com:8080/v1/graphql',
@@ -53,14 +41,36 @@ const authLink = new ApolloLink((operation, forward) => {
 });
 
 const errorLink = onError(({ networkError, graphQLErrors, response, forward, operation }) => {
+    console.log(operation.getContext())
+    console.log(networkError, graphQLErrors)
+    console.log(navigator.connection.type)
     if (networkError && (networkError as ServerError).statusCode === 401) {
-        auth.refreshSession();
-        return forward(operation);
-    }
 
+    }
     if (graphQLErrors) {
-        graphQLErrors.map(({ message, locations, path }) => {
-            console.log(message)
+        graphQLErrors.map((err) => {
+            const { message, extensions: { code }, path } = err;
+            console.log(err)
+            if (code === 'invalid-jwt')
+                return fromPromise(new Promise((res, rej) => {
+                    auth.refreshSession((err) => {
+                        if (!err)
+                            res(true)
+                        else
+                            res(false);
+                    })
+                })).filter(x => { console.log(x); return !!x }).flatMap(() => {
+                    const oldHeaders = operation.getContext().headers;
+                    console.log(token.get());
+                    // modify the operation context with a new token
+                    operation.setContext({
+                        headers: {
+                            ...oldHeaders,
+                            Authorization: `Bearer ${token.get()}`,
+                        },
+                    });
+                    return forward(operation)
+                })
         })
     }
     if (response) response.errors = undefined;

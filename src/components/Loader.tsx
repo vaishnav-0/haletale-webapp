@@ -10,7 +10,6 @@ type PropsType = {
 }
 const setLoaderRef: { current: null | ((enable: boolean, config?: PropsType) => void) } = { current: null };
 const setLoader = (enable: boolean, config?: PropsType) => {
-    console.log(enable, setLoaderRef.current)
     setLoaderRef.current && setLoaderRef.current(enable, config);
 }
 
