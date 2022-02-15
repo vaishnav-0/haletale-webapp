@@ -1,6 +1,6 @@
 import Token from "./token";
 import OAuth2 from "./OAuth2";
-import { cognitoSignUp, cognitoSignin, refreshSession as cognitoRefreshSession } from "./cognito";
+import { cognitoSignUp, cognitoSignin, refreshSession as cognitoRefreshSession, revokeToken } from "./cognito";
 import {
     TSignInResponseObject,
     TSignInObject,
@@ -137,8 +137,10 @@ class Auth {
     signOut() {
         idToken.remove();
         this.setUserFromIdToken();
+        revokeToken(refreshToken.get() as string, this.signoutCb);
     }
 
+    signoutCb() { return }
 }
 
 
