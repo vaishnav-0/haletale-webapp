@@ -30,7 +30,7 @@ import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
-import { DeepReadonly } from '../../functions/utils'
+import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
 import { error } from "console";
 type ItemType<T, P> = {
@@ -105,7 +105,7 @@ function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
             inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
         }
     })
-return inputComponent;
+    return inputComponent;
 }
 function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
     const inputComponent = getInputComponent(item);
