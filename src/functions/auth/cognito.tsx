@@ -84,11 +84,12 @@ function refreshSession(Rtoken: string, callback: Function) {
         });
 
 }
-function revokeToken(token: string, callback: Function) {
+export function revokeToken(token: string, callback: Function) {
+    if (!token)
+        throw new Error("token must be a string")
     provider.revokeToken({ ClientId: poolData.ClientId, Token: token },
         (err: any, data: any) => {
             if (err) {
-                console.log(err);
                 callback(err);
             }
             else {
