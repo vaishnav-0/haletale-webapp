@@ -1,6 +1,6 @@
 import Token from "./token";
 import OAuth2 from "./OAuth2";
-import { cognitoSignUp, cognitoSignin, refreshSession as cognitoRefreshSession } from "./cognito";
+import { cognitoSignUp, cognitoSignin, refreshSession as cognitoRefreshSession, revokeToken } from "./cognito";
 import {
     TSignInResponseObject,
     TSignInObject,
@@ -47,7 +47,7 @@ class Auth {
         if (refreshToken.get())
             this._refreshSession().then((res: any) => {
                 const authResult = res.AuthenticationResult;
-                authResult?.id_token && idToken.set(authResult.id_token);
+                authResult?.IdToken && idToken.set(authResult.IdToken);
                 console.log(res);
                 this.setUserFromIdToken();
                 cb && cb();
@@ -138,6 +138,12 @@ class Auth {
     }
     signOut() {
         idToken.remove();
+        revokeToken(refreshToken.get()!, (err: any, data: any) => {
+            if (err)
+                console.log(err)
+            else
+                console.log(data)
+        })
         this.setUserFromIdToken();
     }
 
