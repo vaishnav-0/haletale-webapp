@@ -6,9 +6,9 @@ import { setLoader } from '../../components/Loader';
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   let [user, setUser] = React.useState<any>(null);
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (user === null)
-      setLoader(true)
+      setLoader(true, { backgroundColor: "white" })
     else
       setLoader(false)
   }, [user])
