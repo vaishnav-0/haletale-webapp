@@ -43,7 +43,7 @@ class Auth {
     private initAuth() {
         this.refreshSession(() => this._initialized = true)
     }
-    private refreshSession(cb?: (err?: any) => void) {
+    refreshSession(cb?: (err?: any) => void) {
         if (refreshToken.get())
             this._refreshSession().then((res: any) => {
                 const authResult = res.AuthenticationResult;
@@ -54,11 +54,11 @@ class Auth {
             }).catch(err => {
                 this.signErrorObserverNotify(err);
                 this.setUser(null);
-                cb && cb();
+                cb && cb(err);
             });
         else {
             this.setUser(null);
-            cb && cb();
+            cb && cb(new Error("No refresh token found"));
         }
     }
     private removeTokens() {
