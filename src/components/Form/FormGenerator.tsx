@@ -14,10 +14,11 @@ import {
     NumberInput,
     Range,
     ImageUpload,
+    CheckBoxGroup
 } from './index';
 import { PropsType as RadioButtonPropsType } from "./components/ToggleButtons";
 import { PropsType as TextInputPropsType } from "./components/TextInput";
-import { PropsType as RadioButtonGroupPropsType } from "./components/RadiobuttonGroup";
+import { RadioButtonGroupPropsType, CheckBoxGroupPropsType } from "./components/RadiobuttonGroup";
 import { PropsType as TimeFieldPropsType } from "./components/TimeField";
 import { PropsType as TextAreaPropsType } from "./components/TextArea";
 import { PropsType as SelectPropsType } from "./components/Select";
@@ -54,14 +55,15 @@ const componentMap = {
     number: NumberInput,
     range: Range,
     file: FileInputButton,
-    image: ImageUpload
+    image: ImageUpload,
+    checkboxGroup: CheckBoxGroup,
 } as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
     ItemType<"checkbox", RadioButtonPropsType> | ItemType<"radioGroup", RadioButtonGroupPropsType> |
     ItemType<"time", TimeFieldPropsType> | ItemType<"textarea", TextAreaPropsType> |
     ItemType<"select", SelectPropsType> | ItemType<"pillList", PillListPropsType> |
     ItemType<"pillGroup", PillListPropsType> | ItemType<"number", NumberInputPropsType> |
-    ItemType<"range", RangePropsType> |
+    ItemType<"range", RangePropsType> | ItemType<"checkboxGroup", CheckBoxGroupPropsType> |
     ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType>
 type FormValueType = string | number | { [k: string]: string } | string[] | boolean
 type TItemCommon = {

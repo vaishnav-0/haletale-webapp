@@ -1,15 +1,20 @@
 import React from 'react';
 import style from './RadioButton.module.scss';
-import { RadioButton } from './ToggleButtons';
+import { RadioButton, CheckBox } from './ToggleButtons';
 import { InputPropsType } from './types';
 
-export interface PropsType extends InputPropsType {
+export interface RadioButtonGroupPropsType extends InputPropsType {
     name: string
     values: string[] | { [index: string]: string },
     defaultValue?: string,
 }
+export interface CheckBoxGroupPropsType extends InputPropsType {
+    name: string
+    values: string[],
+    defaultValue?: string[],
+}
 
-const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, values, type, defaultValue, ...rest }: PropsType, ref) => {
+const RadioButtonGroup = React.forwardRef<HTMLInputElement, RadioButtonGroupPropsType>(({ name, values, type, defaultValue, ...rest }: RadioButtonGroupPropsType, ref) => {
     const values_ = Array.isArray(values) ? Object.fromEntries(values.map(e => [e, e])) : values;
     return <>
         {Object.entries(values_).map(([value, label], i) => {
@@ -22,5 +27,18 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, PropsType>(({ name, 
         }
     </>
 });
+const CheckBoxGroup = React.forwardRef<HTMLInputElement, CheckBoxGroupPropsType>(({ name, values, type, defaultValue, ...rest }: CheckBoxGroupPropsType, ref) => {
+    return <>
+        {
+            values.map((v, i) => {
+                return (
+                    <CheckBox key={i} name={name} {...rest} value={v} label={v} ref={ref}
+                        {...defaultValue?.includes(v) ? { defaultChecked: true } : {}}
+                    />
+                );
+            })
+        }
+    </>
+});
 
-export { RadioButtonGroup };
+export { RadioButtonGroup, CheckBoxGroup };
