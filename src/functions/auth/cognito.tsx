@@ -8,13 +8,11 @@ import {
 import { TSignUpObject, TSignInObject } from './types';
 import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
 
-const provider = new CognitoIdentityProvider({ region: 'ca-central-1' });
-
 const poolData: ICognitoUserPoolData = {
     UserPoolId: "ca-central-1_iO0qMcotb",
     ClientId: "2msia8lds7enqe1cqutubt1l4s"
 }
-
+const provider = new CognitoIdentityProvider({ region: 'ca-central-1' });
 const userPool = new CognitoUserPool(poolData);
 
 
@@ -84,12 +82,11 @@ function refreshSession(Rtoken: string, callback: Function) {
         });
 
 }
-function revokeToken(token: string, callback: Function) {
-    if (!token)
-        throw new Error("token must be a string")
-    provider.revokeToken({ ClientId: poolData.ClientId, Token: token },
+function resendConfirmationCode(username: string, callback: Function) {
+    provider.resendConfirmationCode({ ClientId: poolData.ClientId, Username: username },
         (err: any, data: any) => {
             if (err) {
+                console.log(err);
                 callback(err);
             }
             else {
@@ -97,4 +94,26 @@ function revokeToken(token: string, callback: Function) {
             }
         });
 }
-export { cognitoSignin, cognitoSignUp, refreshSession, revokeToken };
+function revokeToken(token: string, callback: Function) {
+    if (!token)
+        throw new Error("token must be a string")
+    fetch("https://cognito-idp.ca-central-1.amazonaws.com", {
+        method: "POST",
+        body: JSON.stringify({ ClientId: poolData.ClientId, Token: token, }),
+        headers: {
+            "x-amz-target": "AWSCognitoIdentityProviderService.RevokeToken",
+            "content-type": "application/x-amz-json-1.1"
+        }
+    }).then(d => {
+        if (d.status === 200) return d.json()
+        else
+            throw new Error(JSON.stringify(d));
+    }).then((res) => {
+        callback(null, res);
+        console.log(res);
+    }).catch(err => {
+        callback(err)
+    })
+
+}
+export { cognitoSignin, cognitoSignUp, refreshSession, revokeToken, resendConfirmationCode };
