@@ -65,7 +65,6 @@ export function x() {
     dt.forEach(element => {
         x = s3PostUrl(element)
         reqq.push(x)
-        console.log(reqq)
     });
     Promise.all(reqq).then(x => {
         console.log(x)

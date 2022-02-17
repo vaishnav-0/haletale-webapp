@@ -15,19 +15,46 @@ export default {
         }
       }`,
 
-  GET_ALL_PROPERTY_TYPE: `query GET_PROPERTY_TYPE_LIST {
+  GET_ALL_PROPERTY_TYPE: gql`query GET_PROPERTY_TYPE_LIST {
         property_type{
           name,
           description
         }
       }`,
 
-  GET_ALL_PROPERTY_SUBTYPE: `query GET_PROPERTY_SUBTYPE_LIST {
+  GET_ALL_PROPERTY_SUBTYPE: gql`query GET_PROPERTY_SUBTYPE_LIST {
         property_subtype{
           name,
           description
         }
       }`,
+
+  GET_PROPERTY_BY_ID: gql`query GET_PROPERTY_BY_ID($id: uuid) {
+    property(where: {id: {_eq: $id}}) {
+      id
+      name
+      description
+      property_address {
+        address {
+          addressline
+          building_number
+          city
+          country
+          id
+          landmarks
+        }
+      }
+      property_detail {
+        max_occupants
+        features
+        description
+        restrictions
+      }
+      property_images {
+        key
+      }
+    }
+  }`
 
 }
 
