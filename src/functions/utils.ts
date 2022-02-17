@@ -55,3 +55,11 @@ export function objectFilter(obj: object, func: (key: string | number, value: an
     }
     return ret;
 }
+
+export function objectReduce(obj: object, func: (acc: any, curr: [k: string | number, v: any], obj?: object) => any, init?: any) {
+    let ret: any = init;
+    for (const [k, v] of Object.entries(obj)) {
+        ret = func(ret, [k, v], obj);
+    }
+    return ret;
+}
