@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.7",
+    "@aws-sdk/client-cognito-identity": "^3.51.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.51.0",
+    "@aws-sdk/credential-provider-cognito-identity": "^3.51.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@hookform/resolvers": "^2.8.8",
     "@testing-library/jest-dom": "^5.15.0",
