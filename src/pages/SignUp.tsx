@@ -4,6 +4,9 @@ import Layout from './Layout';
 import FormGenerator, { SchemaType, FormDataShape } from '../components/Form/FormGenerator';
 import * as yup from 'yup';
 import auth from '../functions/auth';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import { setLoader } from '../components/Loader';
 //Example
 // const testSchema: SchemaType = {
 //     heading: "Sign Up",
@@ -248,10 +251,42 @@ const schema = {
 } as const;
 type FormData = FormDataShape<typeof schema>;
 //type Extractor<T extends sch["items"]> = T extends any?T["name"] 
-const onSubmit = (d: FormData) => {
-    auth.emailPasswordSignUp({ email: d.email, password: d.password, name: d.firstname });
-}
 function Signup(): JSX.Element {
+    const navigate = useNavigate();
+    const signUpCallback = (err: Error | null, data?: any): void => {
+        if (!err) {
+            console.log(data);
+            if (data.CodeDeliveryDetails) {
+                setLoader(true, { spinner: false });
+                toast.success('A confirmation link has been sent to your email.', {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    onClose: () => { navigate("/"); setLoader(false) }
+                });
+            }
+        }
+        else {
+            console.log(err.name);
+            if (err.name === 'UsernameExistsException')
+                toast.error('User already exist', {
+                    position: "bottom-center",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+        }
+    }
+    const onSubmit = (d: FormData) => {
+        auth.emailPasswordSignUp({ email: d.email, password: d.password, name: d.firstname }, signUpCallback);
+    }
     return (
         <Layout>
             <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
