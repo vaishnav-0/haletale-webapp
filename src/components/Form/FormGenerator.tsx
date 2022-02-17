@@ -250,7 +250,6 @@ export default function FormGenerator({ schema, onSubmit, onError }: {
     const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
-    console.log(methods.formState.errors);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
