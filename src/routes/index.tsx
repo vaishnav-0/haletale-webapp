@@ -6,6 +6,7 @@ import {
     Navigate,
 } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
+import { NotRequireAuth } from "./NotRequireAuth";
 import HomePage from "../pages/Home";
 import PropertyListing from "../pages/PropertySearchListing";
 import AddProperty from '../pages/AddProperty';
@@ -25,20 +26,13 @@ export default function () {
             {
                 (auth?.user && ['user'].some(e => (auth.user?.role as string[]).includes(e))) ?
                     <Routes>
-                        <Route path="/" element={<RequireAuth role={[Roles['user']]} />}>
-                            <Route path="pickRole" element={< SelectRole />} />
-                            <Route
-                                path="*"
-                                element={<Navigate to="/pickRole" replace />}
-                            />
-                        </Route>
+                        <Route path="*" element={< SelectRole />} />
                     </Routes> :
                     <Routes>
 
                         <Route path="/">
                             <Route index element={< HomePage />} />
                             <Route path="properties" element={< PropertyListing />} />
-                            <Route path="signup" element={< Signup />} />
                             <Route path="propertiesMapView" element={< MapView />} />
                             <Route path="PropertyDetailed" element={< PropertyDetailed />} />
                             <Route path="dashboard" element={< LandlordDashboard />} />
@@ -51,6 +45,9 @@ export default function () {
                                     </main>
                                 }
                             />
+                        </Route>
+                        <Route path="/" element={<NotRequireAuth />}>
+                            <Route path="signup" element={< Signup />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                             <Route path="addProperty" element={< AddProperty />} />

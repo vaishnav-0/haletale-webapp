@@ -86,7 +86,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                 resErrors.current.delete(i);
 
                     }
-                    console.log(resErrors.current)
                     //if (ind === addUpdateIndex.length - 1)
                     //  setImages(imageList);//filter((e, i) => !resErrors.current.has(i)));
                 });
@@ -138,8 +137,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
             }
         })
     }
-    console.log(resErrors);
-    console.log(images);
     return (
         <ImageUploading
             multiple={multiple}
@@ -168,7 +165,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                 dragProps,
                 errors
             }) => {
-                console.log(imageList);
                 return (
                     <div key={key} ref={divRef} className={style["imageupload-wrapper"]}>
                         <div className={style["imageupload-container-wrapper"]}>
@@ -185,7 +181,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                             <div key={index} className={style["image-element"]}>
                                                 <img ref={el => imgRefs.current[index] = el as HTMLImageElement}
                                                     src={image[CUSTOM_DATA_URL]} alt="" />
-                                                <button type="button" onClick={() => { console.log(index); onImageRemove(index) }} className={style["image-close-btn"]}>
+                                                <button type="button" onClick={() => { onImageRemove(index) }} className={style["image-close-btn"]}>
                                                     <i className="fas fa-times" />
                                                 </button>
                                                 <button type="button" onClick={() => onImageUpdate(index)} className={style["image-update-btn"]}>

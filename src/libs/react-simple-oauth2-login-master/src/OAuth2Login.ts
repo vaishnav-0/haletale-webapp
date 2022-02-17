@@ -76,7 +76,6 @@ class OAuth2Login {
       payload.code_challenge_method = "S256";
       payload.code_challenge = this.code_challenge;
     }
-    console.log(payload)
     const search = toQuery(payload);
 
     const popup = PopupWindow.open(
@@ -103,7 +102,6 @@ class OAuth2Login {
   onSuccess(data: any) {
     const { responseType, onSuccess, onFailure, isCrossOrigin, clientId, scope, redirectUri } = this.props;
     if (this.props.responseType === 'code' && this.config) {
-      console.log(this.code_verifier, "***", this.code_challenge);
       const code = data.code;
       fetch(this.config!.tokenUrl, {
         method: "POST",

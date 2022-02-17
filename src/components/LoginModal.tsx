@@ -8,6 +8,8 @@ import fbLogo from '../assets/icons/fb_logo_color.png';
 import { useNavigate } from 'react-router-dom';
 import FormGenerator, { SchemaType } from '../components/Form/FormGenerator';
 import { validateSchema } from 'graphql';
+import { MessageBox } from './MessageBox';
+import { resendConfirmationCode } from '../functions/auth/cognito';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 const schema: SchemaType = {
@@ -40,6 +42,47 @@ type props = {
     signUpUrl: string,
     onClose: () => void;
 }
+function resendCode(email: string, onSuccess?: () => void) {
+    console.log(email);
+    resendConfirmationCode(email,
+        (err: any, data: any) => {
+            if (!err) {
+                toast.success('Confirmation link sent.', {
+                    position: "bottom-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+            else {
+                if (err.name === "LimitExceededException")
+                    toast.error('Limit exceeded. Try again later.', {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+                else
+                    toast.error('There was an error.', {
+                        position: "bottom-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
+            }
+
+            console.log(JSON.stringify(err), data)
+        })
+}
 function onSubmit(d: any, SuccessAction: Function) {
     auth.emailPasswordSignIn({ email: d.email, password: d.password },
         (err: any, data: any) => {
@@ -53,6 +96,22 @@ function onSubmit(d: any, SuccessAction: Function) {
                 pauseOnHover: true,
                 draggable: true,
             });
+            if (err?.code === "UserNotConfirmedException") {
+                toast.warn(({ closeToast }) => <div className={style["confirm-container"]}>
+                    <div>Your account is not confirmed</div>
+                    <button
+                        onClick={() => resendCode(d.email, () => closeToast && closeToast())}
+                        className={style["confirm-btn"]}>(Resend confirmation link)</button>
+                </div >, {
+                    position: "bottom-center",
+                    autoClose: false,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         });
 }
 function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {

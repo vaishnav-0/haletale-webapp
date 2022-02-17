@@ -14,10 +14,11 @@ import {
     NumberInput,
     Range,
     ImageUpload,
+    CheckBoxGroup
 } from './index';
 import { PropsType as RadioButtonPropsType } from "./components/ToggleButtons";
 import { PropsType as TextInputPropsType } from "./components/TextInput";
-import { PropsType as RadioButtonGroupPropsType } from "./components/RadiobuttonGroup";
+import { RadioButtonGroupPropsType, CheckBoxGroupPropsType } from "./components/RadiobuttonGroup";
 import { PropsType as TimeFieldPropsType } from "./components/TimeField";
 import { PropsType as TextAreaPropsType } from "./components/TextArea";
 import { PropsType as SelectPropsType } from "./components/Select";
@@ -30,23 +31,8 @@ import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
-
+import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
-
-
-
-//import { DeepReadonly } from '../../functions/utils'
-type DeepReadonly<T> =
-    T extends (infer R)[] ? DeepReadonlyArray<R> :
-    T extends Function ? T :
-    T extends object ? DeepReadonlyObject<T> :
-    T;
-
-interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> {}
-
-type DeepReadonlyObject<T> = {
-    readonly [P in keyof T]: DeepReadonly<T[P]>;
-};
 
 
 
@@ -69,14 +55,15 @@ const componentMap = {
     number: NumberInput,
     range: Range,
     file: FileInputButton,
-    image: ImageUpload
+    image: ImageUpload,
+    checkboxGroup: CheckBoxGroup,
 } as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
     ItemType<"checkbox", RadioButtonPropsType> | ItemType<"radioGroup", RadioButtonGroupPropsType> |
     ItemType<"time", TimeFieldPropsType> | ItemType<"textarea", TextAreaPropsType> |
     ItemType<"select", SelectPropsType> | ItemType<"pillList", PillListPropsType> |
     ItemType<"pillGroup", PillListPropsType> | ItemType<"number", NumberInputPropsType> |
-    ItemType<"range", RangePropsType> |
+    ItemType<"range", RangePropsType> | ItemType<"checkboxGroup", CheckBoxGroupPropsType> |
     ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType>
 type FormValueType = string | number | { [k: string]: string } | string[] | boolean
 type TItemCommon = {
@@ -123,7 +110,7 @@ function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
             inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
         }
     })
-return inputComponent;
+    return inputComponent;
 }
 function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
     const inputComponent = getInputComponent(item);
@@ -263,7 +250,6 @@ export default function FormGenerator({ schema, onSubmit, onError }: {
     const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
-    console.log(methods.formState.errors);
     return (
         <FormProvider {...methods}>
             <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>

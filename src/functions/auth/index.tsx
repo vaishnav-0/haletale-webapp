@@ -11,6 +11,8 @@ import {
     TSignSuccessCB,
     TSignErrorCB
 } from './types';
+import { toast } from "react-toastify";
+import { setLoader } from "../../components/Loader";
 
 const idToken = new Token("id");
 const refreshToken = new Token("refresh");
@@ -48,7 +50,6 @@ class Auth {
             this._refreshSession().then((res: any) => {
                 const authResult = res.AuthenticationResult;
                 authResult?.IdToken && idToken.set(authResult.IdToken);
-                console.log(res);
                 this.setUserFromIdToken();
                 cb && cb();
             }).catch(err => {
@@ -80,22 +81,12 @@ class Auth {
     }
     signInCallback(err: Error | null, data?: TSignInResponseObject): void {
         if (!err) {
-            console.log(data);
             data?.id_token && idToken.set(data.id_token);
             data?.refresh_token && refreshToken.set(data.refresh_token);
             this.setUserFromIdToken();
         }
         else {
             this.signErrorObserverNotify(err);
-            console.log(err)
-        }
-    }
-    signUpCallback(err: Error | null, data?: any): void {
-        if (!err) {
-            console.log(data);
-        }
-        else {
-            console.log(err)
         }
     }
     onAuthStateChange: TOnAuthStateChange = (successCB, signErrorCB) => {
@@ -116,8 +107,8 @@ class Auth {
         OAuth2(provider, this.signInCallback).login();
     }
 
-    emailPasswordSignUp(data: TSignUpObject) {
-        cognitoSignUp(data, this.signUpCallback);
+    emailPasswordSignUp(data: TSignUpObject, callback: (err: Error | null, data?: any) => void) {
+        cognitoSignUp(data, callback);
     }
     private _refreshSession() {
         return new Promise((res, rej) => {
@@ -138,11 +129,18 @@ class Auth {
     }
     signOut() {
         idToken.remove();
-        this.setUserFromIdToken();
-        revokeToken(refreshToken.get() as string, this.signoutCb);
+        setLoader(true);
+        revokeToken(refreshToken.get()!, (err: any, data: any) => {
+            refreshToken.remove();
+            if (err)
+                console.log(err)
+            else {
+                this.setUserFromIdToken();
+            }
+            setLoader(false);
+        })
     }
 
-    signoutCb() { return }
 }
 
 
