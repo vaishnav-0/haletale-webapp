@@ -18,7 +18,7 @@ import { Roles } from "../functions/auth/types";
 import LandlordDashboard from '../pages/LandlordDashboard'
 import SelectRole from "../pages/SelectRole";
 import { useAuth } from '../functions/auth/useAuth';
-
+import AccountRoutes from "./Account";
 export default function () {
     let auth = useAuth();
     return (
@@ -40,7 +40,7 @@ export default function () {
                             <Route
                                 path="*"
                                 element={
-                                    <main style={{ padding: "1rem", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <main style={{ padding: "1rem", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", fontSize: "2rem" }}>
                                         <p>There's nothing here!</p>
                                     </main>
                                 }
@@ -51,6 +51,7 @@ export default function () {
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                             <Route path="addProperty" element={< AddProperty />} />
+                            <Route path="account/*" element={<AccountRoutes />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                             <Route path="sendRequest" element={< SendRequest />} />
