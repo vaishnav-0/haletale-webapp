@@ -1,6 +1,9 @@
 @import '../breakpoints.scss';
+@import '../colors.scss';
+@import 'src/styles/mixins.scss';
 
 .searchbox-container {
+    position: relative;
     display: flex;
     height: 50px;
     background-color: #f0f0f0;
@@ -16,7 +19,8 @@
         width: 100%;
         height: 100%;
         background-color: rgba($color: #000000, $alpha: 0);
-        &::placeholder{
+
+        &::placeholder {
             font-weight: 800;
         }
     }
@@ -27,6 +31,7 @@
     border-radius: inherit;
     transition: background-color 0.3s ease;
     height: 100%;
+
     &:hover {
         background-color: #17cfaa59;
     }
@@ -34,11 +39,41 @@
     button {
         background-color: rgba($color: #000000, $alpha: 0);
         border: 0;
-        
+
     }
 
     img,
     button {
         height: 100%;
+    }
+}
+
+.suggestions-container {
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    border-radius: 0.8em;
+    display: flex;
+    flex-direction: column;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    @include def-shadow;
+
+    &>button {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0.6em 1em;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+        text-align: left;
+        font-size: 1.2em;
+        font-weight: 900;
+        color: $greyText;
+        &:hover{
+            background-color: $greyBackground;
+        }
     }
 }

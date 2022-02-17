@@ -5,7 +5,7 @@ import { Openable } from "../components/Openable";
 import FilterModel from "../components/FilterModal";
 import { MarkerType } from "../components/Map";
 import MapViewTile from "../components/MapViewTile";
-const coordList: [number, number][] = [[49.964714, -97.189074], [49.961505, -97.196203], [49.964422, -97.152835], [49.943581, -97.167384]];
+const coordList: [number, number][] = [[49.964714, -97.189074], [49.961505, -97.196203], [49.964422, -97.152835], [49.943581, -97.167384],[49.943481, -97.157384],[49.943181, -97.152384]];
 export default function MapView(): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
     const [map, setMap] = React.useState<any>(null!);

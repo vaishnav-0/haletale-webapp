@@ -26,11 +26,9 @@ export default function Footer(): JSX.Element {
                     <ul><a href="#">Your Bookings</a></ul>
                     <ul><a href="#">Wishlist</a></ul>
                     <ul><a href="#">Settings</a></ul>
-                    <ul><a href="#">Help</a></ul>
                 </li>
                 <li>
-                    <ul>Tanent Dashboard</ul>
-
+                    <ul>Tanent services</ul>
                     <ul><a href="#">Verification</a></ul>
                     <ul><a href="#">Update Booking</a></ul>
                     <ul><a href="#">Cancel Booking</a></ul>
@@ -38,7 +36,7 @@ export default function Footer(): JSX.Element {
                     <ul><a href="#">Check in Details</a></ul>
                 </li>
                 <li>
-                    <ul>Landlord Dashboard</ul>
+                    <ul>Landlord services</ul>
 
                     <ul><a href="#">My propertyperties</a></ul>
                     <ul><a href="#">Booking Requests</a></ul>
