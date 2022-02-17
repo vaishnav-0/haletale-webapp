@@ -1,0 +1,34 @@
+@import "src/breakpoints.scss";
+@import "src/colors.scss";
+@import "src/styles/mixins.scss";
+
+.sidenav-container {
+    display: flex;
+}
+
+.nav-container {
+    background-color: $greyBackground;
+}
+
+.nav-list {
+    list-style-type: none;
+    font-weight: 900;
+
+    &>li {
+        padding: 1em;
+    }
+
+    & a {
+        text-decoration: none;
+        color: $grey;
+        border: none;
+    }
+
+    & .active {
+        color: $primary;
+    }
+}
+
+.content {
+    flex: 1;
+}
