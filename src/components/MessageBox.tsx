@@ -4,9 +4,10 @@ import style from './MessageBox.module.scss';
 export interface PropsType {
     children: React.ReactNode,
     labelComponent: JSX.Element,
-    style?: string
+    style?: string,
+    onClose?: () => void
 }
-export function MessageBox({ children, labelComponent, style: boxStyle = "" }: PropsType) {
+export function MessageBox({ children, labelComponent, style: boxStyle = "", onClose = () => { } }: PropsType) {
     const [open, setOpen] = React.useState<boolean>(true);
     return <div className={style["container"]}>
         <button type="button" onClick={() => setOpen(p => !p)} className={style["label-btn"]}>
@@ -14,7 +15,7 @@ export function MessageBox({ children, labelComponent, style: boxStyle = "" }: P
         </button>
         {open &&
             <div className={style["content"] + " " + boxStyle}>
-                <button type="button" onClick={() => setOpen(false)} className={style["close-btn"]}>
+                <button type="button" onClick={() => { setOpen(false); onClose() }} className={style["close-btn"]}>
                     <i className="fas fa-times" />
                 </button>
                 {children}
