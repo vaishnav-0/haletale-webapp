@@ -1,31 +1,51 @@
 import React from 'react';
-import { useNavigate } from "react-router-dom";
 import style from "./Searchbar.module.scss";
 import searchIcon from "../assets/icons/search.png";
-import debounce from '../functions/debounce';
-const debouncedCall = debounce((v: any) => console.log(v.target.value), 1000);
-export default function (): JSX.Element {
-    let navigate = useNavigate();
+import { clickOutsideEvent } from '../functions/domEvents';
+type PropsType = {
+    onChange?: (v: string) => void,
+    onSubmit?: (v: string, i?: number) => void,
+    placeholder?: string,
+    submitOnSuggestionClick?: boolean,
+    suggestionItems?: string[];
+}
+export default function ({ onChange = () => { }, onSubmit = () => { },
+    submitOnSuggestionClick = false, suggestionItems, placeholder = "" }: PropsType): JSX.Element {
+    const [suggestionsOpen, setSuggestionsOpen] = React.useState<boolean>(false);
+    const componentRef = React.useRef(null!)
+    const inpRef = React.useRef<HTMLInputElement>(null);
+    React.useEffect(() => {
+        return clickOutsideEvent(componentRef, () => setSuggestionsOpen(false))
+    }, [])
+    const suggestionOnClick = (v: string, i: number) => {
+        if (inpRef.current)
+            inpRef.current.value = v;
+        setSuggestionsOpen(false);
+        submitOnSuggestionClick && onSubmit(inpRef.current?.value ?? "", i);
+    }
     return (
-        <div className={style["searchbox-container"]}>
+        <div ref={componentRef}
+            className={style["searchbox-container"]}>
             <div className={style["searchbox-input-field"]}>
-                <input placeholder="Search Property, Neighbourhood or Address" type="text"
-                    onChange={debouncedCall}
+                <input
+                    onFocus={() => setSuggestionsOpen(true)}
+                    ref={inpRef}
+                    placeholder={placeholder} type="text"
+                    onChange={(e) => onChange(e.target.value)}
                 />
             </div>
             <div className={style["searchbox-btn"]}>
-                <button onClick={() => {
-                    navigate("/properties");
-                }}>
+                <button onClick={() => onSubmit(inpRef.current?.value ?? "")}>
                     <img src={searchIcon} />
                 </button>
             </div>
             {
-                false &&
+                suggestionsOpen && suggestionItems &&
                 <div className={style["suggestions-container"]}>
-                    <button>Place 1</button>
-                    <button>Place 2</button>
-                    <button>Place 3</button>
+                    {
+                        suggestionItems.map((e, i) => <button onClick={() => suggestionOnClick(e, i)}>{e}</button>
+                        )
+                    }
                 </div>
             }
         </div>
