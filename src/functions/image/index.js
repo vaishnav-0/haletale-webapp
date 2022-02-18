@@ -1,5 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosPromise } from 'axios'
 import { TypeKind } from 'graphql';
+import PropertySearchListing from '../../pages/PropertySearchListing';
 import Token from '../auth/token';
 
 
@@ -72,3 +73,30 @@ export function x() {
 }
 
 //const s3PutUrl = 
+//{ file: File, url: string, fields: { ["string"]: any } }
+
+const uploadToBucket = async (file, url, fields)=> {
+
+    const form = new FormData();
+    Object.entries(fields).forEach(([field, value]) => {
+        form.append(field, value);
+    });
+    form.append("file", file)
+    try {
+        let res = await axios.post(url, {
+            method: "post",
+            headers: {
+                "Authorization": `Bearer ${new Token("id").get()}`,
+                "Content-Type": "multipart/form-data"
+            },
+            data: form
+        })
+
+        return res;
+    }
+    catch (error) {
+        throw new Error(error)
+    }
+}
+
+

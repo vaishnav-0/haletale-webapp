@@ -7,6 +7,7 @@ import { SchemaType } from '../components/Form/FormGenerator';
 import { PropertyQuery } from '../queries'
 import { useQuery } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
+import Loder, { setLoader } from '../components/Loader';
 
 
 
@@ -194,14 +195,24 @@ function AddProperty(): JSX.Element {
         { loading: loading2, data: property_subtypes }
     ] = useQueries()
 
+
     if (property_types && property_subtypes)
         console.log(property_subtypes, property_subtypes)
 
-    return (
-        <Layout>
-            <FormGenerator schema={schema} onError={(e) => console.log(e)}
-                onSubmit={(d) => console.log(d)} />
-            {/* 
+    if (loading1 && loading2) {
+        setLoader(true);
+        return <></>
+    }
+
+
+
+    else {
+        setLoader(false)
+        return (
+            <Layout>
+                <FormGenerator schema={schema} onError={(e) => console.log(e)}
+                    onSubmit={(d) => console.log(d)} />
+                {/* 
                     <PillCollection
                         items={{
                             single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", value: "abc", limit: 5 }],
@@ -231,8 +242,9 @@ function AddProperty(): JSX.Element {
                         }
                     </PillCollection>
  */}
-        </Layout >
-    );
+            </Layout >
+        );
+    }
 }
 
 export default AddProperty;
