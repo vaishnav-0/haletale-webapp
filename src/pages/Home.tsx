@@ -12,9 +12,13 @@ import { x } from '../functions/image/index'
 function HomePage(): JSX.Element {
     const [searchSuggestion, setSearchSuggestion] = React.useState<string[]>([])
     const suggestPlaces = (search: string) => {
-        suggest(search).then(data => {
-            setSearchSuggestion(data);
-        }).catch(e => console.log(e))
+        if (search !== "")
+            suggest(search).then(data => {
+                setSearchSuggestion(data);
+            }).catch(e => console.log(e))
+        else
+            setSearchSuggestion([]);
+
     }
     const debouncedSuggest = React.useCallback(debounce(suggestPlaces, 800), []);
     return (
