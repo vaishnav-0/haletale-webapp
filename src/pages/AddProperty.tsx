@@ -2,16 +2,16 @@ import React from 'react';
 import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
-
+import { FormDataShape } from '../components/Form/FormGenerator';
 
 import { PropertyQuery } from '../queries'
 import { useQuery } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
 import Loder, { setLoader } from '../components/Loader';
+import { cropToAspectRatio } from '../components/Form/components/Images';
 
 
-
-const schema: SchemaType = {
+const schema = {
     heading: "Add Property",
     items: [
         {
@@ -177,11 +177,18 @@ const schema: SchemaType = {
 
     ],
     submitButton: "Next",
-}
+} as const;
 const useQueries = () => {
     let property_types = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE);
     let property_subtypes = useQuery(propertyQuery.GET_ALL_PROPERTY_SUBTYPE);
     return [property_types, property_subtypes];
+}
+type FormData = FormDataShape<typeof schema>;
+const onSubmit = (d: FormData) => {
+    console.log(d);
+    const imageList = d.images;
+    console.log(imageList)
+    cropToAspectRatio(imageList, 16 / 9).then(d => { console.log(imageList) })
 }
 function AddProperty(): JSX.Element {
 
@@ -210,8 +217,8 @@ function AddProperty(): JSX.Element {
         setLoader(false)
         return (
             <Layout>
-                <FormGenerator schema={schema} onError={(e) => console.log(e)}
-                    onSubmit={(d) => console.log(d)} />
+                <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
+                    onSubmit={onSubmit} />
                 {/* 
                     <PillCollection
                         items={{
