@@ -6,6 +6,7 @@ import { getImage } from '../../../libs/react-images-uploading/src/utils';
 import { Drag } from '../../../functions/DragEvent';
 import { MessageBox } from '../../MessageBox';
 import Cropper from "react-cropper";
+import cropperjs from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import { usePillCollection } from './PillList';
 import { toast } from 'react-toastify';
@@ -27,19 +28,66 @@ const tagItems = {
     single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", limit: 3, value: "a" }],
     group: [{ name: "roomtype", items: ["bedroom", "bathroom"], limit: 5 }]
 }
+const CUSTOM_DATA_URL = "dataUrl";
 
+export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
+    return new Promise((res, rej) => {
+        const promiseList: Promise<any>[] = []
+        imgList.forEach(async (image, i) => {
+            promiseList.push(new Promise((resolve, reject) => {
+                getImage(image.file as File).then(img => {
+                    const checkRes = isResolutionValid(
+                        img,
+                        "ratio",
+                        aspectRatio * 10,
+                        10
+                    );
+                    if (!checkRes) {
+                        const divElm = document.createElement("div");
+                        divElm.appendChild(img);
+                        console.log("asdsdaaaaa");
+                        const cropper = new cropperjs(img, {
+                            aspectRatio: aspectRatio,
+                            ready() {
+                                console.log("asdsd");
+                                (this as any).cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
+                                    if (blob) {
+                                        const reader = new FileReader();
+                                        reader.readAsDataURL(blob);
+                                        reader.onerror = () => {
+                                            console.log("filereader error");
+                                            reject("filereader error");
+                                        }
+                                        reader.onload = () => {
+                                            console.log(reader.result);
+                                            imgList[i][CUSTOM_DATA_URL] = reader.result as string;
+                                            imgList[i].file = new File([blob], (imgList[i].file as File).name);
+                                            resolve(true)
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                    else
+                        resolve(true)
+                });
+            }))
+        });
+        Promise.all(promiseList).then(d => res(true))
+    })
+}
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
     maxFileSize, resolutionType,
     resolutionHeight, resolutionWidth, rejectOnResolutionError, onChange = () => { }, key }: PropsType): JSX.Element {
-    const CUSTOM_DATA_URL = "dataUrl";
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
-    const resErrors = React.useRef<Set<number>>(new Set());
+    const [resErrors, setResErrors] = React.useState<Set<number>>(new Set());
     const [editor, setEditor] = React.useState<number | false>(false);
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
-    const validating = React.useRef(false);
     const Tags = usePillCollection({
         items: tagItems,
         pillProps: {
@@ -69,7 +117,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
         if (!rejectOnResolutionError) {
             if (addUpdateIndex) {
-                validating.current = true;
                 addUpdateIndex.forEach(async (i, ind) => {
                     if (resolutionType) {
                         const image = await getImage(imageList[i].file as File);
@@ -79,19 +126,22 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                             resolutionWidth,
                             resolutionHeight
                         );
-                        if (!checkRes)
-                            resErrors.current.add(i);
-                        else
-                            if (resErrors.current.has(i))
-                                resErrors.current.delete(i);
-
+                        if (!checkRes) {
+                            setResErrors(prev => (new Set(prev)).add(i));
+                        }
+                        else {
+                            if (resErrors.has(i))
+                                setResErrors(prev => {
+                                    const s = new Set(prev);
+                                    s.delete(i);
+                                    return s;
+                                });
+                        }
                     }
-                    //if (ind === addUpdateIndex.length - 1)
-                    //  setImages(imageList);//filter((e, i) => !resErrors.current.has(i)));
+
                 });
             }
         }
-        //else
         setImages(imageList);
     };
     const setEditedImage = (i: number) => {
@@ -177,7 +227,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                 <div className={style["imagelist-container"]}>
                                     {imageList.map((image, index) => (
                                         <div key={index}
-                                            className={`${style["image-item"]} ${(!rejectOnResolutionError && resErrors.current.has(index)) ? style["image-item-error"] : ""}`}>
+                                            className={`${style["image-item"]} ${(!rejectOnResolutionError && resErrors.has(index)) ? style["image-item-error"] : ""}`}>
                                             <div key={index} className={style["image-element"]}>
                                                 <img ref={el => imgRefs.current[index] = el as HTMLImageElement}
                                                     src={image[CUSTOM_DATA_URL]} alt="" />
