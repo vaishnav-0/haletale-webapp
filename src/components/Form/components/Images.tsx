@@ -57,8 +57,9 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                                             reject("filereader error");
                                         }
                                         reader.onload = () => {
+                                            const oldFile = (imgList[i].file as File);
                                             imgList[i][CUSTOM_DATA_URL] = reader.result as string;
-                                            imgList[i].file = new File([blob], (imgList[i].file as File).name);
+                                            imgList[i].file = new File([blob], oldFile.name, { type: oldFile.type, lastModified: oldFile.lastModified });
                                             resolve(true)
                                         }
                                     }
@@ -109,6 +110,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         }
     }, []);
     React.useEffect(() => {
+        console.log(images);
         onChange(images);
     }, [images]);
     const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
