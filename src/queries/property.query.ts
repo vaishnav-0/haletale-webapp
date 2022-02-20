@@ -15,14 +15,11 @@ export default {
         }
       }`,
 
-  GET_ALL_PROPERTY_TYPE: gql`query GET_PROPERTY_TYPE_LIST {
+  GET_ALL_PROPERTY_TYPE_SUBTYPE: gql`query GET_PROPERTY_TYPE_LIST {
         property_type{
           name
          }
-      }`,
-
-  GET_ALL_PROPERTY_SUBTYPE: gql`query GET_PROPERTY_SUBTYPE_LIST {
-        property_subtype{
+         property_subtype{
           name
         }
       }`,
