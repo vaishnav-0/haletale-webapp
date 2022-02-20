@@ -2,25 +2,19 @@ import React from 'react';
 import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
-<<<<<<< HEAD
 
 
 import propertyMutation from '../queries/property.mutation'
-import { useQuery, useMutation } from '@apollo/client';
-=======
 import { FormDataShape } from '../components/Form/FormGenerator';
 import Searchbar from '../components/Searchbar';
 import { PropertyQuery } from '../queries'
-import { useQuery } from '@apollo/client';
->>>>>>> db97757445346f11f8c22bb1935867197adbbc3d
+import { useQuery, useMutation } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
-import Loader, { setLoader } from '../components/Loader';
+import Loder, { setLoader } from '../components/Loader';
 import { cropToAspectRatio } from '../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
-
-import { handleImage } from '../functions/api/imageUpload';
 
 const schema = {
     heading: "Add Property",
@@ -90,22 +84,35 @@ const schema = {
         },
     ],
     submitButton: "Next",
-}
+} as const;
 
 
 
 type FormData = FormDataShape<typeof schema>;
-const onSubmit = (d: FormData) => {
-}
+
 function AddProperty(): JSX.Element {
     const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
+    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
+    const onSubmit = (d: FormData) => {
+        addProperty({
+            variables: {
+                coordinates: {
+                    "type": "Point",
+                    "coordinates": d.property_coords
+                },
+                name: d.property_name,
+                description: d.notes,
+                type: d.type,
+                sub_type: d.subtype
+            }
+        })
+    }
 
-    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY)
-
+    // add property res
     if (error) console.log(error)
     if (data) console.log(data)
     if (loading) console.log(loading)
@@ -146,23 +153,6 @@ function AddProperty(): JSX.Element {
             <Layout>
                 <FormGenerator schema={schema} onError={(e) => console.log(e)}
                     onSubmit={(d) => console.log(d)} />
-
-                <button onClick={() => addProperty({
-                    variables: {
-
-                        coordinates: {
-                            "type": "Point",
-                            "coordinates": [
-                                75.87158203125,
-                                11.210733765689508
-                            ]
-                        },
-                        name: "test",
-                        description: "test",
-                        type: "Condos",
-                        sub_type: "Mainlevel"
-                    }
-                })}></button>
                 {
                     schema_ &&
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
@@ -174,7 +164,3 @@ function AddProperty(): JSX.Element {
 }
 
 export default AddProperty;
-
-
-
-
