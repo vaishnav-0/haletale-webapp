@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, MapContainerProps } from 'react-leaflet'
 import { Map as LeafletMap } from 'leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -13,17 +13,16 @@ const iconPin = new L.Icon({
     iconSize: new L.Point(60, 75),
     className: style['location-pin']
 });
-type propType = {
-    className?: string;
-    whenCreated?: any
+interface propType extends MapContainerProps {
     markers?: MarkerType
 }
-export default function ({ className, whenCreated, markers = [] }: propType): JSX.Element {
+export default function ({ whenCreated, markers = [], ...props }: propType): JSX.Element {
     const [map, setMap] = React.useState<LeafletMap>(null!);
     React.useEffect(() => {
-        whenCreated(map);
+        if (whenCreated)
+            whenCreated(map);
     }, [map])
-    return <MapContainer whenCreated={(map: LeafletMap) => setMap(map)} className={className} scrollWheelZoom={true}>
+    return <MapContainer whenCreated={(map: LeafletMap) => setMap(map)} {...props}>
         <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -14,6 +14,7 @@ import { Range as Range_, PropType as RangePropsType } from "./components/Range"
 import { FileInputButton as FileInputButton_, FileInputButtonPropsType } from "./components/FileInputButton";
 import { ImageUpload as ImageUpload_, PropsType as ImageUploadPropsType } from "./components/Images";
 import { NativeWrapper, CustomWrapper } from "./formWrap";
+import CoordinateInput_, { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 
 function wrappedGen<T extends { name: string }>(c: NativeWrapperComponentType<T> | CustomWrapperComponentType<T>, custom?: boolean) {
     return function (p: T) {
@@ -38,5 +39,7 @@ export const PillGroup = wrappedGen<PillListPropsType & { name: string }>(PillGr
 export const NumberInput = wrappedGen<NumberInputPropsType & { name: string }>(NumberInput_, true);
 export const Range = wrappedGen<RangePropsType & { name: string }>(Range_, true);
 export const ImageUpload = wrappedGen<ImageUploadPropsType & { name: string }>(ImageUpload_, true);
+export const CoordinateInput = wrappedGen<CoordinateInputPropsType & { name: string }>(CoordinateInput_, true);
+
 
 

@@ -38,10 +38,13 @@ const Openable = function ({ children, className, style, open, clickOutsideClose
             return clickOutsideEvent(ref, () => open[1](false), clickOutsideCloseException);
     }, []);
     React.useEffect(() => {
+        const ref_: { current: any } = { current: null };
+        ref_.current = ref.current;
         if (firstRender.current && !open[0]) {
-            handleOpen(open[0], ref, animation, false);
+            console.log(ref)
+            handleOpen(open[0], ref_, animation, false);
         } else
-            handleOpen(open[0], ref, animation);
+            handleOpen(open[0], ref_, animation);
         firstRender.current = false;
     }, [open]);
     return (
