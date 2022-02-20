@@ -13,6 +13,6 @@ export function usePlaceSuggestions() {
             setSearchSuggestion([]);
 
     }
-    const debouncedSuggest = React.useCallback(debounce(suggestPlaces, 800), []);
+    const debouncedSuggest = React.useCallback(debounce(suggestPlaces, 600), []);
     return { suggestions: searchSuggestion, suggest: debouncedSuggest }
 }
