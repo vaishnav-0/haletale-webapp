@@ -35,10 +35,14 @@ function tk() {
 
 
 export const s3PostUrl = (file) => {
+    instance = axios.create({
+        baseURL: 'http://3.97.148.224:11240/'
+    });
 
+    instance.defaults.headers.common['Authorization'] = new Token("id").get();
     return instance.post("/s3/preSignedUrl", {
         body: {
-            key: file.key,
+            name: file.name,
             type: file.type
         }
 
@@ -75,7 +79,7 @@ export function x() {
 //const s3PutUrl = 
 //{ file: File, url: string, fields: { ["string"]: any } }
 
-const uploadToBucket = async (file, url, fields)=> {
+const uploadToBucket = async (file, url, fields) => {
 
     const form = new FormData();
     Object.entries(fields).forEach(([field, value]) => {

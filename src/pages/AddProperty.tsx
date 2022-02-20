@@ -11,6 +11,8 @@ import Loder, { setLoader } from '../components/Loader';
 import { cropToAspectRatio } from '../components/Form/components/Images';
 
 
+import { handleImage } from '../functions/api/imageUpload';
+
 const schema = {
     heading: "Add Property",
     items: [
@@ -185,10 +187,12 @@ const useQueries = () => {
 }
 type FormData = FormDataShape<typeof schema>;
 const onSubmit = (d: FormData) => {
-    console.log(d);
+    // console.log(d);
     const imageList = d.images;
-    console.log(imageList)
+    // console.log(imageList)
     cropToAspectRatio(imageList, 16 / 9).then(d => { console.log(imageList) })
+
+    handleImage(d.images);
 }
 function AddProperty(): JSX.Element {
 
