@@ -1,8 +1,6 @@
 import React from "react";
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from "../functions/auth/useAuth";
-import { Roles } from "../functions/auth/types";
-import { setLoader } from "../components/Loader";
 
 /**
  * @description 

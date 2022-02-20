@@ -2,8 +2,6 @@ import React from "react";
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from "../functions/auth/useAuth";
 import { Roles } from "../functions/auth/types";
-import { setLoader } from "../components/Loader";
-
 /**
  * @description Redirect user to / if the user is not logged in and opens the login modal
  * @param children 
