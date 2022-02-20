@@ -2,15 +2,15 @@ import React from 'react';
 import authContext from './authContext';
 import auth from './index';
 import { toast } from 'react-toastify';
-import { setLoader } from '../../components/Loader';
+import { setGlobalLoader } from '../../components/Loader';
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   let [user, setUser] = React.useState<any>(null);
   React.useLayoutEffect(() => {
     if (user === null)
-      setLoader(true, { backgroundColor: "white" })
+      setGlobalLoader(true, { backgroundColor: "white" })
     else
-      setLoader(false)
+      setGlobalLoader(false)
   }, [user])
   React.useEffect(() => {
     return auth.onAuthStateChange(

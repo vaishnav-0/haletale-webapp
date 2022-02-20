@@ -12,7 +12,7 @@ import {
     TSignErrorCB
 } from './types';
 import { toast } from "react-toastify";
-import { setLoader } from "../../components/Loader";
+import { setGlobalLoader } from "../../components/Loader";
 
 const idToken = new Token("id");
 const refreshToken = new Token("refresh");
@@ -129,7 +129,7 @@ class Auth {
     }
     signOut() {
         idToken.remove();
-        setLoader(true);
+        setGlobalLoader(true);
         revokeToken(refreshToken.get()!, (err: any, data: any) => {
             refreshToken.remove();
             if (err)
@@ -137,7 +137,7 @@ class Auth {
             else {
                 this.setUserFromIdToken();
             }
-            setLoader(false);
+            setGlobalLoader(false);
         })
     }
 

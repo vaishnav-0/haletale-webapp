@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import auth from '../functions/auth';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { setLoader } from '../components/Loader';
+import { setGlobalLoader } from '../components/Loader';
 //Example
 // const testSchema: SchemaType = {
 //     heading: "Sign Up",
@@ -257,7 +257,7 @@ function Signup(): JSX.Element {
         if (!err) {
             console.log(data);
             if (data.CodeDeliveryDetails) {
-                setLoader(true, { spinner: false });
+                setGlobalLoader(true, { spinner: false });
                 toast.success('A confirmation link has been sent to your email.', {
                     position: "bottom-center",
                     autoClose: 5000,
@@ -266,7 +266,7 @@ function Signup(): JSX.Element {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-                    onClose: () => { navigate("/"); setLoader(false) }
+                    onClose: () => { navigate("/"); setGlobalLoader(false) }
                 });
             }
         }
