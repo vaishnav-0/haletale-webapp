@@ -45,11 +45,9 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                     if (!checkRes) {
                         const divElm = document.createElement("div");
                         divElm.appendChild(img);
-                        console.log("asdsdaaaaa");
                         const cropper = new cropperjs(img, {
                             aspectRatio: aspectRatio,
                             ready() {
-                                console.log("asdsd");
                                 (this as any).cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
                                     if (blob) {
                                         const reader = new FileReader();
@@ -59,9 +57,9 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                                             reject("filereader error");
                                         }
                                         reader.onload = () => {
-                                            console.log(reader.result);
+                                            const oldFile = (imgList[i].file as File);
                                             imgList[i][CUSTOM_DATA_URL] = reader.result as string;
-                                            imgList[i].file = new File([blob], (imgList[i].file as File).name);
+                                            imgList[i].file = new File([blob], oldFile.name, { type: oldFile.type, lastModified: oldFile.lastModified });
                                             resolve(true)
                                         }
                                     }
@@ -112,6 +110,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         }
     }, []);
     React.useEffect(() => {
+        console.log(images);
         onChange(images);
     }, [images]);
     const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {
