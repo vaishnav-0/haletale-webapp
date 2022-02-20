@@ -14,8 +14,10 @@ import {
     NumberInput,
     Range,
     ImageUpload,
-    CheckBoxGroup
+    CheckBoxGroup,
+    CoordinateInput
 } from './index';
+import { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 import { PropsType as RadioButtonPropsType } from "./components/ToggleButtons";
 import { PropsType as TextInputPropsType } from "./components/TextInput";
 import { RadioButtonGroupPropsType, CheckBoxGroupPropsType } from "./components/RadiobuttonGroup";
@@ -28,7 +30,7 @@ import { PropType as RangePropsType } from "./components/Range";
 import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { ButtonSolid } from '../Button';
-import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError } from 'react-hook-form';
+import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError, UseFormReturn } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
 import { DeepReadonly } from '../../types/utilTypes'
@@ -57,6 +59,7 @@ const componentMap = {
     file: FileInputButton,
     image: ImageUpload,
     checkboxGroup: CheckBoxGroup,
+    coordinateInput: CoordinateInput
 } as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
     ItemType<"checkbox", RadioButtonPropsType> | ItemType<"radioGroup", RadioButtonGroupPropsType> |
@@ -64,7 +67,8 @@ type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioB
     ItemType<"select", SelectPropsType> | ItemType<"pillList", PillListPropsType> |
     ItemType<"pillGroup", PillListPropsType> | ItemType<"number", NumberInputPropsType> |
     ItemType<"range", RangePropsType> | ItemType<"checkboxGroup", CheckBoxGroupPropsType> |
-    ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType>
+    ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType> |
+    ItemType<"coordinateInput", CoordinateInputPropsType> | { type: "custom", render: (f: UseFormReturn) => JSX.Element }
 type FormValueType = string | number | { [k: string]: string } | string[] | boolean
 type TItemCommon = {
     title?: string,
@@ -85,7 +89,7 @@ type TSingleItem = {
     validationSchema?: yup.AnySchema,
 } & ItemTypes
 type TArrayItem = {
-    items: (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
+    items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
     defaultValue?: FormValueType[],
     isArray: {   //dynamic field
         controlHeading: string //heading where + and - buttons are
@@ -102,134 +106,152 @@ export interface SchemaType {
     submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
-function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
-    let inputComponent!: JSX.Element;
-    Object.entries(componentMap).forEach(([type, component]) => {
-        if (item.type === type) {
-            let Component = component as any;
-            inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
-        }
-    })
-    return inputComponent;
-}
-function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
-    const inputComponent = getInputComponent(item);
-    return <div className={style["form-item"]}>
-        <div className={style["form-item-heading"]}>
-            {item.title}
-        </div>
-        {
-            item.wrapperRender ?
-                item.wrapperRender(inputComponent)
-                :
-                <div className={item.wrapperClassname ?? ""} style={item.wrapperStyle ?? {}}>
-                    {
-                        inputComponent
-                    }
-                </div>
-        }
-        {
-            error && <div className={style["field-error"]}>{error}</div>
-        }
-    </div>;
-}
-function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[]) {
-    const setCountRef = React.useRef<(v: number) => void>(() => { });
-    const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
-    return <>
-        <FieldArrayWrapper name={item.name}>
-            {({ fields, append, remove }) => <>
-                <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
-                    <div className={style["form-item-heading"]}>
-                        {item.isArray.controlHeading}
-                    </div>
-                    <NumberInput
-                        name={item.name + "_count"}
-                        onIncrement={(v) => {
-                            append(defValues);
-                        }}
-                        disabled={[0]}
-                        setValueRef={setCountRef}
-                    />
-                </div>
-                <div className={`${style["form-item"]}`}>
-                    {
-                        fields.map((e, i) => {
-                            return <div key={e.id} className={style["form-item"]}>
-                                <div className={style["horizontal-list"]}>
-                                    <div>
-                                        {typeof item.isArray.title === "string" ?
-                                            item.isArray.title + " " + (i + 1) :
-                                            item.isArray.title(i + 1)
-                                        }
-                                    </div>
-                                    <button type="button" className={style["remove-btn"]}
-                                        onClick={() => {
-                                            setCountRef.current(fields.length - 1);
-                                            remove(i);
-                                        }}
-                                    >
-                                        <i className="fas fa-minus" /></button>
-                                </div>
-                                <div className={style["horizontal-list"]} style={{ alignItems: "start" }}>
-                                    {
-                                        item.items.map((_item, k) => <div key={k}>{
-                                            SingleComponent(
-                                                {
-                                                    ..._item, name: `${item.name}[${i}].${_item.name}`,
-                                                    wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
-                                                },
-                                                errors?.[i]?.[_item.name]?.message)
-                                        }</div>)
-                                    }
-                                </div>
-                            </div>
-                        })
-                    }
-                </div>
-            </>
 
+function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: UseFormReturn) {
+    function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
+        let inputComponent!: JSX.Element;
+        if (item.type === "custom") {
+            return item.render(useFormRet);
+        }
+        Object.entries(componentMap).forEach(([type, component]) => {
+            if (item.type === type) {
+                let Component = component as any;
+                inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
             }
-        </FieldArrayWrapper>
-    </>
-}
-function FormComponent(item: TItem, errors?: FieldErrors) {
-    if (item.isArray)
-        return ArrayComponent(item, errors?.[item.name]);
-    else
-        return SingleComponent(item, errors?.[item.name]?.message);
-}
-
-function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element) {
-    const [open, setOpen] = React.useState<boolean>(optionalProps.default);
-    return (
-        <>
-            <div className={style["form-item"]}>
-                <div className={style["form-item-heading"]}>
-                    {optionalProps.title}
-                </div>
-                <div className={style["horizontal-list"]}>
-                    <RadioButtonGroup
-                        name={name + "Provided"}
-                        values={optionalProps.value}
-                        defaultValue={optionalProps.value[+!optionalProps.default]}
-                        onChange={(e) => setOpen(e.target.value === optionalProps.value[0])}
-                    />
-                </div>
+        })
+        return inputComponent;
+    }
+    function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
+        const inputComponent = getInputComponent(item);
+        return <div key={keyGen.next().value} className={style["form-item"]}>
+            <div className={style["form-item-heading"]}>
+                {item.title}
             </div>
             {
-                open && <>
-                    {optionalProps.sectionHeading && <div className={style["form-section-heading"]}>
-                        {optionalProps.sectionHeading}
-                    </div>}
-                    {
-                        itemComponent
-                    }
-                </>
+                item.wrapperRender ?
+                    item.wrapperRender(inputComponent)
+                    :
+                    <div className={item.wrapperClassname ?? ""} style={item.wrapperStyle ?? {}}>
+                        {
+                            inputComponent
+                        }
+                    </div>
             }
-        </>
-    )
+            {
+                error && <div className={style["field-error"]}>{error}</div>
+            }
+        </div>;
+    }
+    function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[]) {
+        const setCountRef = React.useRef<(v: number) => void>(() => { });
+        const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
+        return <div key={keyGen.next().value}>
+            <FieldArrayWrapper name={item.name} >
+                {({ fields, append, remove }) => <>
+                    <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
+                        <div className={style["form-item-heading"]}>
+                            {item.isArray.controlHeading}
+                        </div>
+                        <NumberInput
+                            name={item.name + "_count"}
+                            onIncrement={(v) => {
+                                append(defValues);
+                            }}
+                            disabled={[0]}
+                            setValueRef={setCountRef}
+                        />
+                    </div>
+                    <div className={`${style["form-item"]}`}>
+                        {
+                            fields.map((e, i) => {
+                                return <div key={e.id} className={style["form-item"]}>
+                                    <div className={style["horizontal-list"]}>
+                                        <div>
+                                            {typeof item.isArray.title === "string" ?
+                                                item.isArray.title + " " + (i + 1) :
+                                                item.isArray.title(i + 1)
+                                            }
+                                        </div>
+                                        <button type="button" className={style["remove-btn"]}
+                                            onClick={() => {
+                                                setCountRef.current(fields.length - 1);
+                                                remove(i);
+                                            }}
+                                        >
+                                            <i className="fas fa-minus" /></button>
+                                    </div>
+                                    <div className={style["horizontal-list"]} style={{ alignItems: "start" }}>
+                                        {
+                                            item.items.map((_item, k) => <div key={k}>{
+                                                SingleComponent(
+                                                    {
+                                                        ..._item, name: `${item.name}[${i}].${_item.name}`,
+                                                        wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
+                                                    },
+                                                    errors?.[i]?.[_item.name]?.message)
+                                            }</div>)
+                                        }
+                                    </div>
+                                </div>
+                            })
+                        }
+                    </div>
+                </>
+
+                }
+            </FieldArrayWrapper>
+        </div>
+    }
+    function FormComponent(item: TItem, errors?: FieldErrors) {
+        if (item.isArray)
+            return ArrayComponent(item, errors?.[item.name]);
+        else
+            return SingleComponent(item, errors?.[item.name]?.message);
+    }
+
+    function ToggleWrapper(name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element) {
+        const [open, setOpen] = React.useState<boolean>(optionalProps.default);
+        return (
+            <div key={keyGen.next().value}>
+                <div className={style["form-item"]} >
+                    <div className={style["form-item-heading"]}>
+                        {optionalProps.title}
+                    </div>
+                    <div className={style["horizontal-list"]}>
+                        <RadioButtonGroup
+                            name={name + "Provided"}
+                            values={optionalProps.value}
+                            defaultValue={optionalProps.value[+!optionalProps.default]}
+                            onChange={(e) => setOpen(e.target.value === optionalProps.value[0])}
+                        />
+                    </div>
+                </div>
+                {
+                    open && <>
+                        {optionalProps.sectionHeading && <div className={style["form-section-heading"]}>
+                            {optionalProps.sectionHeading}
+                        </div>}
+                        {
+                            itemComponent
+                        }
+                    </>
+                }
+            </div>
+        )
+    }
+    const keyGen = (function* () {
+        let index = 0;
+        while (true) {
+            yield index++;
+        }
+    })();
+    return schema.items.map(item => {
+        return item.isOptional ?
+            ToggleWrapper(item.name, item.isOptional, FormComponent(item, errors)) :
+            FormComponent(item, errors);
+    })
 }
+
 function generateYupSchema(items: readonly TItem[]) {
     return yup.object(
         items.reduce((schema, item) => {
@@ -259,11 +281,7 @@ export default function FormGenerator({ schema, onSubmit, onError }: {
                     </div>
                 }
                 {
-                    schema.items.map(item => {
-                        return item.isOptional ?
-                            ToggleWrapper(item.name, item.isOptional, FormComponent(item, errors)) :
-                            FormComponent(item, errors);
-                    })
+                    generateFields(schema, errors, methods)
                 }
                 {
                     typeof schema.submitButton === "string" ?
