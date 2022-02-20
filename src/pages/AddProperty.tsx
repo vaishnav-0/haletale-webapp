@@ -2,16 +2,25 @@ import React from 'react';
 import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
+<<<<<<< HEAD
 
 
 import propertyMutation from '../queries/property.mutation'
 import { useQuery, useMutation } from '@apollo/client';
+=======
+import { FormDataShape } from '../components/Form/FormGenerator';
+import Searchbar from '../components/Searchbar';
+import { PropertyQuery } from '../queries'
+import { useQuery } from '@apollo/client';
+>>>>>>> db97757445346f11f8c22bb1935867197adbbc3d
 import propertyQuery from '../queries/property.query';
 import Loder, { setLoader } from '../components/Loader';
+import { cropToAspectRatio } from '../components/Form/components/Images';
+import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
+import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
+import { UseFormReturn } from 'react-hook-form';
 
-
-
-const schema: SchemaType = {
+const schema = {
     heading: "Add Property",
     items: [
         {
@@ -31,13 +40,26 @@ const schema: SchemaType = {
             }
         },
         {
-            title: "Images",
-            name: "images",
-            type: "image",
+            name: "address_search",
+            type: "custom",
+            render: function PlaceSuggest(f: UseFormReturn) {
+                const { suggestions, suggest } = usePlaceSuggestions();
+                return <Searchbar suggestionItems={suggestions.map(e => e[0])}
+                    placeholder="Search Property, Neighbourhood or Address"
+                    onChange={suggest}
+                    onSubmit={(v, i) => {
+                        f.setValue("property_address", v); f.setValue("property_coords", "hey")
+                    }}
+                    submitOnSuggestionClick />
+            }
+        },
+        {
+            title: "Property location",
+            name: "property_coords",
+            type: "coordinateInput",
             props: {
-                resolutionType: 'ratio',
-                resolutionWidth: 16,
-                resolutionHeight: 9
+                center: [55.731538, -103.650174],
+                zoom: 4
             }
         },
         {
@@ -49,121 +71,12 @@ const schema: SchemaType = {
             }
         },
         {
-            title: "Property type",
+            title: "Property subtype",
             name: "subtype",
             type: "select",
             props: {
                 values: { "-": "", "snow": "Main level", "lawn": "Basement" }
             }
-        },
-        {
-            title: "bedroom",
-            name: "bedroom",
-            type: "number",
-            props: {
-                min: 1,
-                max: 10
-            }
-        },
-        {
-            title: "Bathroom",
-            name: "bathroom",
-            type: "number",
-            props: {
-                min: 1,
-                max: 10
-            }
-        },
-        {
-            title: "Lease term",
-            name: "lease_term",
-            type: "select",
-            props: {
-                values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
-            }
-        },
-        {
-            title: "Maximum occupants",
-            name: "tenant_count",
-            type: "number",
-            props: {
-                min: 1,
-                max: 10
-            }
-        },
-        {
-            title: "Parking",
-            name: "parking",
-            type: "number",
-            props: {
-                min: 0,
-                max: 6
-            }
-        },
-        {
-            title: "Features and amenities",
-            name: "features",
-            type: "pillList",
-            props: {
-                items: {
-                    fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
-                    nosmoking: "No smoking", stove2: "Stove"
-                }
-            }
-        },
-        {
-            title: "Pets",
-            name: "pets",
-            type: "select",
-            props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
-            }
-        },
-        {
-            title: "Smoking",
-            name: "smoking",
-            type: "select",
-            props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
-            }
-        },
-        {
-            title: "Rent",
-            name: "rent",
-            type: "text",
-            props: {
-                type: "number"
-            }
-        },
-        { //checkbox group
-            title: "Paid by landlord",
-            name: "landlord_paid",
-            type: "checkboxGroup",
-            props: {
-                values: ["Hydro", "Water", "Heat"]
-            }
-        },
-        {
-            title: "Hydro percentage",
-            name: "hydo",
-            type: "text",
-            props: {
-                type: "number"
-            }
-        },
-        {
-            title: "Outdoor maintainance",
-            name: "outdoor_maintainance",
-            type: "select",
-            props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
-            }
-        },
-        {
-            title: "Address verification document",
-            name: "address_proof",
-            type: "file",
-            props: {}
         },
         {
             title: "Additional notes:",
@@ -173,43 +86,53 @@ const schema: SchemaType = {
                 rows: 10
             }
         },
-
-
     ],
     submitButton: "Next",
 }
-const useQueries = () => {
 
 
-    let property_types = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE, {
-        // onCompleted: (data) => // setProducts(getProductData(d))
-    });
-    let property_subtypes = useQuery(propertyQuery.GET_ALL_PROPERTY_SUBTYPE, {
-        // onCompleted: (data) => // setProducts(getProductData(d))
-    });
-    return [property_types, property_subtypes];
+
+type FormData = FormDataShape<typeof schema>;
+const onSubmit = (d: FormData) => {
+
 }
-
-
 function AddProperty(): JSX.Element {
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
+
+    let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
 
-    const [addProperty, { data, loading, error }] = useMutation(propertyMutation.ADD_PROPERTY)
+
+    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY)
 
     if (error) console.log(error)
     if (data) console.log(data)
     if (loading) console.log(loading)
 
-    const [
-        { loading: loading1, data: property_types },
-        { loading: loading2, data: property_subtypes }
-    ] = useQueries()
+    React.useEffect(() => {
+        if (!loading) {
+            dynamicSchemaGenerator({
+                schema: schema as SchemaType,
+                dataLoader: () => new Promise(res => res(
+                    {
+                        type: property_types.property_type.map((e: any) => e.name),
+                        subtype: property_types.property_subtype.map((e: any) => e.name),
+                    })),
+                dataMap: (data) => [
+                    {
+                        type: (item: any) => { item.props.values = data.type; console.log(item, data) },
+                    },
+                    {
+                        subtype: (item: any) => { item.props.values = data.subtype },
+                    }
+                ] as dataMapReturn
+            }).then(sch => {
+                setSchema_(sch)
+            })
+        }
+    }, [loading]);
 
-
-    if (property_types && property_subtypes)
-        console.log(property_subtypes, property_subtypes)
-
-    if (loading1 && loading2) {
+    if (loading) {
         setLoader(true);
         return <></>
     }
@@ -222,37 +145,6 @@ function AddProperty(): JSX.Element {
             <Layout>
                 <FormGenerator schema={schema} onError={(e) => console.log(e)}
                     onSubmit={(d) => console.log(d)} />
-                {/* 
-                    <PillCollection
-                        items={{
-                            single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", value: "abc", limit: 5 }],
-                            group: [{ name: "roomtype", items: ["bedroom", "bathroom"], limit: 1 }]
-                        }}
-                    >
-                        {
-                            ({ List, Groups }) => {
-                                return <>
-                                    <div className={style["form-item"]}>
-                                        <div className={style["form-item-heading"]}>
-                                            list1
-                                        </div>
-                                        <List />
-                                        <Groups.roomtype />
-                                    </div>
-                                    <div className={style["form-item"]}>
-                                        <div className={style["form-item-heading"]}>
-                                            list2
-                                        </div>
-                                        <List />
-                                        <Groups.roomtype />
-
-                                    </div>
-                                </>
-                            }
-                        }
-                    </Pill
-                    Collection>
- */}
 
                 <button onClick={() => addProperty({
                     variables: {
@@ -270,9 +162,18 @@ function AddProperty(): JSX.Element {
                         sub_type: "Mainlevel"
                     }
                 })}></button>
+                {
+                    schema_ &&
+                    <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
+                        onSubmit={onSubmit} />
+                }
             </Layout >
         );
     }
 }
 
 export default AddProperty;
+
+
+
+

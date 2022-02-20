@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Token from '../auth/token';
+import { objectReduce } from '../utils';
 
 const instance = axios.create({
     baseURL: `${process.env.REACT_APP_API_SERVER_URL}/location`,
@@ -14,7 +15,7 @@ export async function suggest(query) {
     try {
         let res = await instance('/search', { params: { location: query } })
         console.log(res)
-        return res.data;
+        return res.data.predictions.map(e=>[e.description,e.place_id])
     }
     catch (error) {
         console.log(error)
