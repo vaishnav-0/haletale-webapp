@@ -15,83 +15,102 @@ import { cropToAspectRatio } from '../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
-
-const schema = {
-    heading: "Add Property",
-    items: [
-        {
-            title: "Property name",
-            name: "property_name",
-            type: "text",
-            props: {
-                type: "text"
-            }
-        },
-        {
-            title: "Property address",
-            name: "property_address",
-            type: "text",
-            props: {
-                type: "text"
-            }
-        },
-        {
-            name: "address_search",
-            type: "custom",
-            render: function PlaceSuggest(f: UseFormReturn) {
-                const { suggestions, suggest } = usePlaceSuggestions();
-                return <Searchbar suggestionItems={suggestions.map(e => e[0])}
-                    placeholder="Search Property, Neighbourhood or Address"
-                    onChange={suggest}
-                    onSubmit={(v, i) => {
-                        f.setValue("property_address", v); f.setValue("property_coords", "hey")
-                    }}
-                    submitOnSuggestionClick />
-            }
-        },
-        {
-            title: "Property location",
-            name: "property_coords",
-            type: "coordinateInput",
-            props: {
-                center: [55.731538, -103.650174],
-                zoom: 4
-            }
-        },
-        {
-            title: "Property type",
-            name: "type",
-            type: "select",
-            props: {
-                values: { "-": "", "1": "Detatched", "2": "Lawn moving" }
-            }
-        },
-        {
-            title: "Property subtype",
-            name: "subtype",
-            type: "select",
-            props: {
-                values: { "-": "", "snow": "Main level", "lawn": "Basement" }
-            }
-        },
-        {
-            title: "Additional notes:",
-            name: "notes",
-            type: "textarea",
-            props: {
-                rows: 10
-            }
-        },
-    ],
-    submitButton: "Next",
-} as const;
-
-
-
-type FormData = FormDataShape<typeof schema>;
+import { addressToGeo } from '../functions/api/location';
 
 function AddProperty(): JSX.Element {
-    const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const schema = {
+        heading: "Add Property",
+        items: [
+            {
+                title: "Property name",
+                name: "property_name",
+                type: "text",
+                props: {
+                    type: "text"
+                }
+            },
+            {
+                title: "Property address",
+                name: "property_address",
+                type: "text",
+                props: {
+                    type: "text"
+                }
+            },
+            {
+                name: "address_search",
+                type: "custom",
+                render: function PlaceSuggest(f: UseFormReturn) {
+                    const { suggestions, suggest } = usePlaceSuggestions();
+                    return <Searchbar suggestionItems={suggestions.map(e => e[0])}
+                        placeholder="Search Property, Neighbourhood or Address"
+                        onChange={suggest}
+                        onSubmit={(v, i) => {
+                            f.setValue("property_address", v);
+                            dynamicSchemaGenerator({
+                                schema: schema as SchemaType,
+                                dataLoader: () => new Promise(res => {
+                                    addressToGeo(suggestions[i!][1]).then(d => {
+                                        res([d.location.lat, d.location.lng])
+                                    }).catch(e => {
+                                        console.log(e);
+                                    })
+                                }),
+                                dataMap: (data) => [
+                                    {
+                                        property_coords: (item: any) => { item.props.coords = data },
+                                    }
+                                ] as dataMapReturn
+                            }).then(sch => {
+                                setSchema_(sch)
+                            })
+                        }}
+                        submitOnSuggestionClick />
+                }
+            },
+            {
+                title: "Property location",
+                name: "property_coords",
+                type: "coordinateInput",
+                props: {
+                    center: [55.731538, -103.650174],
+                    zoom: 4
+                }
+            },
+            {
+                title: "Property type",
+                name: "type",
+                type: "select",
+                props: {
+                    values: { "-": "", "1": "Detatched", "2": "Lawn moving" }
+                }
+            },
+            {
+                title: "Property subtype",
+                name: "subtype",
+                type: "select",
+                props: {
+                    values: { "-": "", "snow": "Main level", "lawn": "Basement" }
+                }
+            },
+            {
+                title: "Additional notes:",
+                name: "notes",
+                type: "textarea",
+                props: {
+                    rows: 10
+                }
+            },
+        ],
+        submitButton: "Next",
+    } as const;
+
+    React.useEffect(() => {
+        setSchema_(schema as SchemaType);
+    }, [])
+
+    type FormData = FormDataShape<typeof schema>;
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
@@ -151,8 +170,6 @@ function AddProperty(): JSX.Element {
         setLoader(false)
         return (
             <Layout>
-                <FormGenerator schema={schema} onError={(e) => console.log(e)}
-                    onSubmit={(d) => console.log(d)} />
                 {
                     schema_ &&
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
