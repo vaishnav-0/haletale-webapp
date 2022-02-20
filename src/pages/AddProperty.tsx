@@ -2,10 +2,17 @@ import React from 'react';
 import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
+<<<<<<< HEAD
+
+
+import propertyMutation from '../queries/property.mutation'
+import { useQuery, useMutation } from '@apollo/client';
+=======
 import { FormDataShape } from '../components/Form/FormGenerator';
 import Searchbar from '../components/Searchbar';
 import { PropertyQuery } from '../queries'
 import { useQuery } from '@apollo/client';
+>>>>>>> db97757445346f11f8c22bb1935867197adbbc3d
 import propertyQuery from '../queries/property.query';
 import Loader, { setLoader } from '../components/Loader';
 import { cropToAspectRatio } from '../components/Form/components/Images';
@@ -83,22 +90,25 @@ const schema = {
         },
     ],
     submitButton: "Next",
-} as const;
-// const useQueries = () => {
-//     let property_types = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE);
-//     let property_subtypes = useQuery(propertyQuery.GET_ALL_PROPERTY_SUBTYPE);
-//     return [property_types, property_subtypes];
-// }
+}
+
+
+
 type FormData = FormDataShape<typeof schema>;
 const onSubmit = (d: FormData) => {
 }
 function AddProperty(): JSX.Element {
     const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
-    // const [
-    //     { loading: loading1, data: property_types },
-    //     { loading: loading2, data: property_subtypes }
-    // ] = useQueries()
+
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
+
+
+
+    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY)
+
+    if (error) console.log(error)
+    if (data) console.log(data)
+    if (loading) console.log(loading)
 
     React.useEffect(() => {
         if (!loading) {
@@ -134,6 +144,25 @@ function AddProperty(): JSX.Element {
         setLoader(false)
         return (
             <Layout>
+                <FormGenerator schema={schema} onError={(e) => console.log(e)}
+                    onSubmit={(d) => console.log(d)} />
+
+                <button onClick={() => addProperty({
+                    variables: {
+
+                        coordinates: {
+                            "type": "Point",
+                            "coordinates": [
+                                75.87158203125,
+                                11.210733765689508
+                            ]
+                        },
+                        name: "test",
+                        description: "test",
+                        type: "Condos",
+                        sub_type: "Mainlevel"
+                    }
+                })}></button>
                 {
                     schema_ &&
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
