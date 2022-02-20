@@ -4,8 +4,8 @@ import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
 
 
-import { PropertyQuery } from '../queries'
-import { useQuery } from '@apollo/client';
+import propertyMutation from '../queries/property.mutation'
+import { useQuery, useMutation } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
 import Loder, { setLoader } from '../components/Loader';
 
@@ -179,16 +179,26 @@ const schema: SchemaType = {
     submitButton: "Next",
 }
 const useQueries = () => {
-    let property_types = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE);
-    let property_subtypes = useQuery(propertyQuery.GET_ALL_PROPERTY_SUBTYPE);
+
+
+    let property_types = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE, {
+        // onCompleted: (data) => // setProducts(getProductData(d))
+    });
+    let property_subtypes = useQuery(propertyQuery.GET_ALL_PROPERTY_SUBTYPE, {
+        // onCompleted: (data) => // setProducts(getProductData(d))
+    });
     return [property_types, property_subtypes];
 }
+
+
 function AddProperty(): JSX.Element {
 
 
+    const [addProperty, { data, loading, error }] = useMutation(propertyMutation.ADD_PROPERTY)
 
-
-
+    if (error) console.log(error)
+    if (data) console.log(data)
+    if (loading) console.log(loading)
 
     const [
         { loading: loading1, data: property_types },
@@ -240,8 +250,26 @@ function AddProperty(): JSX.Element {
                                 </>
                             }
                         }
-                    </PillCollection>
+                    </Pill
+                    Collection>
  */}
+
+                <button onClick={() => addProperty({
+                    variables: {
+
+                        coordinates: {
+                            "type": "Point",
+                            "coordinates": [
+                                75.87158203125,
+                                11.210733765689508
+                            ]
+                        },
+                        name: "test",
+                        description: "test",
+                        type: "Condos",
+                        sub_type: "Mainlevel"
+                    }
+                })}></button>
             </Layout >
         );
     }
