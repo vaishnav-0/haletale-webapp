@@ -8,11 +8,10 @@ export interface PropsType extends MapContainerProps {
     onChange?: (value: [number, number]) => void,
     style?: React.CSSProperties,
     className?: string,
-    value?: [number, number]
+    coords?: [number, number]
 }
-export default function CoordinateInput({ onChange = () => { }, style, className, value, ...props }: PropsType) {
+export default function CoordinateInput({ onChange = () => { }, style, className, coords, ...props }: PropsType) {
     const [map, setMap] = React.useState<Map>(null!);
-    const value_ = React.useRef<[number, number]>(null!)
     React.useEffect(() => {
         if (map) {
             const center = map.getCenter();
@@ -20,7 +19,6 @@ export default function CoordinateInput({ onChange = () => { }, style, className
             const onMoveEnd = (e: any) => {
                 const center = map.getCenter();
                 onChange([center.lat, center.lng]);
-                value_.current = [center.lat, center.lng];
             }
             map.addEventListener('moveend', onMoveEnd);
             return () => {
@@ -29,10 +27,10 @@ export default function CoordinateInput({ onChange = () => { }, style, className
         }
     }, [map])
     React.useEffect(() => {
-        if (value && map && value !== value_.current) {
-            map.flyTo(value, 14);
+        if (coords && map) {
+            map.flyTo(coords, 15, { duration: 1 });
         }
-    }, [value]);
+    }, [coords]);
     return <div className={CSSstyle["map-container"]}>
         <MapComponent whenCreated={setMap}
             worldCopyJump
