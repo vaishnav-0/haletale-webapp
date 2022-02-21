@@ -26,7 +26,7 @@ export interface PropsType {
 }
 const tagItems = {
     single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", limit: 3, value: "a" }],
-    group: [{ name: "roomtype", items: ["bedroom", "bathroom"], limit: 5 }]
+    group: [{ name: "roomtype", label: "Room type", items: ["bedroom", "bathroom"], limit: 5 }]
 }
 const CUSTOM_DATA_URL = "dataUrl";
 
@@ -92,6 +92,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
             className: style["tag"]
         }
     })
+    const selectedTags = React.useRef<{ [k: number]: string[] }>({})
     React.useEffect(() => {
         const divRef_ = divRef.current;
         const drag = new Drag(divRef.current);
@@ -245,10 +246,10 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                                     <Tags.List />
                                                 </div>
                                                 {
-                                                    Object.keys(Tags.Groups).map(k => {
-                                                        const Group = Tags.Groups[k];
+                                                    Tags.Groups.map(k => {
+                                                        const Group = k.List;
                                                         return <div className={style["tag-group-container"]}>
-                                                            <div className={style["tag-heading"]}>{k}</div>
+                                                            <div className={style["tag-heading"]}>{k.label}</div>
                                                             <Group />
                                                         </div>
                                                     })
@@ -299,7 +300,9 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                         <div className={style["imageupload-message-container"]}>
                             <MessageBox labelComponent={<i className="fas fa-info-circle" />}>
                                 <div className={style["message-box"]} >
-                                    info
+                                    The images highlighted in red will be cropped automatically upon upload. To crop manually
+                                    click <i className="far fa-edit" /> button.
+
                                 </div>
                             </MessageBox>
                         </div>
