@@ -418,10 +418,22 @@ function AddPropertyForm3(props: FormPropsType) {
     type FormData = FormDataShape<typeof schema>;
 
 
-    // const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+    const [addPropertyDetails, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_DETAILS);
 
     const onSubmit = (d: FormData) => {
         console.log(d);
+        
+        addPropertyDetails({
+            variables: {
+                description: "desc",
+                features: [],
+                max_occupants: 5,
+                rent_amount: 100.00,
+                restrictions: [],
+                rooms: {},
+                id: "propertyid"
+            }
+        })
     }
 
     // add property res
