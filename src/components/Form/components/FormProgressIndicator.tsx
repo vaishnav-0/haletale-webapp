@@ -5,7 +5,8 @@ type PropsType = {
     height?: number,
     indicator: string,
     state: ProgressStateEnum,
-    description: string
+    description: string,
+    onClick?: () => void
 }
 export enum ProgressStateEnum {
     Pending,
@@ -13,12 +14,15 @@ export enum ProgressStateEnum {
     Processing,
     Done
 }
-export default function FormProgressIndicator({ height = 120, indicator, state, description }: PropsType) {
+export default function FormProgressIndicator({ height = 120, indicator, state, description, onClick = () => { } }: PropsType) {
     return (
         <div className={style["progress-container"]} style={{ height: height + "px" }}>
             <div className={style["progress-symbols"]} >
                 <div></div>
-                <button className={`${style["progress-btn"]}${(state === ProgressStateEnum.Done || state === ProgressStateEnum.OnProgress) ? " " + style["active"] : ''}`}>
+                <button
+                    className={`${style["progress-btn"]}${(state === ProgressStateEnum.Done || state === ProgressStateEnum.OnProgress) ? " " + style["active"] : ''}`}
+                    onClick={onClick}
+                >
                     {state === ProgressStateEnum.Done ?
                         <i className="fas fa-check" /> :
                         state === ProgressStateEnum.Processing ?

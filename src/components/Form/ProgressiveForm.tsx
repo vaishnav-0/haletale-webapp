@@ -14,6 +14,19 @@ export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
     const getOnLoading = React.useCallback((n: number) => {
         return () => progressListUpdate(ProgressStateEnum.Processing, n);
     }, []);
+    const getOnClick = React.useCallback((n: number) => {
+        return () => {
+            if (progressList[n] === ProgressStateEnum.Done) {
+                if (formContainerRefs?.current?.[n]) {
+                    if (!formContainerRefs.current[n]?.clientHeight)
+                        expand(formContainerRefs.current[n]!);
+                    else
+                        collapse(formContainerRefs.current[n]!);
+
+                }
+            }
+        }
+    }, [progressList]);
     const getOnComplete = React.useCallback((n: number) => {
         return () => {
             const formContainerRefs_ = formContainerRefs;
@@ -22,7 +35,7 @@ export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
             }
             progressListUpdate(ProgressStateEnum.Done, n);
             if (formContainerRefs_.current[n + 1]) {
-                expand(formContainerRefs_.current[n]!);
+                expand(formContainerRefs_.current[n + 1]!);
                 progressListUpdate(ProgressStateEnum.OnProgress, n + 1);
             }
         }
@@ -42,7 +55,11 @@ export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
         <>
             {
                 forms.map((e, i) => <>
-                    <FormProgressIndicator state={progressList[i]} indicator={(i + 1).toString()} description={e.description} />
+                    <FormProgressIndicator state={progressList[i]}
+                        indicator={(i + 1).toString()}
+                        description={e.description}
+                        onClick={getOnClick(i)}
+                    />
                     <div ref={(n) => formContainerRefs.current[i] = n} style={{ height: 0, overflow: "hidden" }}>
                         <e.component onComplete={getOnComplete(i)} onLoading={getOnLoading(i)} />
                     </div>
