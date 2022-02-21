@@ -26,6 +26,8 @@ type FormPropsType = {
     onComplete: () => void,
     onLoading: () => void
 }
+
+const propertyId: { current: null | string } = { current: null };
 function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
@@ -134,6 +136,7 @@ function AddPropertyForm1(props: FormPropsType) {
         if (MutationLoading) {
             props.onLoading();
         } else if (data) {
+            propertyId.current = data.insert_property_owner.returning[0].property_id;
             props.onComplete()
         }
     }, [data, MutationLoading])
@@ -219,19 +222,21 @@ function AddPropertyForm2(props: FormPropsType) {
 
     type FormData = FormDataShape<typeof schema>;
 
-    const [addImages, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_IMAGES);
-
+    const [addImages, { data, loading: mutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY_IMAGES);
+    React.useEffect(() => {
+        if (data) {
+            props.onComplete();
+        }
+    }, [data])
     const onSubmit = async (d: FormData) => {
-        let imageVariable: { key: string, property_id: string }[];
-        // add property id
-        let propertyId = 'xyz'
+        props.onLoading();
         let keys = await handleImage(d.images);
-        keys.forEach((x) => {
-            imageVariable.push({
+        const imageVariable = keys.map((x: string) => {
+            return {
                 key: x,
-                property_id: propertyId
-            })
-        })
+                property_id: propertyId.current!
+            }
+        });
         addImages({
             variables: {
                 object: imageVariable!
@@ -385,7 +390,9 @@ function AddPropertyForm3(props: FormPropsType) {
     );
 }
 function AddProperty(): JSX.Element {
-
+    React.useEffect(() => {
+        propertyId.current = null;
+    }, [])
     const forms = [{ description: "Basic details", component: AddPropertyForm1 }, { description: "Images", component: AddPropertyForm2 }, { description: "Details", component: AddPropertyForm3 }]
     return (
         <Layout>
