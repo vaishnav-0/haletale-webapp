@@ -104,6 +104,7 @@ export interface SchemaType {
     heading: string,//Form heading
     items: readonly TItem[],
     submitButton: string | ((props: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => JSX.Element),
+    defaultValue?: object
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 
@@ -265,11 +266,12 @@ function generateYupSchema(items: readonly TItem[]) {
 }
 export type PropsType = {
     schema: SchemaType, onSubmit: (data: any) => void,
-    onError?: (e: any) => void, disabled?: boolean
+    onError?: (e: any) => void,
+    disabled?: boolean,
 }
 export default function FormGenerator({ schema, onSubmit, onError, disabled }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
-    const methods = useForm({ resolver: yupResolver(yupSchema) });
+    const methods = useForm({ resolver: yupResolver(yupSchema), defaultValues: schema.defaultValue ?? {} });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
     return (
