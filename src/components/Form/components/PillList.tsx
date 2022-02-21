@@ -61,8 +61,10 @@ export function PillList({ items, onChange, disabledKeys = [], disabled, classNa
     const [activePills, setActivePills] = React.useState<number[]>(defaultValues_);
     const setValue = (v: number[]) => {
         setActivePills(v);
-        onChange && onChange(Object.keys(items_).filter((e, i) => v.includes(i)));
     }
+    React.useEffect(() => {
+        onChange && onChange(Object.keys(items_).filter((e, i) => activePills.includes(i)));
+    }, [activePills])
     return (
         <div key={key} className={style["pill-list"]}>
             {Object.entries(items_).map(([k, e], i) =>
