@@ -3,14 +3,14 @@ import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
 import formStyle from '../components/Form/Form.module.scss';
-
+import * as yup from 'yup';
 import propertyMutation from '../queries/property.mutation'
 import { FormDataShape } from '../components/Form/FormGenerator';
 import Searchbar from '../components/Searchbar';
 import { PropertyQuery } from '../queries'
 import { useQuery, useMutation } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
-import { setGlobalLoader, useLoder } from '../components/Loader';
+import { useLoder } from '../components/Loader';
 import { cropToAspectRatio } from '../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
@@ -34,8 +34,9 @@ function AddPropertyForm1(props: FormPropsType) {
                 name: "property_name",
                 type: "text",
                 props: {
-                    type: "text"
-                }
+                    type: "text",
+                },
+                validationSchema: yup.string().required("Property name is required")
             },
             {
                 name: "address_search",
@@ -110,9 +111,6 @@ function AddPropertyForm1(props: FormPropsType) {
             },
         ],
         submitButton: "Next",
-        defaultValue: {
-            property_name: "this"
-        }
     } as const;
 
     React.useEffect(() => {
@@ -215,17 +213,13 @@ function AddPropertyForm2(props: FormPropsType) {
                         //upload and set images prop to disabled
                         // setSchema_(schema => {
                         //     if (schema)
-                        //         (schema.items[0] as any).props.disabled = true;//beware of index of items
+                        //         (schema.items[0] as any).props.disabled = true;//beware of the index of items
                         //     return schema;
                         // })
-                        dynamicSchemaGenerator({
+                        dynamicSchemaGenerator({//disable image input
                             schema: schema as SchemaType,
                             dataLoader: new Promise(res => res(true)),
-                            dataMap: (data) => [
-                                {
-                                    images: (item: any) => { item.props.disabled = data },
-                                }
-                            ] as dataMapReturn
+                            dataMap: (data) => [{ images: (item: any) => { item.props.disabled = data } }] as dataMapReturn
                         }).then(sch => {
                             setSchema_(sch)
                         })
