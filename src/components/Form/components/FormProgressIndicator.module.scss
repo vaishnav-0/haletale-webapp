@@ -18,6 +18,9 @@
     @include media(">lgMin") {
         padding-left: 7em;
     }
+    @include media(">xlMin") {
+        padding-left: 10em;
+    }
 }
 
 .progress-symbols {
@@ -50,4 +53,8 @@
         background-color: $primary;
         color: white;
     }
+}
+.progress-description{
+    font-size: 1.2em;
+    font-weight: 900;
 }
