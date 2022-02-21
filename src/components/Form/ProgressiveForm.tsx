@@ -6,8 +6,9 @@ import FormProgressIndicator from "./components/FormProgressIndicator";
 
 type PropsType = {
     forms: { description: string, component: (props: { onComplete: () => void, onLoading: () => void }) => JSX.Element }[],
+    parallel?: boolean
 }
-export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
+export default function ProgressiveForm({ forms, parallel = false }: PropsType): JSX.Element {
     const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: forms.length }, () => 0));
     console.log(progressList);
     const formContainerRefs = React.useRef<(HTMLElement | null)[]>([]);
@@ -16,7 +17,7 @@ export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
     }, []);
     const getOnClick = React.useCallback((n: number) => {
         return () => {
-            if (progressList[n] === ProgressStateEnum.Done) {
+            if (parallel || progressList[n] === ProgressStateEnum.Done) {
                 if (formContainerRefs?.current?.[n]) {
                     if (!formContainerRefs.current[n]?.clientHeight)
                         expand(formContainerRefs.current[n]!);
