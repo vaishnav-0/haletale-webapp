@@ -208,7 +208,7 @@ function AddPropertyForm2(props: FormPropsType) {
                 name: "upload_button",
                 type: "custom",
                 render: function PlaceSuggest(f: UseFormReturn) {
-                    return <ButtonSolid style={{padding:"0.5em"}} onClick={() => {
+                    return <ButtonSolid style={{ padding: "0.5em" }} onClick={() => {
                         const images = f.getValues("images");
                         //upload and set images prop to disabled
                         // setSchema_(schema => {
