@@ -8,7 +8,7 @@ type PropsType = {
     forms: { description: string, component: (props: { onComplete: () => void, onLoading: () => void }) => JSX.Element }[],
 }
 export default function ProgressiveForm({ forms }: PropsType): JSX.Element {
-    const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: 3 }, () => 0));
+    const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: forms.length }, () => 0));
     console.log(progressList);
     const formContainerRefs = React.useRef<(HTMLElement | null)[]>([]);
     const getOnLoading = React.useCallback((n: number) => {
