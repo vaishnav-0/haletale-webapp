@@ -4,7 +4,6 @@
     background-color: #00000000;
     border: $primary solid 1px;
     color: $primary;
-    border-radius: 10px;
 
     &:hover {
         color: white;
@@ -12,11 +11,26 @@
     }
 }
 
+.btn-smoothround-solid,
+.btn-smoothround-hollow {
+    border-radius: 10px;
+
+    &:disabled {
+        background-color: $grey;
+        cursor: not-allowed;
+        border-color: $grey;
+
+        &:hover {
+            background-color: inherit;
+            color: inherit;
+        }
+    }
+}
+
 .btn-smoothround-solid {
     border: $primary solid 1px;
     color: white;
     background-color: $primary;
-    border-radius: 10px;
 
     &:hover {
         background-color: #00000000;
@@ -27,7 +41,8 @@
 .indicator-wrapper {
     position: relative;
     display: flex;
-    &>button{
+
+    &>button {
         height: 100%;
         width: 100%;
     }
