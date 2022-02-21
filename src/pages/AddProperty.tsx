@@ -18,9 +18,9 @@ import { UseFormReturn } from 'react-hook-form';
 import { addressToGeo } from '../functions/api/location';
 import { ButtonSolid } from '../components/Button';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
-
-
 import { handleImage } from '../functions/api/imageUpload'
+
+const stringFieldRequired = yup.string().required("This field is required.")
 
 type FormPropsType = {
     onComplete: () => void,
@@ -40,7 +40,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 props: {
                     type: "text",
                 },
-                validationSchema: yup.string().required("Property name is required")
+                validationSchema: stringFieldRequired
             },
             {
                 name: "address_search",
@@ -78,7 +78,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "text",
                 props: {
                     type: "text"
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Property location",
@@ -95,7 +96,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "select",
                 props: {
                     values: {}
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Property subtype",
@@ -103,7 +105,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "select",
                 props: {
                     values: {}
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Additional notes:",
@@ -160,10 +163,10 @@ function AddPropertyForm1(props: FormPropsType) {
                     })),
                 dataMap: (data) => [
                     {
-                        type: (item: any) => { item.props.values = data.type; console.log(item, data) },
+                        type: (item: any) => { item.props.values = ["", ...data.type]; },
                     },
                     {
-                        subtype: (item: any) => { item.props.values = data.subtype },
+                        subtype: (item: any) => { item.props.values = ["", ...data.subtype] },
                     }
                 ] as dataMapReturn
             }).then(sch => {
@@ -206,101 +209,6 @@ function AddPropertyForm2(props: FormPropsType) {
                     resolutionType: 'ratio',
                     resolutionWidth: 16,
                     resolutionHeight: 9
-                }
-            },
-            {
-                name: "upload_button",
-                type: "custom",
-                render: function PlaceSuggest(f: UseFormReturn) {
-                    return <ButtonSolid style={{ padding: "0.5em" }} onClick={() => {
-                        const images = f.getValues("images");
-                        //upload and set images prop to disabled
-                        // setSchema_(schema => {
-                        //     if (schema)
-                        //         (schema.items[0] as any).props.disabled = true;//beware of the index of items
-                        //     return schema;
-                        // })
-                        dynamicSchemaGenerator({//disable image input
-                            schema: schema as SchemaType,
-                            dataLoader: new Promise(res => res(true)),
-                            dataMap: (data) => [{ images: (item: any) => { item.props.disabled = data } }] as dataMapReturn
-                        }).then(sch => {
-                            setSchema_(sch)
-                        })
-                    }}>
-                        Upload Images
-                    </ButtonSolid>
-                }
-            },
-            {
-                title: "bedroom",
-                name: "bedroom",
-                type: "number",
-                props: {
-                    min: 1,
-                    max: 10
-                }
-            },
-            {
-                title: "Bathroom",
-                name: "bathroom",
-                type: "number",
-                props: {
-                    min: 1,
-                    max: 10
-                }
-            },
-            {
-                title: "Maximum occupants",
-                name: "tenant_count",
-                type: "number",
-                props: {
-                    min: 1,
-                    max: 10
-                }
-            },
-            {
-                title: "Parking",
-                name: "parking",
-                type: "number",
-                props: {
-                    min: 0,
-                    max: 6
-                }
-            },
-            {
-                title: "Features and amenities",
-                name: "features",
-                type: "pillList",
-                props: {
-                    items: {
-                        fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
-                        nosmoking: "No smoking", stove2: "Stove"
-                    }
-                }
-            },
-            {
-                title: "Pets",
-                name: "pets",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-            {
-                title: "Smoking",
-                name: "smoking",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-            {
-                title: "Outdoor maintainance",
-                name: "outdoor_maintainance",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
                 }
             },
         ],
@@ -369,11 +277,66 @@ function AddPropertyForm3(props: FormPropsType) {
         heading: "",
         items: [
             {
-                title: "Rent",
-                name: "rent",
-                type: "text",
+                title: "Bedroom",
+                name: "bedroom",
+                type: "number",
                 props: {
-                    type: "number"
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Bathroom",
+                name: "bathroom",
+                type: "number",
+                props: {
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Maximum occupants",
+                name: "tenant_count",
+                type: "number",
+                props: {
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Parking",
+                name: "parking",
+                type: "number",
+                props: {
+                    min: 0,
+                    max: 6
+                }
+            },
+            {
+                title: "Features and amenities",
+                name: "features",
+                type: "pillList",
+                props: {
+                    items: {
+                        fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
+                        nosmoking: "No smoking", stove2: "Stove", outdoor_maintainance: "Outdoor maintainance"
+                    }
+                }
+            },
+            {
+                title: "Pets",
+                name: "pets",
+                type: "select",
+                props: {
+                    values: { "-": "", "yes": "Yes", "no": "No" }
+                }
+            },
+            {
+                title: "Smoking",
+                name: "smoking",
+                type: "select",
+                props: {
+                    values: { "-": "", "yes": "Yes", "no": "No" }
                 }
             },
             {
@@ -384,29 +347,15 @@ function AddPropertyForm3(props: FormPropsType) {
                     values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
                 }
             },
-            { //checkbox group
-                title: "Paid by landlord",
-                name: "landlord_paid",
-                type: "checkboxGroup",
-                wrapperClassName: formStyle["horizontal-list"],
-                props: {
-                    values: ["Hydro", "Water", "Heat"]
-                }
-            },
             {
-                title: "Hydro percentage",
-                name: "hydo",
+                title: "Rent",
+                name: "rent",
                 type: "text",
                 props: {
                     type: "number"
                 }
             },
-            {
-                title: "Address verification document",
-                name: "address_proof",
-                type: "file",
-                props: {}
-            },
+
         ],
         submitButton: "Next",
     } as const;
