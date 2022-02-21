@@ -2,7 +2,7 @@ import React from 'react';
 import Layout from './Layout';
 import FormGenerator from '../components/Form/FormGenerator';
 import { SchemaType } from '../components/Form/FormGenerator';
-
+import formStyle from '../components/Form/Form.module.scss';
 
 import propertyMutation from '../queries/property.mutation'
 import { FormDataShape } from '../components/Form/FormGenerator';
@@ -10,29 +10,23 @@ import Searchbar from '../components/Searchbar';
 import { PropertyQuery } from '../queries'
 import { useQuery, useMutation } from '@apollo/client';
 import propertyQuery from '../queries/property.query';
-import Loder, { setLoader } from '../components/Loader';
+import { setGlobalLoader, useLoder } from '../components/Loader';
 import { cropToAspectRatio } from '../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
 import { addressToGeo } from '../functions/api/location';
-
-function AddProperty(): JSX.Element {
+import FormProgressIndicator from '../components/Form/components/FormProgressIndicator';
+import useListState from '../functions/hooks/useListState';
+function AddPropertyForm1() {
+    const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
-        heading: "Add Property",
+        heading: "",
         items: [
             {
                 title: "Property name",
                 name: "property_name",
-                type: "text",
-                props: {
-                    type: "text"
-                }
-            },
-            {
-                title: "Property address",
-                name: "property_address",
                 type: "text",
                 props: {
                     type: "text"
@@ -44,7 +38,7 @@ function AddProperty(): JSX.Element {
                 render: function PlaceSuggest(f: UseFormReturn) {
                     const { suggestions, suggest } = usePlaceSuggestions();
                     return <Searchbar suggestionItems={suggestions.map(e => e[0])}
-                        placeholder="Search Property, Neighbourhood or Address"
+                        placeholder="Search a place"
                         onChange={suggest}
                         onSubmit={(v, i) => {
                             f.setValue("property_address", v);
@@ -70,6 +64,14 @@ function AddProperty(): JSX.Element {
                 }
             },
             {
+                title: "Property address",
+                name: "property_address",
+                type: "text",
+                props: {
+                    type: "text"
+                }
+            },
+            {
                 title: "Property location",
                 name: "property_coords",
                 type: "coordinateInput",
@@ -83,7 +85,7 @@ function AddProperty(): JSX.Element {
                 name: "type",
                 type: "select",
                 props: {
-                    values: { "-": "", "1": "Detatched", "2": "Lawn moving" }
+                    values: {}
                 }
             },
             {
@@ -91,7 +93,7 @@ function AddProperty(): JSX.Element {
                 name: "subtype",
                 type: "select",
                 props: {
-                    values: { "-": "", "snow": "Main level", "lawn": "Basement" }
+                    values: {}
                 }
             },
             {
@@ -158,26 +160,266 @@ function AddProperty(): JSX.Element {
             })
         }
     }, [loading]);
+    React.useEffect(() => {
+        if (loading || !schema_) {
+            setLoader(true);
+        } else {
+            setLoader(false)
+        }
+    }, [loading, schema_])
 
-    if (loading) {
-        setLoader(true);
-        return <></>
-    }
-
-
-
-    else {
-        setLoader(false)
-        return (
-            <Layout>
-                {
-                    schema_ &&
+    return (
+        <>
+            {
+                schema_ && <div style={{ height: "max-content", position: "relative", padding: "1em 0" }}>
+                    {Loader}
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
                         onSubmit={onSubmit} />
+                </div>
+
+            }
+        </ >
+    );
+}
+function AddPropertyForm2() {
+    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const schema = {
+        heading: "",
+        items: [
+            {
+                title: "Images",
+                name: "images",
+                type: "image",
+                props: {
+                    resolutionType: 'ratio',
+                    resolutionWidth: 16,
+                    resolutionHeight: 9
                 }
-            </Layout >
-        );
+            },
+            {
+                title: "bedroom",
+                name: "bedroom",
+                type: "number",
+                props: {
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Bathroom",
+                name: "bathroom",
+                type: "number",
+                props: {
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Maximum occupants",
+                name: "tenant_count",
+                type: "number",
+                props: {
+                    min: 1,
+                    max: 10
+                }
+            },
+            {
+                title: "Parking",
+                name: "parking",
+                type: "number",
+                props: {
+                    min: 0,
+                    max: 6
+                }
+            },
+            {
+                title: "Features and amenities",
+                name: "features",
+                type: "pillList",
+                props: {
+                    items: {
+                        fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
+                        nosmoking: "No smoking", stove2: "Stove"
+                    }
+                }
+            },
+            {
+                title: "Pets",
+                name: "pets",
+                type: "select",
+                props: {
+                    values: { "-": "", "yes": "Yes", "no": "No" }
+                }
+            },
+            {
+                title: "Smoking",
+                name: "smoking",
+                type: "select",
+                props: {
+                    values: { "-": "", "yes": "Yes", "no": "No" }
+                }
+            },
+            {
+                title: "Outdoor maintainance",
+                name: "outdoor_maintainance",
+                type: "select",
+                props: {
+                    values: { "-": "", "yes": "Yes", "no": "No" }
+                }
+            },
+        ],
+        submitButton: "Next",
+    } as const;
+
+    React.useEffect(() => {
+        setSchema_(schema as SchemaType);
+    }, [])
+
+    type FormData = FormDataShape<typeof schema>;
+
+
+    // const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+
+    const onSubmit = (d: FormData) => {
+
     }
+
+    // add property res
+    // if (error) console.log(error)
+    // if (data) console.log(data)
+    // if (loading) console.log(loading)
+
+    // React.useEffect(() => {
+    //     if (!loading) {
+    //     }
+    // }, [loading]);
+    // React.useEffect(() => {
+    //     if (loading || !schema_) {
+    //         setLoader(true);
+    //     } else {
+    //         setLoader(false)
+    //     }
+    // }, [loading, schema_])
+
+    return (
+        <>
+            {Loader}
+            {
+                schema_ &&
+                <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
+                    onSubmit={onSubmit} />
+            }
+        </ >
+    );
+}
+function AddPropertyForm3() {
+    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const schema = {
+        heading: "",
+        items: [
+            {
+                title: "Rent",
+                name: "rent",
+                type: "text",
+                props: {
+                    type: "number"
+                }
+            },
+            {
+                title: "Lease term",
+                name: "lease_term",
+                type: "select",
+                props: {
+                    values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
+                }
+            },
+            { //checkbox group
+                title: "Paid by landlord",
+                name: "landlord_paid",
+                type: "checkboxGroup",
+                props: {
+                    values: ["Hydro", "Water", "Heat"]
+                }
+            },
+            {
+                title: "Hydro percentage",
+                name: "hydo",
+                type: "text",
+                props: {
+                    type: "number"
+                }
+            },
+            {
+                title: "Address verification document",
+                name: "address_proof",
+                type: "file",
+                props: {}
+            },
+        ],
+        submitButton: "Next",
+    } as const;
+
+    React.useEffect(() => {
+        setSchema_(schema as SchemaType);
+    }, [])
+
+    type FormData = FormDataShape<typeof schema>;
+
+
+    // const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+
+    const onSubmit = (d: FormData) => {
+
+    }
+
+    // add property res
+    // if (error) console.log(error)
+    // if (data) console.log(data)
+    // if (loading) console.log(loading)
+
+    // React.useEffect(() => {
+    //     if (!loading) {
+    //     }
+    // }, [loading]);
+    // React.useEffect(() => {
+    //     if (loading || !schema_) {
+    //         setLoader(true);
+    //     } else {
+    //         setLoader(false)
+    //     }
+    // }, [loading, schema_])
+
+    return (
+        <>
+            {Loader}
+            {
+                schema_ &&
+                <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
+                    onSubmit={onSubmit} />
+            }
+        </ >
+    );
+}
+function AddProperty(): JSX.Element {
+    const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: 3 }, () => 0));
+    console.log(progressList);
+    return (
+        <Layout>
+            <div className={formStyle["form-header"]}>
+                Add Property
+            </div>
+            <FormProgressIndicator state={progressList[0]} indicator='1' description='Basic details' />
+            <AddPropertyForm1 />
+            <FormProgressIndicator state={progressList[1]} indicator='2' description='Images' />
+            <AddPropertyForm2 />
+            <FormProgressIndicator state={progressList[2]} indicator='3' description='Details' />
+            <AddPropertyForm3 />
+
+        </Layout >
+    );
+
 }
 
 export default AddProperty;
