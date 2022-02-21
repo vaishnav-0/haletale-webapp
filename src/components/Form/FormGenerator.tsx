@@ -103,7 +103,7 @@ type TItem = TItemCommon & TItemDiscriminated;
 export interface SchemaType {
     heading: string,//Form heading
     items: readonly TItem[],
-    submitButton: string | ((getData: UseFormGetValues<FieldValues>) => JSX.Element),
+    submitButton: string | ((props: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => JSX.Element),
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 
@@ -263,11 +263,11 @@ function generateYupSchema(items: readonly TItem[]) {
         }, {} as any)
     )
 }
-
-export default function FormGenerator({ schema, onSubmit, onError }: {
+export type PropsType = {
     schema: SchemaType, onSubmit: (data: any) => void,
-    onError?: (e: any) => void,
-}) {
+    onError?: (e: any) => void, disabled?: boolean
+}
+export default function FormGenerator({ schema, onSubmit, onError, disabled }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
     const methods = useForm({ resolver: yupResolver(yupSchema) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
@@ -285,9 +285,9 @@ export default function FormGenerator({ schema, onSubmit, onError }: {
                 }
                 {
                     typeof schema.submitButton === "string" ?
-                        <ButtonSolid className={style["form-submit-btn"]} >{schema.submitButton}</ButtonSolid>
+                        <ButtonSolid className={style["form-submit-btn"]} disabled={disabled}>{schema.submitButton}</ButtonSolid>
                         :
-                        schema.submitButton(methods.getValues)
+                        schema.submitButton({ disabled })
 
                 }
             </form>
