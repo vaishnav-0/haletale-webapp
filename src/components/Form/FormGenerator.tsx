@@ -68,7 +68,7 @@ type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioB
     ItemType<"pillGroup", PillListPropsType> | ItemType<"number", NumberInputPropsType> |
     ItemType<"range", RangePropsType> | ItemType<"checkboxGroup", CheckBoxGroupPropsType> |
     ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType> |
-    ItemType<"coordinateInput", CoordinateInputPropsType> | { type: "custom", render: (f: UseFormReturn) => JSX.Element }
+    ItemType<"coordinateInput", CoordinateInputPropsType> | { type: "custom", render: (f: UseFormReturn, s: SchemaType) => JSX.Element }
 type FormValueType = string | number | { [k: string]: string } | string[] | boolean
 type TItemCommon = {
     title?: string,
@@ -113,7 +113,7 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
         console.log(config.disabled);
         let inputComponent!: JSX.Element;
         if (item.type === "custom") {
-            return item.render(useFormRet);
+            return item.render(useFormRet, schema);
         }
         Object.entries(componentMap).forEach(([type, component]) => {
             if (item.type === type) {
