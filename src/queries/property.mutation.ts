@@ -16,12 +16,13 @@ export default {
     }
   }`,
 
-  ADD_PROPERTY_DETAILS: gql`mutation ADD_PROPERTY_DETAILS($description: String = "", $features: json = "", $max_occupants: Int = 10, $restrictions: json = "", $id: uuid = "") {
-        insert_property_details_one(object: {description: $description, features: $features, max_occupants: $max_occupants, restrictions: $restrictions, id: $id}) {
-          id
-        }
-    }`,
-    
+  ADD_PROPERTY_DETAILS: gql`mutation ADD_PROPERY_DETAILS($description: String, $features: json, $max_occupants: Int, $rent_amount: float8, $restrictions: json = "", $rooms: jsonb, $id: uuid) {
+    insert_property_details_one(object: {description: $description, features: $features, max_occupants: $max_occupants, rent_amount: $rent_amount, restrictions: $restrictions, rooms: $rooms, id: $id}) {
+      id
+    }
+  }
+  `,
+
   ADD_PROPERTY_IMAGES:  gql`mutation ADD_IMAGE($object: [property_images_insert_input!]!) {  
       insert_property_images(objects:$object) {
         returning {
