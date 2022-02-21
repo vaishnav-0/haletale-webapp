@@ -14,9 +14,9 @@ function handleOpen(state: boolean, ref: React.MutableRefObject<HTMLElement>, an
         return ref.current.style.display = !state ? "none" : "";
     const { type, ...config } = animation;
     if (type === "slide")
-        state ? expand(ref, config, true, !animate) : collapse(ref, config, true, !animate);
+        state ? expand(ref.current, config, true, !animate) : collapse(ref.current, config, true, !animate);
     else if (type === "zoom")
-        state ? zoomIn(ref, config, !animate) : zoomOut(ref, config, !animate);
+        state ? zoomIn(ref.current, config, !animate) : zoomOut(ref.current, config, !animate);
 }
 interface OpenableProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     children?: React.ReactNode,
