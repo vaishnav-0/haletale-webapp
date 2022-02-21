@@ -15,7 +15,7 @@ export type PropsType = {
     disabled?: boolean,
     maxActive?: number,
     className?: string,
-    key?:React.Attributes["key"]
+    key?: React.Attributes["key"]
 }
 function getKeyPosition(obj: object, key: string) {
     return Object.keys(obj).indexOf(key);
@@ -29,7 +29,7 @@ function keyArrayToPositionArray(keyArray: Array<number | string>, obj: object) 
 }
 
 export function PillList({ items, onChange, disabledKeys = [], disabled, className: pillClassname = "",
-    maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { },key }: PropsType): JSX.Element {
+    maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { }, key }: PropsType): JSX.Element {
     const defaultValues_ = React.useMemo(() => {
         if (defaultValues.length > 0) {
             return keyArrayToPositionArray(defaultValues, items);
@@ -110,17 +110,18 @@ export interface usePillCollectionProps {
         single?: {
             name: string,
             value?: string,
-            limit?: number
+            limit?: number,
         }[],
         group?: {
             name: string,
             items: ItemType,
-            limit?: number
+            limit?: number,
+            label?: string
         }[]
     },
     pillProps?: Omit<PropsType, "items" | "onClick">;
 }
-type GroupType = { [k: string]: React.FC<Omit<PropsType, "items">> }
+type GroupType = { List: React.FC<Omit<PropsType, "items">>, name: string, label?: string }[]
 type CollectionChildrenFnType = ({ List, Groups }:
     { List: React.FC<Omit<PropsType, "items">>, Groups: GroupType }
 ) => JSX.Element;
@@ -201,27 +202,30 @@ export function usePillCollection({ items, pillProps = {} }: usePillCollectionPr
     }, []);
     const Groups: GroupType = useMemoized(() => {
         return !items.group ?
-            {} :
-            items.group.reduce((obj, e) =>
-                Object.assign(obj, {
-                    [e.name]:
-                        function P_Group({ onClick, ...props }: Omit<PropsType, "items" | "disabledActivatableKeys">) {
-                            const [, updateList] = React.useState<boolean>(false);
-                            const indices = Object.keys(e.items).map((_, i) => i);
-                            React.useEffect(() => {
-                                addGroupUpdateFn(updateList, e.name);
-                            }, []);
+            [] :
+            items.group.reduce((arr, e) => {
+                arr.push({
+                    name: e.name,
+                    List: function P_Group({ onClick, ...props }: Omit<PropsType, "items" | "disabledActivatableKeys">) {
+                        const [, updateList] = React.useState<boolean>(false);
+                        const indices = Object.keys(e.items).map((_, i) => i);
+                        React.useEffect(() => {
+                            addGroupUpdateFn(updateList, e.name);
+                        }, []);
 
-                            return < PillGroup items={e.items}
-                                onClick={(k, t) => {
-                                    groupOnClick(e.name, t);
-                                    onClick && onClick(k, t)
-                                }}
-                                disabledActivatableKeys={disabledGroups.current.includes(e.name) ? indices : []}
-                                {...{ ...props, ...pillProps }}
-                            />
-                        }
-                }), {})
+                        return < PillGroup items={e.items}
+                            onClick={(k, t) => {
+                                groupOnClick(e.name, t);
+                                onClick && onClick(k, t)
+                            }}
+                            disabledActivatableKeys={disabledGroups.current.includes(e.name) ? indices : []}
+                            {...{ ...props, ...pillProps }}
+                        />
+                    },
+                    label: e.label ?? ""
+                });
+                return arr;
+            }, [] as GroupType)
     }, [])
     return { List: List, Groups: Groups };
 }
