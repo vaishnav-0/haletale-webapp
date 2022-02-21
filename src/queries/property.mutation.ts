@@ -9,9 +9,11 @@ export default {
     }`,
 
   ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: property_subtype_enum, $type: property_type_enum) {
-      insert_property_one(object: {coordinates: $coordinates, description: $description, name: $name, sub_type: $sub_type, type: $type}) {
-        id
+    insert_property_owner(objects: {property: {data: {coordinates: $coordinates, description: $description, name: $name, sub_type: $sub_type, type: $type}}}) {
+      returning {
+        property_id
       }
+    }
   }`,
 
   ADD_PROPERTY_DETAILS: gql`mutation ADD_PROPERTY_DETAILS($description: String = "", $features: json = "", $max_occupants: Int = 10, $restrictions: json = "", $id: uuid = "") {
