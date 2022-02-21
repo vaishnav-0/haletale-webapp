@@ -82,7 +82,7 @@ type TItemCommon = {
 }
 type TSingleItem = {
     wrapperRender?: (c: JSX.Element) => JSX.Element
-    wrapperClassname?: string,
+    wrapperClassName?: string,
     wrapperStyle?: React.CSSProperties,
     defaultValue?: FormValueType,
     isArray?: undefined,
@@ -131,7 +131,7 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
                 item.wrapperRender ?
                     item.wrapperRender(inputComponent)
                     :
-                    <div className={item.wrapperClassname ?? ""} style={item.wrapperStyle ?? {}}>
+                    <div className={item.wrapperClassName ?? ""} style={item.wrapperStyle ?? {}}>
                         {
                             inputComponent
                         }

@@ -1,48 +1,48 @@
-export function collapse(ref: React.MutableRefObject<HTMLElement>,
+export function collapse(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
     auto = true,
     disabled = false
 ) {
-    if (ref.current) {
-        let elementTransition = ref.current.style.transition;
-        let sectionHeight = ref.current.scrollHeight;
+    if (node) {
+        let elementTransition = node.style.transition;
+        let sectionHeight = node.scrollHeight;
         if (auto) {
-            ref.current.style.transition = '';
-            ref.current.style.height = sectionHeight + 'px';
-            ref.current.style.transition = elementTransition;
+            node.style.transition = '';
+            node.style.height = sectionHeight + 'px';
+            node.style.transition = elementTransition;
         }
-        applyValues(ref,
+        applyValues(node,
             [{ property: "height", duration: duration, timing: timing, delay: delay }],
             { height: "0px" }, parseFloat(duration), disabled);
     }
 }
 
-export function expand(ref: React.MutableRefObject<HTMLElement>,
+export function expand(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
     auto = true,
     disabled = false
 ) {
-    var sectionHeight = ref.current.scrollHeight;
-    applyValues(ref,
+    var sectionHeight = node.scrollHeight;
+    applyValues(node,
         [{ property: "height", duration: duration, timing: timing, delay: delay }],
         { height: auto ? sectionHeight + 'px' : "" }, parseFloat(duration), disabled);
 }
-export function zoomIn(ref: React.MutableRefObject<HTMLElement>,
+export function zoomIn(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
     disabled = false
 ) {
-    applyValues(ref,
+    applyValues(node,
         [
             { property: "transform", duration: duration, timing: timing, delay: delay },
             { property: "opacity", duration: duration, timing: timing, delay: delay }
         ],
         { transform: "scale(1)", opacity: 1 }, parseFloat(duration), disabled);
 }
-export function zoomOut(ref: React.MutableRefObject<HTMLElement>,
+export function zoomOut(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
     disabled = false
 ) {
-    applyValues(ref,
+    applyValues(node,
         [
             { property: "transform", duration: duration, timing: timing, delay: delay },
             { property: "opacity", duration: duration, timing: timing, delay: delay }
@@ -56,32 +56,32 @@ interface transition {
     timing?: string,
     delay?: string
 }
-function applyTransition(ref: React.MutableRefObject<HTMLElement>,
+function applyTransition(node: HTMLElement,
     { property, duration = "0.5s", timing = "ease-in", delay = "0s" }: transition
 ) {
-    if (ref.current) {
+    if (node) {
         let transition = `${property} ${duration} ${timing} ${delay}`;
-        ref.current.style.transition += (ref.current.style.transition === "" ? "" : ",") + transition;
+        node.style.transition += (node.style.transition === "" ? "" : ",") + transition;
     }
 }
-function applyTransitions(ref: React.MutableRefObject<HTMLElement>,
+function applyTransitions(node: HTMLElement,
     transitions: transition[]
 ) {
     transitions.forEach(e => {
-        applyTransition(ref, e);
+        applyTransition(node, e);
     });
 }
-function applyValues(ref: React.MutableRefObject<HTMLElement>
+function applyValues(node: HTMLElement
     , transitions: transition[], values: object, maxDuration: number, disabled: boolean) {
-    if (ref.current) {
-        let elementTransition = ref.current.style.transition;
-        applyTransitions(ref, transitions);
+    if (node) {
+        let elementTransition = node.style.transition;
+        applyTransitions(node, transitions);
         requestAnimationFrame(function () {
             Object.entries(values).forEach(([k, v]) => {
-                (ref.current.style as any)[k] = v;
+                (node.style as any)[k] = v;
             });
             setTimeout(function () {
-                ref.current.style.transition = elementTransition;
+                node.style.transition = elementTransition;
             }, +!disabled * maxDuration * 1000);
         });
     }

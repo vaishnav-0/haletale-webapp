@@ -37,6 +37,7 @@ export default function useListState<T>(defaultValue: T[] = []): useListStateRet
     );
     const replace: useListStateReturnType<T>['replace'] = React.useCallback(
         (a, pos) => {
+            console.log(a, pos)
             if (Array.isArray(a)) {
                 updateList(l => {
                     let list_ = [...l];
@@ -49,7 +50,7 @@ export default function useListState<T>(defaultValue: T[] = []): useListStateRet
                 });
 
             } else {
-                if (!pos || pos < 0)
+                if (pos === undefined || pos < 0)
                     throw new Error("position shouldn't be negative");
                 else
                     updateList(l => {
