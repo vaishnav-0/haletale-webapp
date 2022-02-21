@@ -25,7 +25,6 @@ export default function ({ count, position = 0, onChange = () => { }, className,
         const refs = dotRefs.current;
         const eventHandlers: (() => void)[] = []
         refs.forEach((e, i) => {
-            console.log(e)
             const clickHandler = function () {
                 console.log(i, posRef.current)
                 console.log("c");
