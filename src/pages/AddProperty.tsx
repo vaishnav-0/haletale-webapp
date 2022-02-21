@@ -20,6 +20,10 @@ import FormProgressIndicator, { ProgressStateEnum } from '../components/Form/com
 import useListState from '../functions/hooks/useListState';
 import { expand, collapse } from '../functions/animations';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
+
+
+import { handleImage } from '../functions/api/imageUpload'
+
 type FormPropsType = {
     onComplete: () => void,
     onLoading: () => void
@@ -128,18 +132,18 @@ function AddPropertyForm1(props: FormPropsType) {
     const onSubmit = (d: FormData) => {
         setDisabled(true)
         console.log(d)
-        // addProperty({
-        //     variables: {
-        //         coordinates: {
-        //             "type": "Point",
-        //             "coordinates": d.property_coords
-        //         },
-        //         name: d.property_name,
-        //         description: d.notes,
-        //         type: d.type,
-        //         sub_type: d.subtype
-        //     }
-        // })
+        addProperty({
+            variables: {
+                coordinates: {
+                    "type": "Point",
+                    "coordinates": d.property_coords
+                },
+                name: d.property_name,
+                description: d.notes,
+                type: d.type,
+                sub_type: d.subtype
+            }
+        })
         props.onLoading();
         setTimeout(() => { props.onComplete() }, 3000);
     }
@@ -289,10 +293,24 @@ function AddPropertyForm2(props: FormPropsType) {
 
     type FormData = FormDataShape<typeof schema>;
 
+    const [addImages, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_IMAGES);
 
-    // const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
-
-    const onSubmit = (d: FormData) => {
+    const onSubmit = async (d: FormData) => {
+        let imageVariable: { key: string, property_id: string }[];
+        // add property id
+        let propertyId = 'xyz'
+        let keys = await handleImage(d.images);
+        keys.forEach((x) => {
+            imageVariable.push({
+                key: x,
+                property_id: propertyId
+            })
+        })
+        addImages({
+            variables: {
+                object: imageVariable!
+            }
+        })
 
     }
 
@@ -422,7 +440,7 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} />
+            <ProgressiveForm forms={forms} parallel />
         </Layout >
     );
 

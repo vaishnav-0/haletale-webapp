@@ -1,30 +1,62 @@
 import axios from 'axios';
-
-
 import { s3PostUrl } from '../image/index'
-async function handleImage(imageList) {
+
+async function getpresignedUrl(imageList) {
     const presignedUrlPromise = [];
-    imageList.forEach(e => {
-
-        console.log(e.file.name, e.file.type)
-        // if (!e.file.type)
+    imageList.forEach(({ file }) => {
         //     e.file.type = e.file.name.match('[^.]+$');
-        // console.log(e.file.type)
-
-        presignedUrlPromise.push(s3PostUrl(e.file));
+        presignedUrlPromise.push(s3PostUrl(file));
     });
+
     try {
         let result = await Promise.all(presignedUrlPromise);
-        console.log(result);
+        return result;
     }
     catch (error) {
         console.log(error)
+        throw new Error(error)
     }
-    // return new Promise((resolve, reject) => {
-
-
-    // })
-
 }
 
-export { handleImage }
+const uploadToBucket = async (file, url, fields) => {
+
+    const form = new FormData();
+    Object.entries(fields).forEach(([field, value]) => {
+        form.append(field, value);
+    });
+    form.append("file", file);
+    try {
+        let res = await axios.post(url, form, {
+            headers: {
+                "enctype": "multipart/form-data",
+                "Content-Type": "multipart/form-data"
+            },
+        })
+
+        return res;
+    }
+    catch (error) {
+        throw new Error(error)
+    }
+}
+
+
+export const handleImage = async (fileL) => {
+    let uploadArray = [];
+    let result = await getpresignedUrl(fileL);
+    let i = 0
+    result.forEach(({ data }) => {
+        uploadArray.push(uploadToBucket(fileL[i].file, data.url, data.fields));
+        i++;
+    })
+    try {
+        let keys = [];
+        let res = await Promise.all(uploadArray);
+        result.map(x => keys.push(x.data.fields.key));
+        console.log(keys)
+        return keys;
+    }
+    catch (e) {
+        throw new Error(e)
+    }
+}
