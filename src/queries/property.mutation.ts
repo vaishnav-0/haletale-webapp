@@ -21,4 +21,12 @@ export default {
           id
         }
     }`,
+    
+  ADD_PROPERTY_IMAGES:  gql`mutation ADD_IMAGE($object: [property_images_insert_input!]!) {  
+      insert_property_images(objects:$object) {
+        returning {
+          id
+        }
+      }
+    }`,
 }
