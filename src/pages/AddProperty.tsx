@@ -16,9 +16,7 @@ import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGe
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
 import { addressToGeo } from '../functions/api/location';
-import FormProgressIndicator, { ProgressStateEnum } from '../components/Form/components/FormProgressIndicator';
-import useListState from '../functions/hooks/useListState';
-import { expand, collapse } from '../functions/animations';
+import { ButtonSolid } from '../components/Button';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
 type FormPropsType = {
     onComplete: () => void,
@@ -51,13 +49,12 @@ function AddPropertyForm1(props: FormPropsType) {
                             f.setValue("property_address", v);
                             dynamicSchemaGenerator({
                                 schema: schema as SchemaType,
-                                dataLoader: () => new Promise(res => {
-                                    addressToGeo(suggestions[i!][1]).then(d => {
-                                        res([d.location.lat, d.location.lng])
-                                    }).catch(e => {
-                                        console.log(e);
-                                    })
-                                }),
+                                dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
+                                    return ([d.location.lat, d.location.lng])
+                                }).catch(e => {
+                                    console.log(e);
+                                })
+                                ,
                                 dataMap: (data) => [
                                     {
                                         property_coords: (item: any) => { item.props.coords = data },
@@ -113,6 +110,9 @@ function AddPropertyForm1(props: FormPropsType) {
             },
         ],
         submitButton: "Next",
+        defaultValue: {
+            property_name: "this"
+        }
     } as const;
 
     React.useEffect(() => {
@@ -147,13 +147,11 @@ function AddPropertyForm1(props: FormPropsType) {
     // add property res
     if (error) console.log(error)
     if (data) console.log(data)
-    if (loading) console.log(loading)
-    console.log(disabled)
     React.useEffect(() => {
         if (!loading) {
             dynamicSchemaGenerator({
                 schema: schema as SchemaType,
-                dataLoader: () => new Promise(res => res(
+                dataLoader: new Promise(res => res(
                     {
                         type: property_types.property_type.map((e: any) => e.name),
                         subtype: property_types.property_subtype.map((e: any) => e.name),
@@ -206,6 +204,34 @@ function AddPropertyForm2(props: FormPropsType) {
                     resolutionType: 'ratio',
                     resolutionWidth: 16,
                     resolutionHeight: 9
+                }
+            },
+            {
+                name: "upload_button",
+                type: "custom",
+                render: function PlaceSuggest(f: UseFormReturn) {
+                    return <ButtonSolid onClick={() => {
+                        const images = f.getValues("images");
+                        //upload and set images prop to disabled
+                        // setSchema_(schema => {
+                        //     if (schema)
+                        //         (schema.items[0] as any).props.disabled = true;//beware of index of items
+                        //     return schema;
+                        // })
+                        dynamicSchemaGenerator({
+                            schema: schema as SchemaType,
+                            dataLoader: new Promise(res => res(true)),
+                            dataMap: (data) => [
+                                {
+                                    images: (item: any) => { item.props.disabled = data },
+                                }
+                            ] as dataMapReturn
+                        }).then(sch => {
+                            setSchema_(sch)
+                        })
+                    }}>
+                        Upload Images
+                    </ButtonSolid>
                 }
             },
             {
@@ -383,7 +409,7 @@ function AddPropertyForm3(props: FormPropsType) {
     // const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
     const onSubmit = (d: FormData) => {
-
+        console.log(d);
     }
 
     // add property res
@@ -422,7 +448,7 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} />
+            <ProgressiveForm forms={forms} parallel />
         </Layout >
     );
 
