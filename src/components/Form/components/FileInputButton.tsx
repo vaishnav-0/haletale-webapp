@@ -6,16 +6,17 @@ import { InputPropsType } from './types';
 import { TextInput } from '..';
 import { PropType } from './Range';
 
-export interface PropsType extends InputPropsType {
+export interface PropsType {
     className?: string;
     style?: React.CSSProperties
     ButtonComponent: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>
     | JSX.Element,
-    key?:React.Attributes["key"]
+    key?: React.Attributes["key"],
+    onChange?: (v: File[]) => void
 }
 export type FileInputButtonPropsType = Omit<PropsType, "ButtonComponent">
 
-export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className = "", style,key, ButtonComponent }: PropsType, ref) => {
+export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className = "", style, key, ButtonComponent, onChange = () => { } }: PropsType, ref) => {
     const {
         files,
         fileNames,
@@ -28,6 +29,9 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         setFiles,
         removeFile,
     } = useFileUpload();
+    React.useEffect(() => {
+        onChange(files);
+    }, [files])
     const inputRef = React.useRef<HTMLInputElement>(null!);
     return <div key={key} className={className} style={style}>
         <input type="file" style={{ display: 'none' }} onChange={(e) => { setFiles(e, 'w'); console.log(e) }}
