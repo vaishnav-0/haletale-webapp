@@ -21,7 +21,8 @@ export interface PropsType {
     rejectOnResolutionError?: boolean,
     onChange?: (value: ImageListType, addUpdatedIndex?: Array<number>) => void;
     onBlur?: () => void,
-    key?: React.Attributes["key"]
+    key?: React.Attributes["key"],
+    disabled?: boolean
 
 }
 const tagItems = {
@@ -77,8 +78,8 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
     })
 }
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
-    maxFileSize, resolutionType,
-    resolutionHeight, resolutionWidth, rejectOnResolutionError, onChange = () => { }, key }: PropsType): JSX.Element {
+    maxFileSize, resolutionType, resolutionHeight, resolutionWidth,
+    rejectOnResolutionError, onChange = () => { }, key, disabled = false }: PropsType): JSX.Element {
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
     const [resErrors, setResErrors] = React.useState<Set<number>>(new Set());
@@ -319,7 +320,9 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                 onClick={onImageRemoveAll}>Remove all
                             </button>
                         </div>
-
+                        {
+                            disabled && <div className={style["disable-container"]} />
+                        }
                     </div>
                 )
             }
