@@ -32,6 +32,8 @@
 }
 
 .file-name {
+    display: flex;
+    width: max-content;
     color: $greyText;
 }
 

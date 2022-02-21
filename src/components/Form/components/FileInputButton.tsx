@@ -12,11 +12,13 @@ export interface PropsType {
     ButtonComponent: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>
     | JSX.Element,
     key?: React.Attributes["key"],
-    onChange?: (v: File[]) => void
+    onChange?: (v: File[]) => void,
+    multiple?: boolean
 }
 export type FileInputButtonPropsType = Omit<PropsType, "ButtonComponent">
 
-export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className = "", style, key, ButtonComponent, onChange = () => { } }: PropsType, ref) => {
+export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ className = "", style, key,
+    ButtonComponent, onChange = () => { }, multiple = false }: PropsType, ref) => {
     const {
         files,
         fileNames,
@@ -34,7 +36,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
     }, [files])
     const inputRef = React.useRef<HTMLInputElement>(null!);
     return <div key={key} className={className} style={style}>
-        <input type="file" style={{ display: 'none' }} onChange={(e) => { setFiles(e, 'w'); console.log(e) }}
+        <input multiple={multiple} type="file" style={{ display: 'none' }} onChange={(e) => { setFiles(e, 'w'); console.log(e) }}
             ref={e => {
                 inputRef.current = e as HTMLInputElement;
                 if (ref)
@@ -53,12 +55,17 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         }
         {files.length !== 0 &&
             <div className={cssStyle["file-info"]}>
-                <div className={cssStyle["file-name"]}>
-                    {fileNames[0]}
-                </div>
-                <button type="button" onClick={() => { removeFile(0); inputRef.current.value = ""; }} className={cssStyle["file-remove-btn"]}>
-                    <i className="fas fa-times" />
-                </button>
+                {
+                    fileNames.map((name, i) => <div key={name} style={{ display: "flex" }}>
+                        <div className={cssStyle["file-name"]}>
+                            {name}
+                        </div>
+                        <button type="button" onClick={() => { removeFile(i); }} className={cssStyle["file-remove-btn"]}>
+                            <i className="fas fa-times" />
+                        </button>
+                    </div>)
+                }
+
             </div>
         }
     </div>
