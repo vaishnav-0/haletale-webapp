@@ -8,9 +8,10 @@ type PropsType = {
     placeholder?: string,
     submitOnSuggestionClick?: boolean,
     suggestionItems?: string[];
+    disabled?: boolean
 }
 export default function ({ onChange = () => { }, onSubmit = () => { },
-    submitOnSuggestionClick = false, suggestionItems, placeholder = "" }: PropsType): JSX.Element {
+    submitOnSuggestionClick = false, suggestionItems, placeholder = "", disabled = false }: PropsType): JSX.Element {
     const [suggestionsOpen, setSuggestionsOpen] = React.useState<boolean>(false);
     const componentRef = React.useRef(null!)
     const inpRef = React.useRef<HTMLInputElement>(null);
@@ -32,6 +33,7 @@ export default function ({ onChange = () => { }, onSubmit = () => { },
                     ref={inpRef}
                     placeholder={placeholder} type="text"
                     onChange={(e) => onChange(e.target.value)}
+                    disabled={disabled}
                 />
             </div>
             <div className={style["searchbox-btn"]}>
