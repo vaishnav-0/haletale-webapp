@@ -16,9 +16,15 @@ import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGe
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
 import { addressToGeo } from '../functions/api/location';
-import FormProgressIndicator from '../components/Form/components/FormProgressIndicator';
+import FormProgressIndicator, { ProgressStateEnum } from '../components/Form/components/FormProgressIndicator';
 import useListState from '../functions/hooks/useListState';
-function AddPropertyForm1() {
+import { expand, collapse } from '../functions/animations';
+import ProgressiveForm from '../components/Form/ProgressiveForm';
+type FormPropsType = {
+    onComplete: () => void,
+    onLoading: () => void
+}
+function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
@@ -181,7 +187,7 @@ function AddPropertyForm1() {
         </ >
     );
 }
-function AddPropertyForm2() {
+function AddPropertyForm2(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
@@ -313,7 +319,7 @@ function AddPropertyForm2() {
         </ >
     );
 }
-function AddPropertyForm3() {
+function AddPropertyForm3(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
@@ -339,6 +345,7 @@ function AddPropertyForm3() {
                 title: "Paid by landlord",
                 name: "landlord_paid",
                 type: "checkboxGroup",
+                wrapperClassName: formStyle["horizontal-list"],
                 props: {
                     values: ["Hydro", "Water", "Heat"]
                 }
@@ -403,19 +410,14 @@ function AddPropertyForm3() {
     );
 }
 function AddProperty(): JSX.Element {
-    const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: 3 }, () => 0));
-    console.log(progressList);
+
+    const forms = [{ description: "Basic details", component: AddPropertyForm1 }, { description: "Images", component: AddPropertyForm2 }, { description: "Details", component: AddPropertyForm3 }]
     return (
         <Layout>
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <FormProgressIndicator state={progressList[0]} indicator='1' description='Basic details' />
-            <AddPropertyForm1 />
-            <FormProgressIndicator state={progressList[1]} indicator='2' description='Images' />
-            <AddPropertyForm2 />
-            <FormProgressIndicator state={progressList[2]} indicator='3' description='Details' />
-            <AddPropertyForm3 />
+            <ProgressiveForm forms={forms} />
 
         </Layout >
     );
