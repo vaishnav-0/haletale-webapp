@@ -23,9 +23,9 @@ function modifySchema(dataMap: dataMapReturn, schema: { items: SchemaType["items
     }
 }
 export async function dynamicSchemaGenerator({ schema, dataLoader, dataMap }:
-    { schema: SchemaType, dataLoader: () => Promise<any>, dataMap: (d: any) => dataMapReturn }) {
+    { schema: SchemaType, dataLoader: Promise<any>, dataMap: (d: any) => dataMapReturn }) {
     const _schema: SchemaType = cloneDeep(schema);
-    const data = await dataLoader();
+    const data = await dataLoader;
     const dataMaped = dataMap(data);
     modifySchema(dataMaped, _schema);
     return _schema;
