@@ -29,6 +29,7 @@ type FormPropsType = {
 function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const schema_Ref = React.useRef(schema_);
     const [disabled, setDisabled] = React.useState<boolean>(false)
     const schema = {
         heading: "",
@@ -53,7 +54,7 @@ function AddPropertyForm1(props: FormPropsType) {
                         onSubmit={(v, i) => {
                             f.setValue("property_address", v);
                             dynamicSchemaGenerator({
-                                schema: schema as SchemaType,
+                                schema: schema_Ref.current as SchemaType,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
                                     return ([d.location.lat, d.location.lng])
                                 }).catch(e => {
@@ -122,17 +123,26 @@ function AddPropertyForm1(props: FormPropsType) {
 
     React.useEffect(() => {
         setSchema_(schema as SchemaType);
-    }, [])
+    }, []);
+    React.useEffect(() => {
+        schema_Ref.current = schema_;
+    }, [schema_])
 
     type FormData = FormDataShape<typeof schema>;
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
-    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+    const [addProperty, { data, loading: MutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
+    React.useEffect(() => {
+        if (loading) {
+            props.onLoading();
+        } else if (data) {
+            props.onComplete()
+        }
+    }, [])
     const onSubmit = (d: FormData) => {
-        setDisabled(true)
-        console.log(d)
+        setDisabled(true);
         addProperty({
             variables: {
                 coordinates: {
@@ -145,8 +155,6 @@ function AddPropertyForm1(props: FormPropsType) {
                 sub_type: d.subtype
             }
         })
-        props.onLoading();
-        setTimeout(() => { props.onComplete() }, 3000);
     }
 
     // add property res
@@ -175,12 +183,12 @@ function AddPropertyForm1(props: FormPropsType) {
         }
     }, [loading]);
     React.useEffect(() => {
-        if (loading || !schema_) {
+        if (loading) {
             setLoader(true);
         } else {
             setLoader(false)
         }
-    }, [loading, schema_])
+    }, [loading])
 
     return (
         <>
@@ -324,19 +332,12 @@ function AddPropertyForm3(props: FormPropsType) {
                 }
             },
             {
-                title: "Pets",
-                name: "pets",
-                type: "select",
+                title: "Restrictions",
+                name: "restriction",
+                type: "checkboxGroup",
+                wrapperClassName: formStyle["horizontal-list"],
                 props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-            {
-                title: "Smoking",
-                name: "smoking",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
+                    values: ["smoking", "pets"],
                 }
             },
             {
@@ -344,8 +345,9 @@ function AddPropertyForm3(props: FormPropsType) {
                 name: "lease_term",
                 type: "select",
                 props: {
-                    values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
-                }
+                    values: { "": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Rent",
@@ -353,7 +355,8 @@ function AddPropertyForm3(props: FormPropsType) {
                 type: "text",
                 props: {
                     type: "number"
-                }
+                },
+                validationSchema: stringFieldRequired
             },
 
         ],
@@ -371,18 +374,18 @@ function AddPropertyForm3(props: FormPropsType) {
 
     const onSubmit = (d: FormData) => {
         console.log(d);
-        
-        addPropertyDetails({
-            variables: {
-                description: "desc",
-                features: [],
-                max_occupants: 5,
-                rent_amount: 100.00,
-                restrictions: [],
-                rooms: {},
-                id: "propertyid"
-            }
-        })
+
+        // addPropertyDetails({
+        //     variables: {
+        //         description: null,
+        //         features: d.features,
+        //         max_occupants: d.tenant_count,
+        //         rent_amount: d.rent,
+        //         restrictions: d.restriction,
+        //         rooms: {},
+        //         id: ""
+        //     }
+        // })
     }
 
     // add property res
