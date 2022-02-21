@@ -10,7 +10,7 @@ export interface RadioButtonGroupPropsType extends InputPropsType {
 }
 export interface CheckBoxGroupPropsType extends InputPropsType {
     name: string
-    values: string[],
+    values: string[] | { [index: string]: string },
     defaultValue?: string[],
 }
 
@@ -28,12 +28,13 @@ const RadioButtonGroup = React.forwardRef<HTMLInputElement, RadioButtonGroupProp
     </>
 });
 const CheckBoxGroup = React.forwardRef<HTMLInputElement, CheckBoxGroupPropsType>(({ name, values, type, defaultValue, ...rest }: CheckBoxGroupPropsType, ref) => {
+    const values_ = Array.isArray(values) ? Object.fromEntries(values.map(e => [e, e])) : values;
     return <>
         {
-            values.map((v, i) => {
+            Object.entries(values_).map(([value, label], i) => {
                 return (
-                    <CheckBox key={i} name={name} {...rest} value={v} label={v} ref={ref}
-                        {...defaultValue?.includes(v) ? { defaultChecked: true } : {}}
+                    <CheckBox key={i} name={name} {...rest} value={value} label={label} ref={ref}
+                        {...defaultValue?.includes(value) ? { defaultChecked: true } : {}}
                     />
                 );
             })
