@@ -49,7 +49,23 @@ export default {
         key
       }
     }
-  }`
+  }`,
+
+  PROPERTY_ATTRIBUTES : gql`query PROPERTY_ATTRIBUTES {
+    property_room_list {
+      name
+      comment
+    }
+    property_restrictions_list {
+      name
+      comment
+    }
+    property_features_list {
+      name
+      comment
+    }
+  }
+  `,
 
 }
 

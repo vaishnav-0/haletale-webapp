@@ -363,6 +363,12 @@ function AddPropertyForm2(props: FormPropsType) {
     );
 }
 function AddPropertyForm3(props: FormPropsType) {
+
+    let { data: property_attributes, loading } = useQuery(propertyQuery.PROPERTY_ATTRIBUTES);
+
+// property attributes --- faetures, restrictions , rooms
+
+
     const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
@@ -422,7 +428,7 @@ function AddPropertyForm3(props: FormPropsType) {
 
     const onSubmit = (d: FormData) => {
         console.log(d);
-        
+
         addPropertyDetails({
             variables: {
                 description: "desc",
