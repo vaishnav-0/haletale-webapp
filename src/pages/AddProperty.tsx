@@ -29,8 +29,7 @@ type FormPropsType = {
 function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
-    const schema_Ref = React.useRef(schema_);
-    const [disabled, setDisabled] = React.useState<boolean>(false)
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const schema = {
         heading: "",
         items: [
@@ -46,15 +45,15 @@ function AddPropertyForm1(props: FormPropsType) {
             {
                 name: "address_search",
                 type: "custom",
-                render: function PlaceSuggest(f: UseFormReturn) {
+                render: function PlaceSuggest(f: UseFormReturn, s: SchemaType) {
                     const { suggestions, suggest } = usePlaceSuggestions();
-                    return <Searchbar suggestionItems={suggestions.map(e => e[0])}
+                    return <Searchbar disabled={disabled} suggestionItems={suggestions.map(e => e[0])}
                         placeholder="Search a place"
                         onChange={suggest}
                         onSubmit={(v, i) => {
                             f.setValue("property_address", v);
                             dynamicSchemaGenerator({
-                                schema: schema_Ref.current as SchemaType,
+                                schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
                                     return ([d.location.lat, d.location.lng])
                                 }).catch(e => {
@@ -124,10 +123,7 @@ function AddPropertyForm1(props: FormPropsType) {
     React.useEffect(() => {
         setSchema_(schema as SchemaType);
     }, []);
-    React.useEffect(() => {
-        schema_Ref.current = schema_;
-    }, [schema_])
-
+    
     type FormData = FormDataShape<typeof schema>;
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
@@ -135,12 +131,12 @@ function AddPropertyForm1(props: FormPropsType) {
     const [addProperty, { data, loading: MutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
     React.useEffect(() => {
-        if (loading) {
+        if (MutationLoading) {
             props.onLoading();
         } else if (data) {
             props.onComplete()
         }
-    }, [])
+    }, [data, MutationLoading])
     const onSubmit = (d: FormData) => {
         setDisabled(true);
         addProperty({
