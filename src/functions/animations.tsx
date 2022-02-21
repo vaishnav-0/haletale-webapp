@@ -22,10 +22,14 @@ export function expand(node: HTMLElement,
     auto = true,
     disabled = false
 ) {
-    var sectionHeight = node.scrollHeight;
+    const sectionHeight = node.scrollHeight;
+    const maxDuration = parseFloat(duration);
     applyValues(node,
         [{ property: "height", duration: duration, timing: timing, delay: delay }],
-        { height: auto ? sectionHeight + 'px' : "" }, parseFloat(duration), disabled);
+        { height: auto ? sectionHeight + 'px' : "" }, maxDuration, disabled);
+    setTimeout(function () {
+        node.style.height = "";
+    }, +!disabled * maxDuration * 1000);
 }
 export function zoomIn(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
