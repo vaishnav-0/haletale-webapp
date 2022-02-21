@@ -123,7 +123,7 @@ function AddPropertyForm1(props: FormPropsType) {
     React.useEffect(() => {
         setSchema_(schema as SchemaType);
     }, []);
-    
+
     type FormData = FormDataShape<typeof schema>;
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
@@ -200,8 +200,6 @@ function AddPropertyForm1(props: FormPropsType) {
     );
 }
 function AddPropertyForm2(props: FormPropsType) {
-    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
-    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
         heading: "",
         items: [
@@ -218,10 +216,6 @@ function AddPropertyForm2(props: FormPropsType) {
         ],
         submitButton: "Next",
     } as const;
-
-    React.useEffect(() => {
-        setSchema_(schema as SchemaType);
-    }, [])
 
     type FormData = FormDataShape<typeof schema>;
 
@@ -246,32 +240,10 @@ function AddPropertyForm2(props: FormPropsType) {
 
     }
 
-    // add property res
-    // if (error) console.log(error)
-    // if (data) console.log(data)
-    // if (loading) console.log(loading)
-
-    // React.useEffect(() => {
-    //     if (!loading) {
-    //     }
-    // }, [loading]);
-    // React.useEffect(() => {
-    //     if (loading || !schema_) {
-    //         setLoader(true);
-    //     } else {
-    //         setLoader(false)
-    //     }
-    // }, [loading, schema_])
-
     return (
-        <>
-            {Loader}
-            {
-                schema_ &&
-                <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
-                    onSubmit={onSubmit} />
-            }
-        </ >
+
+        <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
+            onSubmit={onSubmit} />
     );
 }
 function AddPropertyForm3(props: FormPropsType) {
