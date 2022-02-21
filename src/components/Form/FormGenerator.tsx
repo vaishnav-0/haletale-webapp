@@ -104,11 +104,13 @@ export interface SchemaType {
     heading: string,//Form heading
     items: readonly TItem[],
     submitButton: string | ((props: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => JSX.Element),
+    defaultValue?: object
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 
-function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: UseFormReturn) {
+function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: UseFormReturn, config: { disabled?: boolean } = { disabled: false }) {
     function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
+        console.log(config.disabled);
         let inputComponent!: JSX.Element;
         if (item.type === "custom") {
             return item.render(useFormRet);
@@ -116,7 +118,7 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
         Object.entries(componentMap).forEach(([type, component]) => {
             if (item.type === type) {
                 let Component = component as any;
-                inputComponent = <Component as any {...{ ...item.props, name: item.name }} />
+                inputComponent = <Component as any {...{ disabled: config.disabled, ...item.props, name: item.name }} />
             }
         })
         return inputComponent;
@@ -265,11 +267,12 @@ function generateYupSchema(items: readonly TItem[]) {
 }
 export type PropsType = {
     schema: SchemaType, onSubmit: (data: any) => void,
-    onError?: (e: any) => void, disabled?: boolean
+    onError?: (e: any) => void,
+    disabled?: boolean,
 }
 export default function FormGenerator({ schema, onSubmit, onError, disabled }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
-    const methods = useForm({ resolver: yupResolver(yupSchema) });
+    const methods = useForm({ resolver: yupResolver(yupSchema), defaultValues: schema.defaultValue ?? {} });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
     return (
@@ -281,7 +284,7 @@ export default function FormGenerator({ schema, onSubmit, onError, disabled }: P
                     </div>
                 }
                 {
-                    generateFields(schema, errors, methods)
+                    generateFields(schema, errors, methods, { disabled })
                 }
                 {
                     typeof schema.submitButton === "string" ?

@@ -87,12 +87,12 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
-    const Tags = usePillCollection({
-        items: tagItems,
-        pillProps: {
-            className: style["tag"]
-        }
-    })
+    // const Tags = usePillCollection({
+    //     items: tagItems,
+    //     pillProps: {
+    //         className: style["tag"]
+    //     }
+    // })
     const selectedTags = React.useRef<{ [k: number]: string[] }>({})
     React.useEffect(() => {
         const divRef_ = divRef.current;
@@ -242,7 +242,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                                     <i className="far fa-edit" />
                                                 </button>
                                             </div>
-                                            <div className={style["tag-container"]}>
+                                            {/* <div className={style["tag-container"]}>
                                                 <div className={style["tag-list-container"]}>
                                                     <Tags.List />
                                                 </div>
@@ -255,7 +255,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                                         </div>
                                                     })
                                                 }
-                                            </div>
+                                            </div> */}
 
                                         </div>
                                     ))}

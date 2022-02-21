@@ -32,8 +32,8 @@ export const CheckBoxGroup = wrappedGen<CheckBoxGroupPropsType>(CheckBoxGroup_);
 export const TimeField = wrappedGen<TimeFieldPropsType>(TimeField_);
 export const TextArea = wrappedGen<TextAreaPropsType>(TextArea_);
 export const Select = wrappedGen<SelectPropsType>(Select_);
-export const FileInputButton = wrappedGen<FileInputButtonPropsType>(FileInputButton_);
 
+export const FileInputButton = wrappedGen<FileInputButtonPropsType & { name: string }>(FileInputButton_, true);
 export const PillList = wrappedGen<PillListPropsType & { name: string }>(PillList_, true);
 export const PillGroup = wrappedGen<PillListPropsType & { name: string }>(PillGroup_, true);
 export const NumberInput = wrappedGen<NumberInputPropsType & { name: string }>(NumberInput_, true);

@@ -1,5 +1,6 @@
 import React from "react";
 import MapComponent from "../../../components/Map"
+import imageStyle from './Images.module.scss';
 import { Map, LatLng } from "leaflet";
 import pinIcon from '../../../assets/icons/map_pin.svg';
 import CSSstyle from './CoordinateInput.module.scss';
@@ -8,9 +9,10 @@ export interface PropsType extends MapContainerProps {
     onChange?: (value: [number, number]) => void,
     style?: React.CSSProperties,
     className?: string,
-    coords?: [number, number]
+    coords?: [number, number],
+    disabled?: boolean
 }
-export default function CoordinateInput({ onChange = () => { }, style, className, coords, ...props }: PropsType) {
+export default function CoordinateInput({ onChange = () => { }, style, className, coords, disabled, ...props }: PropsType) {
     const [map, setMap] = React.useState<Map>(null!);
     React.useEffect(() => {
         if (map) {
@@ -40,5 +42,6 @@ export default function CoordinateInput({ onChange = () => { }, style, className
                 }, ...style
             }} {...props} />
         <img className={CSSstyle["centermarker"]} src={pinIcon} />
+        {disabled && <div className={imageStyle["disable-container"]} />}
     </div>
 }
