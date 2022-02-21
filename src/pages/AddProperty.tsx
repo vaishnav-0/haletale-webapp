@@ -27,6 +27,7 @@ type FormPropsType = {
 function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const [disabled, setDisabled] = React.useState<boolean>(false)
     const schema = {
         heading: "",
         items: [
@@ -125,25 +126,29 @@ function AddPropertyForm1(props: FormPropsType) {
     const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
     const onSubmit = (d: FormData) => {
-        addProperty({
-            variables: {
-                coordinates: {
-                    "type": "Point",
-                    "coordinates": d.property_coords
-                },
-                name: d.property_name,
-                description: d.notes,
-                type: d.type,
-                sub_type: d.subtype
-            }
-        })
+        setDisabled(true)
+        console.log(d)
+        // addProperty({
+        //     variables: {
+        //         coordinates: {
+        //             "type": "Point",
+        //             "coordinates": d.property_coords
+        //         },
+        //         name: d.property_name,
+        //         description: d.notes,
+        //         type: d.type,
+        //         sub_type: d.subtype
+        //     }
+        // })
+        props.onLoading();
+        setTimeout(() => { props.onComplete() }, 3000);
     }
 
     // add property res
     if (error) console.log(error)
     if (data) console.log(data)
     if (loading) console.log(loading)
-
+    console.log(disabled)
     React.useEffect(() => {
         if (!loading) {
             dynamicSchemaGenerator({
@@ -180,7 +185,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 schema_ && <div style={{ height: "max-content", position: "relative", padding: "1em 0" }}>
                     {Loader}
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
-                        onSubmit={onSubmit} />
+                        onSubmit={onSubmit} disabled={disabled} />
                 </div>
 
             }
@@ -418,7 +423,6 @@ function AddProperty(): JSX.Element {
                 Add Property
             </div>
             <ProgressiveForm forms={forms} />
-
         </Layout >
     );
 
