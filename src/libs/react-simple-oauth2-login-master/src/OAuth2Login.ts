@@ -123,9 +123,10 @@ class OAuth2Login {
           code_verifier: this.code_verifier!,
         })
       }).then(res => {
+        console.log(res); 
         if (res.status !== 200)
           throw { code: "NewtworkError", message: "Network error" };
-        res.json()
+        return res.json()
       }).then(d => {
         console.log(d)
         onSuccess(d)
