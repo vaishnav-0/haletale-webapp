@@ -78,19 +78,20 @@ type TItemCommon = {
         value: [string, string];
         default: boolean,
         sectionHeading?: string,
-    }
-}
-type TSingleItem = {
-    wrapperRender?: (c: JSX.Element) => JSX.Element
+    },
     wrapperClassName?: string,
     wrapperStyle?: React.CSSProperties,
+}
+type TSingleItem = {
     defaultValue?: FormValueType,
+    wrapperRender?: (c: JSX.Element) => JSX.Element,
     isArray?: undefined,
     validationSchema?: yup.AnySchema,
 } & ItemTypes
 type TArrayItem = {
     items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
     defaultValue?: FormValueType[],
+    wrapperRender?: (c: JSX.Element[]) => JSX.Element
     isArray: {   //dynamic field
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
@@ -149,7 +150,16 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
     function ArrayComponent(item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[]) {
         const setCountRef = React.useRef<(v: number) => void>(() => { });
         const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
-        return <div key={keyGen.next().value}>
+        const itemList = React.useCallback((i: number) => item.items.map((_item, k) => <React.Fragment key={k}>{
+            SingleComponent(
+                {
+                    ..._item, name: `${item.name}[${i}].${_item.name}`,
+                    wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
+                },
+                errors?.[i]?.[_item.name]?.message)
+        }</React.Fragment>
+        ), []);
+        return <React.Fragment key={keyGen.next().value}>
             <FieldArrayWrapper name={item.name} >
                 {({ fields, append, remove }) => <>
                     <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
@@ -184,18 +194,16 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
                                         >
                                             <i className="fas fa-minus" /></button>
                                     </div>
-                                    <div className={style["horizontal-list"]} style={{ alignItems: "start" }}>
-                                        {
-                                            item.items.map((_item, k) => <div key={k}>{
-                                                SingleComponent(
-                                                    {
-                                                        ..._item, name: `${item.name}[${i}].${_item.name}`,
-                                                        wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
-                                                    },
-                                                    errors?.[i]?.[_item.name]?.message)
-                                            }</div>)
-                                        }
-                                    </div>
+                                    {
+                                        item.wrapperRender ?
+                                            item.wrapperRender(itemList(i))
+                                            :
+                                            <div className={item.wrapperClassName ?? !item.wrapperStyle ? style["horizontal-list"] : ""} style={item.wrapperStyle ?? {}}>
+                                                {
+                                                    itemList(i)
+                                                }
+                                            </div>
+                                    }
                                 </div>
                             })
                         }
@@ -204,7 +212,7 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
 
                 }
             </FieldArrayWrapper>
-        </div>
+        </React.Fragment >
     }
     function FormComponent(item: TItem, errors?: FieldErrors) {
         if (item.isArray)
