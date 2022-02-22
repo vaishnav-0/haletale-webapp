@@ -16,11 +16,11 @@ import { ImageUpload as ImageUpload_, PropsType as ImageUploadPropsType } from "
 import { NativeWrapper, CustomWrapper } from "./formWrap";
 import CoordinateInput_, { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 
-function wrappedGen<T extends { name: string }>(c: NativeWrapperComponentType<T> | CustomWrapperComponentType<T>, custom?: boolean) {
+function wrappedGen<T extends { name: string }>(c: NativeWrapperComponentType<T> | CustomWrapperComponentType<T>, custom?: boolean, defaultValue?: any) {
     return function (p: T) {
         if (custom)
             return <CustomWrapper<T> Component={c as CustomWrapperComponentType<T>} props={p} />
-        return <NativeWrapper<T> Component={c} props={p} />
+        return <NativeWrapper<T> Component={c} props={p} defaultValue={defaultValue} />
     }
 }
 
@@ -28,7 +28,7 @@ export const RadioButton = wrappedGen<RadioButtonPropsType>(RadioButton_);
 export const CheckBox = wrappedGen<RadioButtonPropsType>(CheckBox_);
 export const TextInput = wrappedGen<TextInputPropsType>(TextInput_);
 export const RadioButtonGroup = wrappedGen<RadioButtonGroupPropsType>(RadioButtonGroup_);
-export const CheckBoxGroup = wrappedGen<CheckBoxGroupPropsType>(CheckBoxGroup_);
+export const CheckBoxGroup = wrappedGen<CheckBoxGroupPropsType>(CheckBoxGroup_, false, []);
 export const TimeField = wrappedGen<TimeFieldPropsType>(TimeField_);
 export const TextArea = wrappedGen<TextAreaPropsType>(TextArea_);
 export const Select = wrappedGen<SelectPropsType>(Select_);

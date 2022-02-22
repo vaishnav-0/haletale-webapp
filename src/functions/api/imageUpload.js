@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { s3PostUrl } from '../image/index'
-
+import { toast } from 'react-toastify'
 async function getpresignedUrl(imageList) {
     const presignedUrlPromise = [];
     imageList.forEach(({ file }) => {
@@ -14,7 +14,16 @@ async function getpresignedUrl(imageList) {
     }
     catch (error) {
         console.log(error)
-        throw new Error(error)
+        toast.error('Network error. Please try again', {
+            position: "bottom-center",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+        throw new Error(error);
     }
 }
 

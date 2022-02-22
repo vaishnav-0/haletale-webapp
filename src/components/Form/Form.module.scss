@@ -7,10 +7,13 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.5em;
     font-size: 1.1em;
+    grid-auto-rows: minmax(5em, max-content);
+
     &>div {
         grid-column: 1 / span 2;
     }
-    @include responsiveVSpacing("margin", (0, 0, 4em, 6em,7em));
+
+    @include responsiveVSpacing("margin", (0, 0, 4em, 6em, 7em));
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -49,7 +52,8 @@
     font-weight: 800;
     margin: 1em 0;
 }
-.form-section-heading{
+
+.form-section-heading {
     background-color: $primaryBackground;
     font-size: 1.3em;
     padding: 0.5em;
@@ -87,28 +91,30 @@
     }
 }
 
-.remove-btn{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 1.1em;
-        height: 1.1em;
-        border-radius: 50%;
+.remove-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.1em;
+    height: 1.1em;
+    border-radius: 50%;
+    border: 1px solid $dangerPrimary;
+    background-color: white;
+    color: $dangerPrimary;
+
+    &:hover {
         border: 1px solid $dangerPrimary;
-        background-color: white;
-        color: $dangerPrimary;
-        &:hover{
-            border: 1px solid $dangerPrimary;
-            background-color: $dangerPrimary;
-            color: white;
-        }
+        background-color: $dangerPrimary;
+        color: white;
+    }
 
-        i {
-            font-size: 0.45em;
+    i {
+        font-size: 0.45em;
 
-        }
+    }
 }
-.field-error{
+
+.field-error {
     color: $dangerPrimary;
     width: 100%;
 }

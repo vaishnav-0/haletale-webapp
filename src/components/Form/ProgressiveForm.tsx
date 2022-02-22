@@ -10,7 +10,6 @@ type PropsType = {
 }
 export default function ProgressiveForm({ forms, parallel = false }: PropsType): JSX.Element {
     const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: forms.length }, () => 0));
-    console.log(progressList);
     const formContainerRefs = React.useRef<(HTMLElement | null)[]>([]);
     const getOnLoading = React.useCallback((n: number) => {
         return () => progressListUpdate(ProgressStateEnum.Processing, n);

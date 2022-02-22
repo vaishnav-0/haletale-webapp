@@ -10,16 +10,17 @@ function groupOptionalCalls(fn1: (v: any) => void, fn2?: Function): (v: any) => 
         :
         fn1;
 }
-export function NativeWrapper<ComponentPropType extends { name: string }>({ Component, props }:
+export function NativeWrapper<ComponentPropType extends { name: string }>({ Component, props, defaultValue }:
     {
         Component: NativeWrapperComponentType<ComponentPropType>,
         props: ComponentPropType,
-        custom?: boolean
+        defaultValue?: any//for special cases(checkboxGroup default value)
     }): JSX.Element {
     const formContext = useFormContext();
     if (!formContext)
         throw new Error("No form context found.");
     const { onChange, onBlur, ...registerRest } = formContext.register(props.name);
+    defaultValue && formContext.setValue(props.name, defaultValue);
     const { onChange: propOnChange, onBlur: PropOnBlur, ...propsRest } = props as any;
     const pr = {
         ...registerRest, ...propsRest, onChange: groupOptionalCalls(onChange, propOnChange),

@@ -112,7 +112,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         }
     }, []);
     React.useEffect(() => {
-        console.log(images);
         onChange(images);
     }, [images]);
     const onChange_ = (imageList: ImageListType, addUpdateIndex: number[] | undefined) => {

@@ -122,7 +122,15 @@ class OAuth2Login {
           //So base64 URL-encoded code_verifier not needed as per aws blog
           code_verifier: this.code_verifier!,
         })
-      }).then(res => res.json()).then(d => onSuccess(d)).catch(e => onFailure(e));
+      }).then(res => {
+        console.log(res); 
+        if (res.status !== 200)
+          throw { code: "NewtworkError", message: "Network error" };
+        return res.json()
+      }).then(d => {
+        console.log(d)
+        onSuccess(d)
+      }).catch(e => onFailure(e));
     } else {
       const responseKey = responseTypeDataKeys[responseType];
       // Cross origin requests will already handle this, let's just return the data

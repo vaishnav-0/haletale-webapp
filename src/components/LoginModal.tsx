@@ -88,14 +88,6 @@ function onSubmit(d: any, SuccessAction: Function) {
         (err: any, data: any) => {
             if (data)
                 SuccessAction();
-            err?.code === "NotAuthorizedException" && toast.error('Incorrect username or password.', {
-                position: "bottom-center",
-                autoClose: 4000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
             if (err?.code === "UserNotConfirmedException") {
                 toast.warn(({ closeToast }) => <div className={style["confirm-container"]}>
                     <div>Your account is not confirmed</div>

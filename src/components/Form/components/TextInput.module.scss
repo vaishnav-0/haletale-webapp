@@ -2,7 +2,7 @@
 
 .textbox {
     display: flex;
-    height: 3em;
+    height: 100%;
     background-color: white;
     border-radius: 1.5em;
     @include def-shadow;

@@ -41,12 +41,10 @@ export const s3PostUrl = (file) => {
 
     instance.defaults.headers.common['Authorization'] = new Token("id").get();
     return instance.post("/s3/preSignedUrl", {
-        body: {
-            name: file.name,
-            type: file.type
-        }
-
-    })
+        name: file.name,
+        type: file.type
+    }
+    )
 
     //.then(res => console.log(res)).catch(e => console.log(e))
 }

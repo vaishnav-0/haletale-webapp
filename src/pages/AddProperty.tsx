@@ -18,18 +18,21 @@ import { UseFormReturn } from 'react-hook-form';
 import { addressToGeo } from '../functions/api/location';
 import { ButtonSolid } from '../components/Button';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
-
-
 import { handleImage } from '../functions/api/imageUpload'
+import { toast } from 'react-toastify';
+
+const stringFieldRequired = yup.string().required("This field is required.")
 
 type FormPropsType = {
     onComplete: () => void,
     onLoading: () => void
 }
+
+const propertyId: { current: null | string } = { current: null };
 function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
-    const [disabled, setDisabled] = React.useState<boolean>(false)
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const schema = {
         heading: "",
         items: [
@@ -40,20 +43,20 @@ function AddPropertyForm1(props: FormPropsType) {
                 props: {
                     type: "text",
                 },
-                validationSchema: yup.string().required("Property name is required")
+                validationSchema: stringFieldRequired
             },
             {
                 name: "address_search",
                 type: "custom",
-                render: function PlaceSuggest(f: UseFormReturn) {
+                render: function PlaceSuggest(f: UseFormReturn, s: SchemaType) {
                     const { suggestions, suggest } = usePlaceSuggestions();
-                    return <Searchbar suggestionItems={suggestions.map(e => e[0])}
+                    return <Searchbar disabled={disabled} suggestionItems={suggestions.map(e => e[0])}
                         placeholder="Search a place"
                         onChange={suggest}
                         onSubmit={(v, i) => {
                             f.setValue("property_address", v);
                             dynamicSchemaGenerator({
-                                schema: schema as SchemaType,
+                                schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
                                     return ([d.location.lat, d.location.lng])
                                 }).catch(e => {
@@ -78,7 +81,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "text",
                 props: {
                     type: "text"
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Property location",
@@ -95,7 +99,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "select",
                 props: {
                     values: {}
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Property subtype",
@@ -103,7 +108,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "select",
                 props: {
                     values: {}
-                }
+                },
+                validationSchema: stringFieldRequired
             },
             {
                 title: "Additional notes:",
@@ -119,17 +125,24 @@ function AddPropertyForm1(props: FormPropsType) {
 
     React.useEffect(() => {
         setSchema_(schema as SchemaType);
-    }, [])
+    }, []);
 
     type FormData = FormDataShape<typeof schema>;
 
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
-    const [addProperty, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+    const [addProperty, { data, loading: MutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY);
 
+    React.useEffect(() => {
+        if (MutationLoading) {
+            props.onLoading();
+        } else if (data) {
+            propertyId.current = data.insert_property_owner.returning[0].property_id;
+            props.onComplete()
+        }
+    }, [data, MutationLoading])
     const onSubmit = (d: FormData) => {
-        setDisabled(true)
-        console.log(d)
+        setDisabled(true);
         addProperty({
             variables: {
                 coordinates: {
@@ -142,8 +155,6 @@ function AddPropertyForm1(props: FormPropsType) {
                 sub_type: d.subtype
             }
         })
-        props.onLoading();
-        setTimeout(() => { props.onComplete() }, 3000);
     }
 
     // add property res
@@ -160,10 +171,10 @@ function AddPropertyForm1(props: FormPropsType) {
                     })),
                 dataMap: (data) => [
                     {
-                        type: (item: any) => { item.props.values = data.type; console.log(item, data) },
+                        type: (item: any) => { item.props.values = ["", ...data.type]; },
                     },
                     {
-                        subtype: (item: any) => { item.props.values = data.subtype },
+                        subtype: (item: any) => { item.props.values = ["", ...data.subtype] },
                     }
                 ] as dataMapReturn
             }).then(sch => {
@@ -172,12 +183,12 @@ function AddPropertyForm1(props: FormPropsType) {
         }
     }, [loading]);
     React.useEffect(() => {
-        if (loading || !schema_) {
+        if (loading) {
             setLoader(true);
         } else {
             setLoader(false)
         }
-    }, [loading, schema_])
+    }, [loading])
 
     return (
         <>
@@ -193,8 +204,7 @@ function AddPropertyForm1(props: FormPropsType) {
     );
 }
 function AddPropertyForm2(props: FormPropsType) {
-    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
-    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const schema = {
         heading: "",
         items: [
@@ -208,32 +218,58 @@ function AddPropertyForm2(props: FormPropsType) {
                     resolutionHeight: 9
                 }
             },
-            {
-                name: "upload_button",
-                type: "custom",
-                render: function PlaceSuggest(f: UseFormReturn) {
-                    return <ButtonSolid onClick={() => {
-                        const images = f.getValues("images");
-                        //upload and set images prop to disabled
-                        // setSchema_(schema => {
-                        //     if (schema)
-                        //         (schema.items[0] as any).props.disabled = true;//beware of the index of items
-                        //     return schema;
-                        // })
-                        dynamicSchemaGenerator({//disable image input
-                            schema: schema as SchemaType,
-                            dataLoader: new Promise(res => res(true)),
-                            dataMap: (data) => [{ images: (item: any) => { item.props.disabled = data } }] as dataMapReturn
-                        }).then(sch => {
-                            setSchema_(sch)
-                        })
-                    }}>
-                        Upload Images
-                    </ButtonSolid>
+        ],
+        submitButton: "Next",
+    } as const;
+
+    type FormData = FormDataShape<typeof schema>;
+
+    const [addImages, { data, loading: mutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY_IMAGES);
+    React.useEffect(() => {
+        if (data) {
+            props.onComplete();
+        }
+    }, [data])
+    const onSubmit = async (d: FormData) => {
+        if (!propertyId.current) //handle it
+            return
+        props.onLoading();
+        try {
+            let keys = await handleImage(d.images);
+            const imageVariable = keys.map((x: string) => {
+                return {
+                    key: x,
+                    property_id: propertyId.current
                 }
-            },
+            });
+
+            addImages({
+                variables: {
+                    object: imageVariable
+                }
+            })
+
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+
+
+    return (
+
+        <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
+            onSubmit={onSubmit} />
+    );
+}
+function AddPropertyForm3(props: FormPropsType) {
+    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
+    const schema = {
+        heading: "",
+        items: [
             {
-                title: "bedroom",
+                title: "Bedroom",
                 name: "bedroom",
                 type: "number",
                 props: {
@@ -275,111 +311,17 @@ function AddPropertyForm2(props: FormPropsType) {
                 props: {
                     items: {
                         fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
-                        nosmoking: "No smoking", stove2: "Stove"
+                        nosmoking: "No smoking", stove2: "Stove", outdoor_maintainance: "Outdoor maintainance"
                     }
                 }
             },
             {
-                title: "Pets",
-                name: "pets",
-                type: "select",
+                title: "Restrictions",
+                name: "restriction",
+                type: "checkboxGroup",
+                wrapperClassName: formStyle["horizontal-list"],
                 props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-            {
-                title: "Smoking",
-                name: "smoking",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-            {
-                title: "Outdoor maintainance",
-                name: "outdoor_maintainance",
-                type: "select",
-                props: {
-                    values: { "-": "", "yes": "Yes", "no": "No" }
-                }
-            },
-        ],
-        submitButton: "Next",
-    } as const;
-
-    React.useEffect(() => {
-        setSchema_(schema as SchemaType);
-    }, [])
-
-    type FormData = FormDataShape<typeof schema>;
-
-    const [addImages, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_IMAGES);
-
-    const onSubmit = async (d: FormData) => {
-        let imageVariable: { key: string, property_id: string }[];
-        // add property id
-        let propertyId = 'xyz'
-        let keys = await handleImage(d.images);
-        keys.forEach((x) => {
-            imageVariable.push({
-                key: x,
-                property_id: propertyId
-            })
-        })
-        addImages({
-            variables: {
-                object: imageVariable!
-            }
-        })
-
-    }
-
-    // add property res
-    // if (error) console.log(error)
-    // if (data) console.log(data)
-    // if (loading) console.log(loading)
-
-    // React.useEffect(() => {
-    //     if (!loading) {
-    //     }
-    // }, [loading]);
-    // React.useEffect(() => {
-    //     if (loading || !schema_) {
-    //         setLoader(true);
-    //     } else {
-    //         setLoader(false)
-    //     }
-    // }, [loading, schema_])
-
-    return (
-        <>
-            {Loader}
-            {
-                schema_ &&
-                <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
-                    onSubmit={onSubmit} />
-            }
-        </ >
-    );
-}
-function AddPropertyForm3(props: FormPropsType) {
-
-    let { data: property_attributes, loading } = useQuery(propertyQuery.PROPERTY_ATTRIBUTES);
-
-// property attributes --- faetures, restrictions , rooms
-
-
-    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
-    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
-    const schema = {
-        heading: "",
-        items: [
-            {
-                title: "Rent",
-                name: "rent",
-                type: "text",
-                props: {
-                    type: "number"
+                    values: ["smoking", "pets"],
                 }
             },
             {
@@ -387,32 +329,20 @@ function AddPropertyForm3(props: FormPropsType) {
                 name: "lease_term",
                 type: "select",
                 props: {
-                    values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
-                }
-            },
-            { //checkbox group
-                title: "Paid by landlord",
-                name: "landlord_paid",
-                type: "checkboxGroup",
-                wrapperClassName: formStyle["horizontal-list"],
-                props: {
-                    values: ["Hydro", "Water", "Heat"]
-                }
+                    values: { "": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
+                },
+                validationSchema: stringFieldRequired
             },
             {
-                title: "Hydro percentage",
-                name: "hydo",
+                title: "Rent",
+                name: "rent",
                 type: "text",
                 props: {
                     type: "number"
-                }
+                },
+                validationSchema: stringFieldRequired
             },
-            {
-                title: "Address verification document",
-                name: "address_proof",
-                type: "file",
-                props: {}
-            },
+
         ],
         submitButton: "Next",
     } as const;
@@ -424,20 +354,26 @@ function AddPropertyForm3(props: FormPropsType) {
     type FormData = FormDataShape<typeof schema>;
 
 
-    const [addPropertyDetails, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_DETAILS);
-
+    const [addPropertyDetails, { data, loading: mutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY_DETAILS);
+    React.useEffect(() => {
+        if (data) {
+            props.onComplete();
+        }
+    }, [data])
     const onSubmit = (d: FormData) => {
+        props.onLoading();
         console.log(d);
-
-        addPropertyDetails({
+        if (!propertyId.current) //handle it
+            return
+        addPropertyDetails({ //lease term to be included
             variables: {
-                description: "desc",
-                features: [],
-                max_occupants: 5,
-                rent_amount: 100.00,
-                restrictions: [],
-                rooms: {},
-                id: "propertyid"
+                description: null,
+                features: d.features,
+                max_occupants: d.tenant_count,
+                rent_amount: d.rent,
+                restrictions: d.restriction,
+                rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
+                id: propertyId.current
             }
         })
     }
@@ -471,7 +407,9 @@ function AddPropertyForm3(props: FormPropsType) {
     );
 }
 function AddProperty(): JSX.Element {
-
+    React.useEffect(() => {
+        propertyId.current = null;
+    }, [])
     const forms = [{ description: "Basic details", component: AddPropertyForm1 }, { description: "Images", component: AddPropertyForm2 }, { description: "Details", component: AddPropertyForm3 }]
     return (
         <Layout>
