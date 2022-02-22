@@ -39,7 +39,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         
       })
   }, []);
-  console.log(user);
   return <authContext.Provider value={user}>{children}</authContext.Provider>;
 
 }
