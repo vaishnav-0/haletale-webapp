@@ -20,6 +20,23 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       },
       (err) => {
         console.log(err);
+        err?.code === "NotAuthorizedException" && toast.error('Incorrect username or password.', {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        err?.code === "NewtworkError" && toast.error('Network error. Please try again.', {
+          position: "bottom-center",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        
       })
   }, []);
   console.log(user);
