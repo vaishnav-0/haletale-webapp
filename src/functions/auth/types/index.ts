@@ -39,5 +39,5 @@ export interface IUser {
     user_id: string
 }
 export type TSignSuccessCB = (user: IUser | null) => void
-export type TSignErrorCB = (err: Error) => void
+export type TSignErrorCB = (err: any) => void
 export type TOnAuthStateChange = (successCB: TSignSuccessCB, errCB?: TSignErrorCB) => () => void
