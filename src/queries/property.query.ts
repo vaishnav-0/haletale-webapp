@@ -66,6 +66,20 @@ export default {
     }
   }
   `,
+  GET_PROPERTY_BY_DISTANCE: `query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int) {
+    show_nearby_properties(args: {cur_coords: $cur_coords, distance: $distance}) {
+      property_images {
+        key
+      }
+      name
+      sub_type
+      type
+      property_detail {
+        rooms
+        rent_amount
+      }
+    }
+  }`,
 
 }
 
