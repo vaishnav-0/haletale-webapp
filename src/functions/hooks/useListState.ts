@@ -28,7 +28,6 @@ export default function useListState<T>(defaultValue: T[] = []): useListStateRet
             updateList(l => {
                 pos = pos ?? l.length - 1;
                 let list_ = [...l];
-                console.log(pos)
                 list_.splice(pos, 1);
                 return list_;
             });
@@ -37,7 +36,6 @@ export default function useListState<T>(defaultValue: T[] = []): useListStateRet
     );
     const replace: useListStateReturnType<T>['replace'] = React.useCallback(
         (a, pos) => {
-            console.log(a, pos)
             if (Array.isArray(a)) {
                 updateList(l => {
                     let list_ = [...l];

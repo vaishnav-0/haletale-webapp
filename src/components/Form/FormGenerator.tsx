@@ -110,7 +110,6 @@ export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items
 
 function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: UseFormReturn, config: { disabled?: boolean } = { disabled: false }) {
     function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
-        console.log(config.disabled);
         let inputComponent!: JSX.Element;
         if (item.type === "custom") {
             return item.render(useFormRet, schema);

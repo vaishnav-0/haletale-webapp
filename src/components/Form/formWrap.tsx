@@ -14,7 +14,6 @@ export function NativeWrapper<ComponentPropType extends { name: string }>({ Comp
     {
         Component: NativeWrapperComponentType<ComponentPropType>,
         props: ComponentPropType,
-        custom?: boolean
     }): JSX.Element {
     const formContext = useFormContext();
     if (!formContext)

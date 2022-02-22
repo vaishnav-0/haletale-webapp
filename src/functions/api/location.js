@@ -14,7 +14,6 @@ const instance = axios.create({
 export async function suggest(query) {
     try {
         let res = await instance('/search', { params: { location: query } })
-        console.log(res)
         return res.data.predictions.map(e=>[e.description,e.place_id])
     }
     catch (error) {
@@ -26,7 +25,6 @@ export async function suggest(query) {
 export async function addressToGeo(query) {
     try {
         let res = await instance('/geocodeId', { params: { placeId: query } });
-        console.log(res)
         return res.data;
     }
     catch (error) {
@@ -38,7 +36,6 @@ export async function addressToGeo(query) {
 export async function geocode(query) {
     try {
         let res = await instance('/geocode', { params: { address: query } })
-        console.log(res)
         return res.data;
     }
     catch (error) {

@@ -41,7 +41,6 @@ const Openable = function ({ children, className, style, open, clickOutsideClose
         const ref_: { current: any } = { current: null };
         ref_.current = ref.current;
         if (firstRender.current && !open[0]) {
-            console.log(ref)
             handleOpen(open[0], ref_, animation, false);
         } else
             handleOpen(open[0], ref_, animation);

@@ -20,14 +20,11 @@ export default function ({ count, position = 0, onChange = () => { }, className,
     React.useEffect(() => {
         posRef.current = pos;
     }, [pos]);
-    console.log(pos);
     React.useEffect(() => {
         const refs = dotRefs.current;
         const eventHandlers: (() => void)[] = []
         refs.forEach((e, i) => {
             const clickHandler = function () {
-                console.log(i, posRef.current)
-                console.log("c");
                 if (posRef.current !== i) {
                     setPos(i);
                     onChange(i);
