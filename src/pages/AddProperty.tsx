@@ -228,6 +228,7 @@ function AddPropertyForm2(props: FormPropsType) {
     React.useEffect(() => {
         if (data) {
             props.onComplete();
+            setDisabled(true);
         }
     }, [data])
     const onSubmit = async (d: FormData) => {
@@ -259,6 +260,7 @@ function AddPropertyForm2(props: FormPropsType) {
     return (
 
         <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
+            disabled={disabled}
             onSubmit={onSubmit} />
     );
 }
@@ -416,7 +418,7 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} parallel />
+            <ProgressiveForm forms={forms} />
         </Layout >
     );
 
