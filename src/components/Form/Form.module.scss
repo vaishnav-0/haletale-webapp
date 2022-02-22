@@ -7,7 +7,6 @@
     grid-template-columns: 1fr 1fr;
     gap: 1.5em;
     font-size: 1.1em;
-    grid-auto-rows: minmax(5em, max-content);
 
     &>div {
         grid-column: 1 / span 2;
