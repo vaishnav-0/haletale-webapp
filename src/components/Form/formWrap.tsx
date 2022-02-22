@@ -14,7 +14,7 @@ export function NativeWrapper<ComponentPropType extends { name: string }>({ Comp
     {
         Component: NativeWrapperComponentType<ComponentPropType>,
         props: ComponentPropType,
-        defaultValue?: any//for special cases
+        defaultValue?: any//for special cases(checkboxGroup default value)
     }): JSX.Element {
     const formContext = useFormContext();
     if (!formContext)
