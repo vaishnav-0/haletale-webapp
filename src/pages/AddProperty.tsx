@@ -19,6 +19,7 @@ import { addressToGeo } from '../functions/api/location';
 import { ButtonSolid } from '../components/Button';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
 import { handleImage } from '../functions/api/imageUpload'
+import { toast } from 'react-toastify';
 
 const stringFieldRequired = yup.string().required("This field is required.")
 
@@ -203,6 +204,7 @@ function AddPropertyForm1(props: FormPropsType) {
     );
 }
 function AddPropertyForm2(props: FormPropsType) {
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const schema = {
         heading: "",
         items: [
@@ -230,20 +232,26 @@ function AddPropertyForm2(props: FormPropsType) {
     }, [data])
     const onSubmit = async (d: FormData) => {
         props.onLoading();
-        let keys = await handleImage(d.images);
-        const imageVariable = keys.map((x: string) => {
-            return {
-                key: x,
-                property_id: propertyId.current!
-            }
-        });
-        addImages({
-            variables: {
-                object: imageVariable!
-            }
-        })
+        try {
+            let keys = await handleImage(d.images);
+            const imageVariable = keys.map((x: string) => {
+                return {
+                    key: x,
+                    property_id: propertyId.current!
+                }
+            });
+            addImages({
+                variables: {
+                    object: imageVariable!
+                }
+            })
 
+        } catch (e) {
+            console.log(e);
+        }
     }
+
+
 
     return (
 
