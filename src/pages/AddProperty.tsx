@@ -231,18 +231,21 @@ function AddPropertyForm2(props: FormPropsType) {
         }
     }, [data])
     const onSubmit = async (d: FormData) => {
+        if (!propertyId.current) //handle it
+            return
         props.onLoading();
         try {
             let keys = await handleImage(d.images);
             const imageVariable = keys.map((x: string) => {
                 return {
                     key: x,
-                    property_id: propertyId.current!
+                    property_id: propertyId.current
                 }
             });
+
             addImages({
                 variables: {
-                    object: imageVariable!
+                    object: imageVariable
                 }
             })
 
@@ -351,22 +354,28 @@ function AddPropertyForm3(props: FormPropsType) {
     type FormData = FormDataShape<typeof schema>;
 
 
-    const [addPropertyDetails, { data, loading: w, error }] = useMutation(propertyMutation.ADD_PROPERTY_DETAILS);
-
+    const [addPropertyDetails, { data, loading: mutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY_DETAILS);
+    React.useEffect(() => {
+        if (data) {
+            props.onComplete();
+        }
+    }, [data])
     const onSubmit = (d: FormData) => {
+        props.onLoading();
         console.log(d);
-
-        // addPropertyDetails({
-        //     variables: {
-        //         description: null,
-        //         features: d.features,
-        //         max_occupants: d.tenant_count,
-        //         rent_amount: d.rent,
-        //         restrictions: d.restriction,
-        //         rooms: {},
-        //         id: ""
-        //     }
-        // })
+        if (!propertyId.current) //handle it
+            return
+        addPropertyDetails({ //lease term to be included
+            variables: {
+                description: null,
+                features: d.features,
+                max_occupants: d.tenant_count,
+                rent_amount: d.rent,
+                restrictions: d.restriction,
+                rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
+                id: propertyId.current
+            }
+        })
     }
 
     // add property res
