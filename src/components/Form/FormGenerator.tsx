@@ -132,11 +132,14 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
                 item.wrapperRender ?
                     item.wrapperRender(inputComponent)
                     :
-                    <div className={item.wrapperClassName ?? ""} style={item.wrapperStyle ?? {}}>
-                        {
-                            inputComponent
-                        }
-                    </div>
+                    item.wrapperClassName || item.wrapperStyle ?
+                        <div className={item.wrapperClassName ?? ""} style={item.wrapperStyle ?? {}}>
+                            {
+                                inputComponent
+                            }
+                        </div>
+                        :
+                        inputComponent
             }
             {
                 error && <div className={style["field-error"]}>{error}</div>
