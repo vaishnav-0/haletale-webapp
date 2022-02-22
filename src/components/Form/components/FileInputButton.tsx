@@ -2,9 +2,8 @@ import React from 'react';
 import cssStyle from './FileInputButton.module.scss';
 import { useFileUpload } from '../../../functions/hooks/useFileUpload'
 import { ButtonSolid } from '../../Button';
-import { InputPropsType } from './types';
-import { TextInput } from '..';
-import { PropType } from './Range';
+import { TextInput } from './TextInput';
+
 
 export interface PropsType {
     className?: string;
@@ -12,7 +11,7 @@ export interface PropsType {
     ButtonComponent: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>>
     | JSX.Element,
     key?: React.Attributes["key"],
-    onChange?: (v: File[]) => void,
+    onChange?: (v: { file: File, name: string }[]) => void,
     multiple?: boolean
 }
 export type FileInputButtonPropsType = Omit<PropsType, "ButtonComponent">
@@ -31,12 +30,29 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         setFiles,
         removeFile,
     } = useFileUpload();
-    React.useEffect(() => {
-        onChange(files);
-    }, [files])
     const inputRef = React.useRef<HTMLInputElement>(null!);
-    return <div key={key} className={className} style={style}>
-        <input multiple={multiple} type="file" style={{ display: 'none' }} onChange={(e) => { setFiles(e, 'w'); console.log(e) }}
+    const [fileNamesMap, setFileNamesMap] = React.useState<{ [k: string]: string | null }>({});
+    const textInputRefs = React.useRef<HTMLInputElement[]>([]);
+    React.useEffect(() => {
+        setFileNamesMap(fileNames.reduce((obj, name, i) => {
+            //sanitize filename?
+            console.log();
+            if (!fileNamesMap[name])
+                obj[name] = name.substring(0, name.search(/\.\w+$/));
+            else
+                obj[name] = fileNamesMap[name];
+            console.log(textInputRefs.current[i]);
+            textInputRefs.current[i] && (textInputRefs.current[i].value = obj[name])
+            return obj;
+        }, {} as any)
+        );
+    }, [fileNames])
+    React.useEffect(() => {
+        onChange(fileNames.map((name, i) => { return { file: files[i], name: fileNamesMap[name]! + name.substring(name.search(/\.\w+$/)) } }));
+    }, [fileNamesMap]);
+    console.log(fileNamesMap);
+    return <div key={key} className={`${cssStyle["file-container"]} ${className ?? ""}`} style={style}>
+        <input multiple={multiple} type="file" style={{ display: 'none' }} onChange={(e) => setFiles(e, 'w')}
             ref={e => {
                 inputRef.current = e as HTMLInputElement;
                 if (ref)
@@ -56,10 +72,10 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         {files.length !== 0 &&
             <div className={cssStyle["file-info"]}>
                 {
-                    fileNames.map((name, i) => <div key={name} style={{ display: "flex" }}>
-                        <div className={cssStyle["file-name"]}>
-                            {name}
-                        </div>
+                    fileNames.map((name, i) => <div key={name} className={cssStyle["filename-contaniner"]}>
+                        <TextInput type="text" name={"filename" + i} className={cssStyle["file-name"]}
+                            onChange={(e) => setFileNamesMap(fileMap => { return { ...fileMap, [name]: e.target.value } })}
+                            ref={node => textInputRefs.current[i] = node!} defaultValue={name} />
                         <button type="button" onClick={() => { removeFile(i); }} className={cssStyle["file-remove-btn"]}>
                             <i className="fas fa-times" />
                         </button>
