@@ -7,132 +7,7 @@ import auth from '../functions/auth';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { setGlobalLoader } from '../components/Loader';
-//Example
-// const testSchema: SchemaType = {
-//     heading: "Sign Up",
-//     items: [
-//         {
-//             title: "First name",
-//             name: "firstname",
-//             type: "text",
-//             props: {
-//                 type: "text"
-//             },
-//             validationSchema: yup.string().required()
-//         },
-//         {
-//             title: "Last name",
-//             name: "lastname",
-//             type: "text",
-//             props: {
-//                 type: "text"
-//             },
-//             validationSchema: yup.string().required()
-//         },
-//         {
-//             title: "Email",
-//             name: "email",
-//             type: "text",
-//             props: {
-//                 type: "text"
-//             },
-//             validationSchema: yup.string().email().required()
-
-//         },
-//         {
-//             title: "Date of birth",
-//             name: "dob",
-//             type: "time",
-//             props: {
-//                 type: "date"
-//             }
-//         },
-//         {
-//             name: "gender",
-//             type: "radioGroup",
-//             isOptional: {
-//                 title: "Provide",
-//                 value: ["Yes", "No"],
-//                 default: false,
-//                 sectionHeading: "Gender"
-//             },
-//             wrapperClassname: style["horizontal-list"],
-//             validationSchema: yup.string().required(),
-//             props: {
-//                 values: { male: "Male", female: "Female", other: "Other" }
-//             }
-//         },
-//         {
-//             name: "member",
-//             isArray: {
-//                 controlHeading: "No. of tenants:",
-//                 title: "Member"
-//             },
-//             items: [
-//                 {
-//                     title: "name",
-//                     name: "name",
-//                     type: "text",
-//                     props: {
-//                         type: "text"
-//                     },
-//                     defaultValue: "asdasd",
-//                 },
-//                 {
-//                     name: "relation",
-//                     type: "select",
-//                     props: {
-//                         values: { 0: "Select Relation", 1: "1", 2: "2" },
-//                     },
-//                     defaultValue: 2
-//                 },
-//                 {
-//                     name: "add_to_lease",
-//                     type: "checkbox",
-//                     props: {
-//                         label: "Add to lease"
-//                     },
-//                     defaultValue: true
-//                 }
-//             ]
-//         },
-//         {
-//             title: "Password",
-//             name: "password",
-//             type: "text",
-//             props: {
-//                 type: "password"
-//             },
-//             validationSchema: yup.string().matches(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
-//         },
-//         {
-//             title: "Confirm Password",
-//             name: "password_conf",
-//             type: "text",
-//             props: {
-//                 type: "password"
-//             },
-//             validationSchema: yup.string()
-//                 .oneOf([yup.ref('password')], 'Passwords must match')
-//         },
-//         {
-//             name: "TCagree",
-//             type: "checkbox",
-//             wrapperRender: (C) => <div style={{ display: "flex" }}>
-//                 {C}
-//                 <div>
-//                     By creating your account you agree to our <a href='#'>terms and condtions</a>
-//                 </div>
-//             </div>,
-//             props: {
-//             }
-//         }],
-//     submitButton: "Sign Up",
-//     onError: (e) => console.log(e),
-//     onSubmit: (d) => console.log(d),
-// }
-// !schema.items[0].isArray && schema.items[0].type:
-
+import { stringFieldRequired } from '../components/Form/yupSchemas';
 const schema = {
     heading: "Sign Up",
     items: [
@@ -143,7 +18,7 @@ const schema = {
             props: {
                 type: "text"
             },
-            validationSchema: yup.string().required()
+            validationSchema: stringFieldRequired
         },
         {
             title: "Last name",
@@ -152,7 +27,7 @@ const schema = {
             props: {
                 type: "text"
             },
-            validationSchema: yup.string().required()
+            validationSchema: stringFieldRequired
         },
         {
             title: "Email",
@@ -161,7 +36,7 @@ const schema = {
             props: {
                 type: "text"
             },
-            validationSchema: yup.string().email().required()
+            validationSchema: stringFieldRequired
 
         },
         {
@@ -170,51 +45,17 @@ const schema = {
             type: "time",
             props: {
                 type: "date"
-            }
+            },
+            validationSchema: stringFieldRequired
         },
         {
             name: "gender",
             type: "radioGroup",
-            wrapperClassname: style["horizontal-list"],
-            validationSchema: yup.string().required(),
+            wrapperClassName: style["horizontal-list"],
+            validationSchema: yup.string().required().nullable(),
             props: {
                 values: { male: "Male", female: "Female", other: "Other" }
             }
-        },
-        {
-            name: "member",
-            isArray: {
-                controlHeading: "No. of tenants:",
-                title: "Member"
-            },
-            items: [
-                {
-                    name: "name",
-                    type: "text",
-                    props: {
-                        type: "text",
-                        placeholder: "name",
-                    },
-                    defaultValue: "",
-                    validationSchema: yup.string().required("aa aaaaaaaaaaaaa aaaaa")
-                },
-                {
-                    name: "relation",
-                    type: "select",
-                    props: {
-                        values: { 0: "Select Relation", 1: "1", 2: "2" },
-                    },
-                    defaultValue: 0
-                },
-                {
-                    name: "add_to_lease",
-                    type: "checkbox",
-                    props: {
-                        label: "Add to lease"
-                    },
-                    defaultValue: true
-                }
-            ]
         },
         {
             title: "Password",
@@ -223,7 +64,11 @@ const schema = {
             props: {
                 type: "password"
             },
-            validationSchema: yup.string().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/)
+            validationSchema: yup.string().matches(/[a-z]+/, "Password must contain atleast one lowercase alphabet.")
+                .matches(/[A-Z]+/, "Password must contain atleast one uppercase alphabet.")
+                .matches(/\d+/, "Password must contain atleast one number.")
+                .matches(/[@$!%*#?&*()]+/, "Password must contain atleast one special charecter @$!%*#?&*().")
+                .matches(/^[A-Za-z\d@$!%*#?&*()]{8,15}$/, "Password must have minimum 8 charectersa and maximum 15 charecters.")
         },
         {
             title: "Confirm Password",
@@ -245,16 +90,19 @@ const schema = {
                 </div>
             </div>,
             props: {
-            }
+            },
+            validationSchema: yup.boolean().oneOf([true], "You haven't agreed to the terms and conditions.")
         }],
     submitButton: "Sign Up",
 } as const;
 type FormData = FormDataShape<typeof schema>;
 //type Extractor<T extends sch["items"]> = T extends any?T["name"] 
 function Signup(): JSX.Element {
+    const [disabled, setDisabled] = React.useState<boolean>(false);
     const navigate = useNavigate();
     const signUpCallback = (err: Error | null, data?: any): void => {
         if (!err) {
+            setDisabled(true);
             console.log(data);
             if (data.CodeDeliveryDetails) {
                 setGlobalLoader(true, { spinner: false });
@@ -290,7 +138,7 @@ function Signup(): JSX.Element {
     return (
         <Layout>
             <FormGenerator schema={schema as SchemaType} onError={(e) => console.log(e)}
-                onSubmit={onSubmit} />
+                onSubmit={onSubmit} disabled={disabled} />
         </Layout>
     );
 }

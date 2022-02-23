@@ -282,7 +282,7 @@ export type PropsType = {
 }
 export default function FormGenerator({ schema, onSubmit, onError, disabled }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
-    const methods = useForm({ resolver: yupResolver(yupSchema), defaultValues: schema.defaultValue ?? {} });
+    const methods = useForm({ resolver: yupResolver(yupSchema, { abortEarly: false }), defaultValues: schema.defaultValue ?? {} });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
     return (
