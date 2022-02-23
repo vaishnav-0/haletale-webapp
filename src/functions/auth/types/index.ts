@@ -37,6 +37,11 @@ export interface IUser {
     tokenExpiry: Date
     role: Roles[]
     user_id: string
+    user_details?: {
+        name: string,
+        email?: string,
+        phone?: string
+    }
 }
 export type TSignSuccessCB = (user: IUser | null) => void
 export type TSignErrorCB = (err: any) => void
