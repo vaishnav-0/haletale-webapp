@@ -28,7 +28,7 @@ export default function Footer(): JSX.Element {
                     <ul><a href="#">Settings</a></ul>
                 </li>
                 <li>
-                    <ul>Tanent services</ul>
+                    <ul>Tenant services</ul>
                     <ul><a href="#">Verification</a></ul>
                     <ul><a href="#">Update Booking</a></ul>
                     <ul><a href="#">Cancel Booking</a></ul>

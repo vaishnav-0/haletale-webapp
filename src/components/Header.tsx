@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
-    const logedin = useAuth();//temporary
+    const authContext = useAuth();//temporary
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -27,14 +27,14 @@ export default function Header(): JSX.Element {
                 </div>
                 <div className={style["topnav-right-container"]}>
 
-                    {logedin?.user ?
+                    {authContext?.user ?
                         <div className={style["profile-container"]}>
                             <img src={userPlaceholder} />
                             <Openable                           //seems hacky
                                 open={[true, setDropdownOpen]}
                                 className={style["profile-dropdown"]}
                                 onClick={() => setDropdownOpen(!dropdownOpen)}>
-                                <p>Welcome <span className={style["name-highlight"]}>John!</span></p>
+                                <p>Welcome <span className={style["name-highlight"]}>{authContext.user?.user_details?.name ?? "User"}!</span></p>
                                 <div className={style["profile-dropdown-down"]} >
                                     <img src={downIcon} />
                                 </div>
@@ -49,13 +49,14 @@ export default function Header(): JSX.Element {
                                 >
                                     <Link to="#">Profile</Link>
                                     <Link to="#">Change Password</Link>
-                                    <Link to="#">Account</Link>
-                                    <Link to="#">Notifications</Link>
-                                    <Link to="#">Your Bookings</Link>
+                                    {//<Link to="#">Account</Link>
+                                        //<Link to="#">Notifications</Link>
+                                    }<Link to="#">Your Bookings</Link>
                                     <Link to="#">Wishlist</Link>
-                                    <Link to="#">Settings</Link>
+                                    {// <Link to="#">Settings</Link>
+                                    }
                                     <Link to="#">Help</Link>
-                                    <Link to="/signout" onClick={()=>auth.signOut()}>Logout</Link>
+                                    <Link to="/signout" onClick={() => auth.signOut()}>Logout</Link>
                                 </Openable>
                             </Openable>
                         </div>

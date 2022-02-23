@@ -14,7 +14,7 @@ const instance = axios.create({
 export async function suggest(query) {
     try {
         let res = await instance('/search', { params: { location: query } })
-        return res.data.predictions.map(e=>[e.description,e.place_id])
+        return res.data.predictions.map(e => [e.description, e.place_id])
     }
     catch (error) {
         console.log(error)
