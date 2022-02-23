@@ -30,7 +30,7 @@ export default function CoordinateInput({ onChange = () => { }, style, className
     }, [map])
     React.useEffect(() => {
         if (coords && map) {
-            map.flyTo(coords, 15, { duration: 1 });
+            map.flyTo(coords, 16, { duration: 1 });
         }
     }, [coords]);
     return <div className={CSSstyle["map-container"]}>
