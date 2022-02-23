@@ -427,7 +427,8 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} />
+            <ProgressiveForm forms={forms} onFinish={()=>{// do stuff
+            }}/>
         </Layout >
     );
 
