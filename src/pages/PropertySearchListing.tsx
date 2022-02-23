@@ -10,6 +10,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 export default function (): JSX.Element {
     let [getPropertyByDistance, { data: propertyData, loading }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_DISTANCE)
+    const [currPropertyData, setCurrPropertyData] = React.useState<IPropertyDetails[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const [filterOpen, setFilterOpen] = React.useState(false);
@@ -18,7 +19,7 @@ export default function (): JSX.Element {
     console.log(propertyData);
     React.useEffect(() => {
         if (searchParams.get("lat") && searchParams.get("lng")) {
-            const coords = [parseFloat(searchParams.get("lat")!),parseFloat(searchParams.get("lng")!)];
+            const coords = [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)];
             getPropertyByDistance({
                 variables: {
                     cur_coords: {
@@ -32,15 +33,18 @@ export default function (): JSX.Element {
         } else
             navigate("/");
 
-    }, [searchParams])
+    }, [searchParams]);
+    React.useEffect(() => {
+        propertyData?.show_nearby_properties && setCurrPropertyData(propertyData?.show_nearby_properties);
+    }, [propertyData])
     React.useEffect(() => {
     }, [])
     return (
         <Layout>
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
-                    <div>Toronto</div>
-                    <div> 153 properties</div>
+                    <div>{searchParams.get("place")}</div>
+                    <div> {currPropertyData.length} properties</div>
                 </div>
                 <div className={style["btn-container"]}>
                     <button onClick={() => { setFilterOpen(true); }}><i className="fas fa-sliders-h"></i></button>
@@ -73,12 +77,9 @@ export default function (): JSX.Element {
 
             </div>
             <div className={style["search-list"]}>
-                <PropertyCardDetailed />
-                <PropertyCardDetailed />
-                <PropertyCardDetailed />
-                <PropertyCardDetailed />
-                <PropertyCardDetailed />
-                <PropertyCardDetailed />
+                {
+                    currPropertyData.map(property => <PropertyCardDetailed propertyData={property} />)
+                }
             </div>
         </Layout >
     );
