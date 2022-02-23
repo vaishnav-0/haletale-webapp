@@ -2,11 +2,11 @@ import { gql } from '@apollo/client'
 
 
 export default {
-  ADD_PROPERTY_ADDRESS: gql`mutation ADD_PROPERTY_ADDRESS($property_id: uuid = "", $addressline: String = "", $building_number: String = "", $city: String = "", $country: String = "", $landmarks: String = "", $province: String = "", $zipcode: String = "") {
-        insert_property_address_one(object: {property_id: $property_id, address: {data: {addressline: $addressline, building_number: $building_number, city: $city, country: $country, landmarks: $landmarks, province: $province, zipcode: $zipcode}}}){
-          address_id
-        }
-    }`,
+  ADD_PROPERTY_ADDRESS: gql`mutation MyMutation($property_id: uuid, $administrative_area_level_1: String, $administrative_area_level_2: String, $country: String, $full_address: String, $locality: String, $route: String, $street_number: String, $postal_code: String) {
+    insert_property_address(objects: {property_id: $property_id, address: {data: {administrative_area_level_1: $administrative_area_level_1, administrative_area_level_2: $administrative_area_level_2, country: $country, full_address: $full_address, locality: $locality, route: $route, street_number: $street_number, postal_code: $postal_code}}}) {
+   affected_rows 
+    }
+  }`,
 
   ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: property_subtype_enum, $type: property_type_enum) {
     insert_property_owner(objects: {property: {data: {coordinates: $coordinates, description: $description, name: $name, sub_type: $sub_type, type: $type}}}) {
