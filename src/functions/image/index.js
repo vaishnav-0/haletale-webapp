@@ -41,7 +41,7 @@ export const s3PostUrl = (file) => {
 }
 
 export const s3GetUrl = ({ key }) => {
-    instance.get("/s3/preSignedUrl/${key}").then(res => console.log(res)).catch(e => console.log(e))
+    return instance.get(`/s3/preSignedUrl/${key}`).then(res => res.data.url).catch(e => console.log(e))
 }
 
 
