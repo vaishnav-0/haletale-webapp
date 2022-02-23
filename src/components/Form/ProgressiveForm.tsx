@@ -7,8 +7,9 @@ import FormProgressIndicator from "./components/FormProgressIndicator";
 type PropsType = {
     forms: { description: string, component: (props: { onComplete: () => void, onLoading: (b?:boolean) => void }) => JSX.Element }[],
     parallel?: boolean
+    onFinish?:()=>void
 }
-export default function ProgressiveForm({ forms, parallel = false }: PropsType): JSX.Element {
+export default function ProgressiveForm({ forms, parallel = false, onFinish=()=>{}}: PropsType): JSX.Element {
     const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: forms.length }, () => 0));
     const formContainerRefs = React.useRef<(HTMLElement | null)[]>([]);
     const getOnLoading = React.useCallback((n: number) => {
@@ -40,6 +41,10 @@ export default function ProgressiveForm({ forms, parallel = false }: PropsType):
             }
         }
     }, []);
+    React.useEffect(()=>{
+       if(!progressList.some(e=>e !== ProgressStateEnum.Done))
+            onFinish();
+    },[progressList])
     React.useEffect(() => {
         requestAnimationFrame(() => {
             setTimeout(() => {
