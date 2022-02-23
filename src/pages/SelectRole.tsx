@@ -40,6 +40,9 @@ export default function SelectRole() {
         <div className={style["role-container"]}>
             <div className={style["role-item"]}>
                 <button onClick={() => setRole(4)}>
+                    <div>
+                        
+                    </div>
                     <img src={landlordIcon} />
                 </button>
                 <div className={style["role-name"]}>
@@ -56,6 +59,9 @@ export default function SelectRole() {
 
 
             </div>
+        </div>
+        <div className={style["info"]}>
+            Choose your account type. You will not be able to change it later.
         </div>
     </div>
 }
