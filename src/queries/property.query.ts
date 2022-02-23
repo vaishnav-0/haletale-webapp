@@ -131,6 +131,7 @@ export default {
       property_detail {
       rooms
       rent_amount
+      restrictions
     }
   }
 }
