@@ -9,3 +9,6 @@ interface DeepReadonlyArray<T> extends ReadonlyArray<DeepReadonly<T>> { }
 type DeepReadonlyObject<T> = {
     readonly [P in keyof T]: DeepReadonly<T[P]>;
 };
+export type DeepPartial<T> = T extends object ? {
+    [P in keyof T]?: DeepPartial<T[P]>;
+} : T;
