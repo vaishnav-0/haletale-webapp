@@ -59,11 +59,11 @@ function AddPropertyForm1(props: FormPropsType) {
                             dynamicSchemaGenerator({
                                 schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
-                                    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
+                                    const addressComponents = ["street_address", "administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
                                     addressRef.current = d.address_components.reduce((obj: any, curr: any) => {
                                         const type = curr.types.find((e: any) => addressComponents.includes(e))
                                         if (type)
-                                            obj[type] =curr.long_name;
+                                            obj[type] = curr.long_name;
                                         return obj;
                                     }, {})
                                     addressRef.current.full_address = v;
@@ -141,27 +141,27 @@ function AddPropertyForm1(props: FormPropsType) {
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
     const [addProperty, { data, loading: MutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY);
-    const [addPropertyAddress, { data:PropAddData, loading: PropAddMutationLoading, error:PropAddErr }] = useMutation(propertyMutation.ADD_PROPERTY_ADDRESS);
+    const [addPropertyAddress, { data: PropAddData, loading: PropAddMutationLoading, error: PropAddErr }] = useMutation(propertyMutation.ADD_PROPERTY_ADDRESS);
 
     React.useEffect(() => {
         if (MutationLoading) {
             props.onLoading();
         } else if (data) {
             propertyId.current = data.insert_property_owner.returning[0].property_id;
-        addPropertyAddress({
-            variables:{
-            property_id: propertyId.current,
-            ...addressRef.current
-        }
+            addPropertyAddress({
+                variables: {
+                    property_id: propertyId.current,
+                    ...addressRef.current
+                }
 
-        })
+            })
         }
     }, [data, MutationLoading]);
-    React.useEffect(()=>{
-        if(PropAddData){
+    React.useEffect(() => {
+        if (PropAddData) {
             props.onComplete();
         }
-    },[PropAddData])
+    }, [PropAddData])
     const onSubmit = (d: FormData) => {
         setDisabled(true);
         addProperty({
