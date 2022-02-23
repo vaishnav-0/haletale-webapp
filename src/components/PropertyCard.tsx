@@ -4,6 +4,7 @@ import propertyImage from "../assets/images/pro-img1.png";
 import { IPropertyDetails } from '../queries/property.query';
 import ClampLines from 'react-clamp-lines';
 import Image from './Image';
+import placeholderImg from '../assets/images/property_placeholder.jpg';
 export default function ({ property }: { property: IPropertyDetails })
     : JSX.Element {
     return (
@@ -12,8 +13,9 @@ export default function ({ property }: { property: IPropertyDetails })
                 <div className={style["AR"]}></div>
                 {
                     <Image
+                        default={placeholderImg}
                         className={style["card-image"]}
-                        src={property.property_images![0] as any}
+                        src={property.property_images![0]?.s3Url?.url}
                     />
                 }
 
