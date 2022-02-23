@@ -20,26 +20,17 @@ import Token from '../auth/token';
 
 
 // export { }
-let instance = {}
-function tk() {
-    instance = axios.create({
-        baseURL: 'http://3.97.148.224:11240/'
-    });
+const instance = axios.create({
+    baseURL: `${process.env.REACT_APP_API_SERVER_URL}`,
+    headers: {
+        'Authorization': new Token("id").get(),
+    }
+});
 
-    instance.defaults.headers.common['Authorization'] = new Token("id").get();
-    ;
-    console.log(new Token("id").get())
-
-    return instance
-}
 
 
 export const s3PostUrl = (file) => {
-    instance = axios.create({
-        baseURL: 'http://3.97.148.224:11240/'
-    });
 
-    instance.defaults.headers.common['Authorization'] = new Token("id").get();
     return instance.post("/s3/preSignedUrl", {
         name: file.name,
         type: file.type
@@ -59,20 +50,20 @@ const dt = [{ name: 'p1', extention: 'jpeg' }, { name: 'p2', extention: 'jpeg' }
 
 
 
-export function x() {
-
-
-    tk()
-    let i = 0
-    let reqq = []
-    dt.forEach(element => {
-        x = s3PostUrl(element)
-        reqq.push(x)
-    });
-    Promise.all(reqq).then(x => {
-        console.log(x)
-    }).catch(e => console.log(e))
-}
+//export function x() {
+//
+//
+//    tk()
+//    let i = 0
+//    let reqq = []
+//    dt.forEach(element => {
+//        x = s3PostUrl(element)
+//        reqq.push(x)
+//    });
+//    Promise.all(reqq).then(x => {
+//        console.log(x)
+//    }).catch(e => console.log(e))
+//}
 
 //const s3PutUrl = 
 //{ file: File, url: string, fields: { ["string"]: any } }

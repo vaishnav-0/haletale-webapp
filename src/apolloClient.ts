@@ -25,7 +25,7 @@ const retryLink = new RetryLink({
 
 
 const httpLink = new HttpLink({
-    uri: 'http://ec2-35-183-39-216.ca-central-1.compute.amazonaws.com:8080/v1/graphql',
+    uri: 'https://resources.haletale.com/v1/graphql',
 });
 
 

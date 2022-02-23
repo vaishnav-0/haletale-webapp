@@ -6,7 +6,7 @@ const OAuth2 = (provider: string, callback: Function) => {
             authorizationUrl: "https://haletale-web1.auth.ca-central-1.amazoncognito.com/oauth2/authorize",
             responseType: "code",
             clientId: "2msia8lds7enqe1cqutubt1l4s",
-            redirectUri: "http://localhost:3000/auth",
+            redirectUri: process.env.REACT_APP_OAUTH_REDIRECT_URI!,
             scope: "email openid phone profile",
             extraParams: { identity_provider: provider },
             onSuccess: (o: { [k: string]: any }) => callback(null, o),
