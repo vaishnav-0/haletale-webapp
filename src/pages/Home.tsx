@@ -7,6 +7,20 @@ import Searchbar from '../components/Searchbar';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
 function HomePage(): JSX.Element {
     const { suggestions, suggest } = usePlaceSuggestions();
+
+    // pagination for queries
+    // const perPage = 20
+    // const [page, setPage] = React.useState(0);
+    // const [offset, setOffset] = React.useState(0);
+    // 
+    // limit: perPage,
+
+    // on loading
+    // setPage(page+1)
+    // setOffset(page * perPage)
+    // send limit and offset vars to queries
+  
+
     return (
         <Layout footer={true}>
             <HomeBanner />

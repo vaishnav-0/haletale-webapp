@@ -66,8 +66,8 @@ export default {
     }
   }
   `,
-  GET_PROPERTY_BY_DISTANCE: `query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int) {
-    show_nearby_properties(args: {cur_coords: $cur_coords, distance: $distance}) {
+  GET_PROPERTY_BY_DISTANCE: `query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int,$offset: Int, $limit: Int) {
+    show_nearby_properties(args: {cur_coords: $cur_coords, distance: $distance},offset: $offset, limit: $limit) {
       property_images {
         key
       }
