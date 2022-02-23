@@ -18,7 +18,16 @@ function Layout({ children, footer }: props): JSX.Element {
                 {children}
             </Body>
             {footer && <Footer />}
-            <ToastContainer />
+            <ToastContainer
+                position="bottom-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </div>
     );
 }
