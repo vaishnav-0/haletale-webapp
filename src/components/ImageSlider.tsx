@@ -3,6 +3,8 @@ import style from './ImageSlider.module.scss';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PositionIndicator from '../components/PositionIndicator';
+import Image from './Image';
+import placeholderImg from '../assets/images/property_placeholder.jpg';
 interface propType extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
     aspectRatio: number;
     indicatorClassName?: string;
@@ -45,7 +47,7 @@ export default function ({ aspectRatio = 16 / 9, indicatorClassName = "",
 
                             <div style={{ paddingBottom: 100 / aspectRatio + "%" }} className={style["aspect-ratio-container"]} />
                             <div className={style["image-slider-container"]}>
-                                <img src={i} />
+                                <Image src={i} default={placeholderImg} style={{ height: "100%", width: "100%", position: "absolute", top: 0 }} />
                             </div>
                         </div>
                     })
