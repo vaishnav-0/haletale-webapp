@@ -58,13 +58,12 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                                             reject("filereader error");
                                         }
                                         reader.onload = () => {
-                                            const oldFile = (imgList[i].file as File);
                                             imgList[i][CUSTOM_DATA_URL] = reader.result as string;
-                                            imgList[i].file = new File([blob], oldFile.name, { type: oldFile.type, lastModified: oldFile.lastModified });
+                                            imgList[i].file = new File([blob], image.file?.name??"", { type: image.file?.type, lastModified:image.file?.lastModified });
                                             resolve(true)
                                         }
                                     }
-                                });
+                                },image.file?.type);
                             }
                         });
 
@@ -87,6 +86,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
+    console.log(images)
     // const Tags = usePillCollection({
     //     items: tagItems,
     //     pillProps: {
@@ -156,7 +156,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                 }
                 reader.onload = () => {
                     img[CUSTOM_DATA_URL] = reader.result as string;
-                    img.file = new File([blob], (images[i].file as File).name);
+                    img.file = new File([blob], (images[i].file as File).name,{type:images[i].file?.type,lastModified:images[i].file?.lastModified});
                     setImages(p => {
                         const newImgList = p.map((e, k) => k === i ? img : e);
                         onChange_(newImgList, [i]);
@@ -164,7 +164,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                     });
                     setEditor(false);
                 }
-            });
+            },images[i].file?.type);
         }
     }
     const onError = (errors: ErrorsType, files?: ImageListType) => {
