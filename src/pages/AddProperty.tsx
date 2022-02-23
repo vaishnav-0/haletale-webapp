@@ -25,7 +25,7 @@ const stringFieldRequired = yup.string().required("This field is required.")
 
 type FormPropsType = {
     onComplete: () => void,
-    onLoading: (s?:boolean) => void
+    onLoading: (s?: boolean) => void
 }
 
 const propertyId: { current: null | string } = { current: null };
@@ -33,6 +33,7 @@ function AddPropertyForm1(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const [disabled, setDisabled] = React.useState<boolean>(false);
+    const addressRef = React.useRef<any>({});
     const schema = {
         heading: "",
         items: [
@@ -58,7 +59,16 @@ function AddPropertyForm1(props: FormPropsType) {
                             dynamicSchemaGenerator({
                                 schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
-                                    return ([d.location.lat, d.location.lng])
+                                    console.log(d);
+                                    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
+                                    addressRef.current = d.address_components.reduce((obj: any, curr: any) => {
+                                        const type = curr.types.find((e: any) => addressComponents.includes(e))
+                                        if (type)
+                                            obj[type] =curr.long_name;
+                                        return obj;
+                                    }, {})
+                                    addressRef.current.full_address = v;
+                                    return ([d.geometry.location.lat, d.geometry.location.lng])
                                 }).catch(e => {
                                     console.log(e);
                                 })
@@ -132,15 +142,28 @@ function AddPropertyForm1(props: FormPropsType) {
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
 
     const [addProperty, { data, loading: MutationLoading, error }] = useMutation(propertyMutation.ADD_PROPERTY);
+    const [addPropertyAddress, { data:PropAddData, loading: PropAddMutationLoading, error:PropAddErr }] = useMutation(propertyMutation.ADD_PROPERTY_ADDRESS);
 
     React.useEffect(() => {
         if (MutationLoading) {
             props.onLoading();
         } else if (data) {
             propertyId.current = data.insert_property_owner.returning[0].property_id;
-            props.onComplete()
+            console.log("hehehehe")
+        addPropertyAddress({
+            variables:{
+            property_id: propertyId.current,
+            ...addressRef.current
         }
-    }, [data, MutationLoading])
+
+        })
+        }
+    }, [data, MutationLoading]);
+    React.useEffect(()=>{
+        if(PropAddData){
+            props.onComplete();
+        }
+    },[PropAddData])
     const onSubmit = (d: FormData) => {
         setDisabled(true);
         addProperty({
@@ -427,8 +450,8 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} onFinish={()=>{// do stuff
-            }}/>
+            <ProgressiveForm forms={forms} onFinish={() => {// do stuff
+            }} />
         </Layout >
     );
 
