@@ -59,7 +59,6 @@ function AddPropertyForm1(props: FormPropsType) {
                             dynamicSchemaGenerator({
                                 schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
-                                    console.log(d);
                                     const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
                                     addressRef.current = d.address_components.reduce((obj: any, curr: any) => {
                                         const type = curr.types.find((e: any) => addressComponents.includes(e))
@@ -149,7 +148,6 @@ function AddPropertyForm1(props: FormPropsType) {
             props.onLoading();
         } else if (data) {
             propertyId.current = data.insert_property_owner.returning[0].property_id;
-            console.log("hehehehe")
         addPropertyAddress({
             variables:{
             property_id: propertyId.current,
@@ -182,7 +180,6 @@ function AddPropertyForm1(props: FormPropsType) {
 
     // add property res
     if (error) console.log(error)
-    if (data) console.log(data)
     React.useEffect(() => {
         if (!loading) {
             dynamicSchemaGenerator({
@@ -280,7 +277,7 @@ function AddPropertyForm2(props: FormPropsType) {
                 props.onLoading(false);
             }
         }).catch(e => {
-            console.log()
+            console.log(e)
             setDisabled(false);
             props.onLoading(false);
         })
@@ -396,7 +393,6 @@ function AddPropertyForm3(props: FormPropsType) {
     }, [data])
     const onSubmit = (d: FormData) => {
         props.onLoading();
-        console.log(d);
         if (!propertyId.current) //handle it
             return
         addPropertyDetails({ //lease term to be included
@@ -411,24 +407,6 @@ function AddPropertyForm3(props: FormPropsType) {
             }
         })
     }
-
-    // add property res
-    // if (error) console.log(error)
-    // if (data) console.log(data)
-    // if (loading) console.log(loading)
-
-    // React.useEffect(() => {
-    //     if (!loading) {
-    //     }
-    // }, [loading]);
-    // React.useEffect(() => {
-    //     if (loading || !schema_) {
-    //         setLoader(true);
-    //     } else {
-    //         setLoader(false)
-    //     }
-    // }, [loading, schema_])
-
     return (
         <>
             {Loader}

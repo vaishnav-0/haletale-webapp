@@ -86,7 +86,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     const imgRefs = React.useRef<HTMLImageElement[]>([]);//why?
     const divRef = React.useRef<HTMLDivElement>(null!);
     const cropperRef = React.useRef<HTMLImageElement>(null);
-    console.log(images)
     // const Tags = usePillCollection({
     //     items: tagItems,
     //     pillProps: {
