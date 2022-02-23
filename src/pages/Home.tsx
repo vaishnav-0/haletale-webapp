@@ -18,22 +18,13 @@ function HomePage(): JSX.Element {
     const navigate = useNavigate();
     const { suggestions, suggest } = usePlaceSuggestions();
     const [popularProperties, setPopularProperties] = React.useState<any[]>([]);
-    let { data: propertyData, loading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, {
-        variables: {
-            id: "662fd90d-2021-4b70-a29d-a03544f68724"
-        }
-    });
+    let { data: recentPropertyData, loading: RecentPropertyloading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
     React.useEffect(() => {
-        if (propertyData) {
-            const imgUrls = Promise.all(propertyData!.property[0]!.property_images!.map(image => s3GetUrl({ key: image!.key }))).then(img => {
-                console.log(img);
-                const propertyDataCopy = cloneDeep(propertyData);
-                propertyDataCopy!.property[0].property_images = img;
-                setPopularProperties(propertyDataCopy!.property);
-            })
+        if (recentPropertyData) {
+
         }
-        console.log(propertyData)
-    }, [propertyData])
+        console.log(recentPropertyData)
+    }, [recentPropertyData])
 
     // pagination for queries
     // const perPage = 20
@@ -72,7 +63,7 @@ function HomePage(): JSX.Element {
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
                 <MinimalPropertyList title="Popular properties"
-                    properties={popularProperties}
+                    properties={recentPropertyData?.property ?? []}
                 />
                 <MinimalPropertyList title="Newly listed properties"
                     properties={[]}
