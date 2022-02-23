@@ -10,12 +10,12 @@ import graphQLClient from './apolloClient';
 function App() {
   const client = graphQLClient();
   return (
-    <AuthProvider>
-      <ApolloProvider client={client}>
+    <ApolloProvider client={client}>
+      <AuthProvider>
         <Router />
         <Loader />
-      </ApolloProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ApolloProvider>
   );
 }
 
