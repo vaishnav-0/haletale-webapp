@@ -41,9 +41,6 @@ const authLink = new ApolloLink((operation, forward) => {
 });
 
 const errorLink = onError(({ networkError, graphQLErrors, response, forward, operation }) => {
-    console.log(operation.getContext())
-    console.log(networkError, graphQLErrors)
-    console.log(navigator.connection.type)
     if (networkError && (networkError as ServerError).statusCode === 401) {
 
     }
