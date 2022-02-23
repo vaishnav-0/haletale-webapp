@@ -1,6 +1,7 @@
 
 import React from 'react';
-import ContentLoader from 'react-content-loader';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function (props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> & { default?: string }) {
     const [loaded, setLoaded] = React.useState<boolean>(false);
@@ -14,13 +15,11 @@ export default function (props: React.DetailedHTMLProps<React.ImgHTMLAttributes<
             imgRef.current!.src = props.default ?? "";
     }, [props.src])
     return <>{
-        !loaded && <ContentLoader
-            className={props.className}
-        >
-            <rect height="100%" width="100%" />
-        </ContentLoader>
+        !loaded && <Skeleton className={props.className} style={props.style} />
 
     }
-        <img ref={imgRef} onLoad={() => setLoaded(true)} {...props} style={{ height: loaded ? "" : 0 }} />
+        {
+            <img ref={imgRef} onLoad={() => setLoaded(true)} {...props} style={{ width: loaded ? "" : 0 }} />
+        }
     </>
 }
