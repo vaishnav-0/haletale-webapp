@@ -35,7 +35,10 @@ interface IPropertyQuerty {
     }
   }
   property_images: {
-    key: string
+    key: string,
+    s3Url: {
+      url: string
+    }
   }[]
 }
 export interface IPropertyDetails extends DeepPartial<IPropertyQuerty> { }
@@ -93,7 +96,9 @@ export default {
       rooms
     }
       property_images {
-      key
+      s4Url{
+        url
+      }
     }
   }
 } `,
@@ -116,7 +121,9 @@ export default {
   GET_PROPERTY_BY_DISTANCE: gql`query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int, $offset: Int, $limit: Int) {
   show_nearby_properties(args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
       property_images {
-      key
+      s3Url{
+        url
+      }
     }
     name
     sub_type
@@ -126,9 +133,48 @@ export default {
       rent_amount
     }
   }
-} `,
-
 }
+ `,
+  GET_RECENT_PROPERTIES: gql`query GET_RECENT_PROPERTIES {
+  property(order_by: { created_at: desc }, limit: 10) {
+    id
+    name
+    description
+    type
+    sub_type
+    coordinates
+      property_address {
+        address {
+        full_address
+          ${""//locality
+    //country
+    //id
+    //postal_code
+    //administrative_area_level_1
+    //administrative_area_level_2
+    //route
+    //street_number
+    }
+        }
+      }
+      property_detail {
+      max_occupants
+      features
+      description
+      restrictions
+      rent_amount
+      rooms
+    }
+      property_images {
+      s3Url{
+        url
+      }
+    }
+  }
+}`
+}
+
+
 
 
 
