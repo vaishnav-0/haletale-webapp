@@ -5,8 +5,30 @@ import HomeBanner from '../components/HomeBanner';
 import MinimalPropertyList from '../components/MinimalPropertyList';
 import Searchbar from '../components/Searchbar';
 import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
+import { useQuery } from '@apollo/client';
+import propertyQuery from '../queries/property.query';
+import { s3GetUrl } from '../functions/image';
+import { IPropertyDetails } from '../queries/property.query';
+import cloneDeep from 'clone-deep';
 function HomePage(): JSX.Element {
     const { suggestions, suggest } = usePlaceSuggestions();
+    const [popularProperties, setPopularProperties] = React.useState<any[]>([]);
+    let { data: propertyData, loading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, {
+        variables: {
+            id: "662fd90d-2021-4b70-a29d-a03544f68724"
+        }
+    });
+    React.useEffect(() => {
+        if (propertyData) {
+            const imgUrls = Promise.all(propertyData!.property[0]!.property_images!.map(image=>s3GetUrl({key:image!.key})) ).then(img=>{
+            console.log(img);
+            const propertyDataCopy = cloneDeep(propertyData);
+            propertyDataCopy!.property[0].property_images = img;
+            setPopularProperties(propertyDataCopy!.property);
+            })
+        }
+        console.log(propertyData)
+    }, [propertyData])
 
     // pagination for queries
     // const perPage = 20
@@ -19,7 +41,7 @@ function HomePage(): JSX.Element {
     // setPage(page+1)
     // setOffset(page * perPage)
     // send limit and offset vars to queries
-  
+
 
     return (
         <Layout footer={true}>
@@ -32,8 +54,12 @@ function HomePage(): JSX.Element {
                     submitOnSuggestionClick />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-                <MinimalPropertyList title="Popular properties" />
-                <MinimalPropertyList title="Newly listed properties" />
+                <MinimalPropertyList title="Popular properties"
+                    properties={popularProperties}
+                />
+                <MinimalPropertyList title="Newly listed properties"
+                    properties={[]}
+                />
                 <button onClick={async () => await suggest("thalassery")} />
             </div>
         </Layout>
