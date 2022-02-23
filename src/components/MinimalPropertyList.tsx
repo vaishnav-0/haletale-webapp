@@ -1,10 +1,12 @@
 import React from 'react';
 import './MinimalPropertyList.scss';
 import PropertyCard from './PropertyCard';
+import { IPropertyDetails } from '../queries/property.query';
 type props = {
     title: string;
+    properties: IPropertyDetails[];
 }
-export default function ({ title }: props): JSX.Element {
+export default function ({ title, properties }: props): JSX.Element {
     const listRef = React.useRef<HTMLDivElement>(null);
     const scrollLeftList = () => {
         if (!listRef.current) throw Error("divRef is not assigned");
@@ -22,7 +24,6 @@ export default function ({ title }: props): JSX.Element {
             behavior: 'smooth'
         });
     }
-    const listItems = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => <PropertyCard key={number.toString()} />);
     return (
         <div className="property-list">
             <div className="list-heading-container">
@@ -31,13 +32,20 @@ export default function ({ title }: props): JSX.Element {
             </div>
             <div className="minimal-list-container-wrapper">
                 <div ref={listRef} className="minimal-list-container">
-                    {listItems}
-                    <button className="left-scroll-btn" onClick={scrollLeftList}>
-                        &lt;
-                    </button>
-                    <button className="right-scroll-btn" onClick={scrollRightList}>
-                        &gt;
-                    </button>
+                    {
+                        properties.map((property) => <PropertyCard key={property.id} property={property} />)
+                    }{
+                        properties.length > 0 &&
+                        <>
+                            <button className="left-scroll-btn" onClick={scrollLeftList}>
+                                &lt;
+                            </button>
+                            <button className="right-scroll-btn" onClick={scrollRightList}>
+                                &gt;
+                            </button>
+                        </>
+                    }
+
                 </div>
             </div>
         </div>
