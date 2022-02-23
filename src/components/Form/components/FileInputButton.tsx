@@ -38,7 +38,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
             //sanitize filename?
             console.log();
             if (!fileNamesMap[name])
-                obj[name] = name.substring(0, name.search(/\.\w+$/));
+                obj[name] = name.substring(0, name.search(/\.[a-zA-Z0-9]+/));
             else
                 obj[name] = fileNamesMap[name];
             console.log(textInputRefs.current[i]);
@@ -48,7 +48,7 @@ export const FileInput = React.forwardRef<HTMLInputElement, PropsType>(({ classN
         );
     }, [fileNames])
     React.useEffect(() => {
-        onChange(fileNames.map((name, i) => { return { file: files[i], name: fileNamesMap[name]! + name.substring(name.search(/\.\w+$/)) } }));
+        onChange(fileNames.map((name, i) => { return { file: files[i], name: fileNamesMap[name]! + name.substring(name.search(/\.[a-zA-Z0-9]+/)) } }));
     }, [fileNamesMap]);
     console.log(fileNamesMap);
     return <div key={key} className={`${cssStyle["file-container"]} ${className ?? ""}`} style={style}>
