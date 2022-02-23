@@ -29,14 +29,21 @@ export default {
       id
       name
       description
+      type
+      sub_type
+      coordinates
       property_address {
         address {
-          addressline
-          building_number
-          city
-          country
-          id
-          landmarks
+          full_address
+          ${""//locality
+          //country
+          //id
+          //postal_code
+          //administrative_area_level_1
+          //administrative_area_level_2
+          //route
+          //street_number
+}
         }
       }
       property_detail {
@@ -44,6 +51,8 @@ export default {
         features
         description
         restrictions
+        rent_amount
+        rooms
       }
       property_images {
         key
