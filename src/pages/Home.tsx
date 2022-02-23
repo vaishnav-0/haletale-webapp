@@ -10,7 +10,12 @@ import propertyQuery from '../queries/property.query';
 import { s3GetUrl } from '../functions/image';
 import { IPropertyDetails } from '../queries/property.query';
 import cloneDeep from 'clone-deep';
+import { setGlobalLoader } from '../components/Loader';
+import { addressToGeo } from '../functions/api/location';
+import { toast } from 'react-toastify';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 function HomePage(): JSX.Element {
+    const navigate = useNavigate();
     const { suggestions, suggest } = usePlaceSuggestions();
     const [popularProperties, setPopularProperties] = React.useState<any[]>([]);
     let { data: propertyData, loading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, {
@@ -20,11 +25,11 @@ function HomePage(): JSX.Element {
     });
     React.useEffect(() => {
         if (propertyData) {
-            const imgUrls = Promise.all(propertyData!.property[0]!.property_images!.map(image=>s3GetUrl({key:image!.key})) ).then(img=>{
-            console.log(img);
-            const propertyDataCopy = cloneDeep(propertyData);
-            propertyDataCopy!.property[0].property_images = img;
-            setPopularProperties(propertyDataCopy!.property);
+            const imgUrls = Promise.all(propertyData!.property[0]!.property_images!.map(image => s3GetUrl({ key: image!.key }))).then(img => {
+                console.log(img);
+                const propertyDataCopy = cloneDeep(propertyData);
+                propertyDataCopy!.property[0].property_images = img;
+                setPopularProperties(propertyDataCopy!.property);
             })
         }
         console.log(propertyData)
@@ -41,7 +46,19 @@ function HomePage(): JSX.Element {
     // setPage(page+1)
     // setOffset(page * perPage)
     // send limit and offset vars to queries
-
+    const searchProperty = (placeId: string) => {
+        setGlobalLoader(true);
+        addressToGeo(placeId).then(d => {
+            setGlobalLoader(false)
+            navigate({
+                pathname: "/properties",
+                search: `?${createSearchParams({ lat: d.geometry.location.lat, lng: d.geometry.location.lng })}`
+            })
+        }).catch(() => {
+            setGlobalLoader(false)
+            toast.error("There was an error.");
+        })
+    }
 
     return (
         <Layout footer={true}>
@@ -50,7 +67,7 @@ function HomePage(): JSX.Element {
                 <Searchbar suggestionItems={suggestions.map(e => e[0])}
                     placeholder="Search Property, Neighbourhood or Address"
                     onChange={suggest}
-                    onSubmit={(v, i) => console.log(v, i)}
+                    onSubmit={(v, i) => searchProperty(suggestions[i!][1])}
                     submitOnSuggestionClick />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
