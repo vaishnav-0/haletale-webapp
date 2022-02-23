@@ -45,7 +45,7 @@ export default function ({ onChange = () => { }, onSubmit = () => { },
                 suggestionsOpen && suggestionItems &&
                 <div className={style["suggestions-container"]}>
                     {
-                        suggestionItems.map((e, i) => <button onClick={() => suggestionOnClick(e, i)}>{e}</button>
+                        suggestionItems.map((e, i) => <button key={i} onClick={() => suggestionOnClick(e, i)}>{e}</button>
                         )
                     }
                 </div>
