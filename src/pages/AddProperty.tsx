@@ -25,7 +25,7 @@ const stringFieldRequired = yup.string().required("This field is required.")
 
 type FormPropsType = {
     onComplete: () => void,
-    onLoading: () => void
+    onLoading: (s?:boolean) => void
 }
 
 const propertyId: { current: null | string } = { current: null };
@@ -228,31 +228,40 @@ function AddPropertyForm2(props: FormPropsType) {
     React.useEffect(() => {
         if (data) {
             props.onComplete();
-            setDisabled(true);
         }
     }, [data])
     const onSubmit = async (d: FormData) => {
         if (!propertyId.current) //handle it
             return
+        setDisabled(true);
         props.onLoading();
-        try {
-            let keys = await handleImage(d.images);
-            const imageVariable = keys.map((x: string) => {
-                return {
-                    key: x,
-                    property_id: propertyId.current
-                }
-            });
+        cropToAspectRatio(d.images, 16 / 9).then(async t => {
+            try {
+                let keys = await handleImage(d.images);
+                const imageVariable = keys.map((x: string) => {
+                    return {
+                        key: x,
+                        property_id: propertyId.current
+                    }
+                });
 
-            addImages({
-                variables: {
-                    object: imageVariable
-                }
-            })
+                addImages({
+                    variables: {
+                        object: imageVariable
+                    }
+                })
 
-        } catch (e) {
-            console.log(e);
-        }
+            } catch (e) {
+                console.log(e);
+                setDisabled(false);
+                props.onLoading(false);
+            }
+        }).catch(e => {
+            console.log()
+            setDisabled(false);
+            props.onLoading(false);
+        })
+
     }
 
 

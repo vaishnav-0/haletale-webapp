@@ -5,14 +5,14 @@ import useListState from "../../functions/hooks/useListState";
 import FormProgressIndicator from "./components/FormProgressIndicator";
 
 type PropsType = {
-    forms: { description: string, component: (props: { onComplete: () => void, onLoading: () => void }) => JSX.Element }[],
+    forms: { description: string, component: (props: { onComplete: () => void, onLoading: (b?:boolean) => void }) => JSX.Element }[],
     parallel?: boolean
 }
 export default function ProgressiveForm({ forms, parallel = false }: PropsType): JSX.Element {
     const { list: progressList, replace: progressListUpdate } = useListState(Array.from({ length: forms.length }, () => 0));
     const formContainerRefs = React.useRef<(HTMLElement | null)[]>([]);
     const getOnLoading = React.useCallback((n: number) => {
-        return () => progressListUpdate(ProgressStateEnum.Processing, n);
+        return (b:boolean=true) => progressListUpdate(b?ProgressStateEnum.Processing:ProgressStateEnum.OnProgress, n);
     }, []);
     const getOnClick = React.useCallback((n: number) => {
         return () => {
