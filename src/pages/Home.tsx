@@ -37,13 +37,14 @@ function HomePage(): JSX.Element {
     // setPage(page+1)
     // setOffset(page * perPage)
     // send limit and offset vars to queries
-    const searchProperty = (placeId: string) => {
+    const searchProperty = (placeId: string, place: string) => {
         setGlobalLoader(true);
         addressToGeo(placeId).then(d => {
+            console.log(d)
             setGlobalLoader(false)
             navigate({
                 pathname: "/properties",
-                search: `?${createSearchParams({ lat: d.geometry.location.lat, lng: d.geometry.location.lng })}`
+                search: `?${createSearchParams({ lat: d.geometry.location.lat, lng: d.geometry.location.lng, place: place })}`
             })
         }).catch(() => {
             setGlobalLoader(false)
@@ -58,7 +59,7 @@ function HomePage(): JSX.Element {
                 <Searchbar suggestionItems={suggestions.map(e => e[0])}
                     placeholder="Search Property, Neighbourhood or Address"
                     onChange={suggest}
-                    onSubmit={(v, i) => searchProperty(suggestions[i!][1])}
+                    onSubmit={(v, i) => searchProperty(suggestions[i!][1], v)}
                     submitOnSuggestionClick />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
