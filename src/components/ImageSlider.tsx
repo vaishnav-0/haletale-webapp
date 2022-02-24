@@ -25,9 +25,9 @@ export default function ({ aspectRatio = 16 / 9, indicatorClassName = "",
     return (
         <div className={style["slider-container"]} {...rest}>
             {
-                showIndicators &&
+                showIndicators && imgSrc.length > 1 &&
                 <PositionIndicator style={{ position: "absolute", zIndex: "10" }} className={indicatorClassName} onChange={(i) => setCurrentImage(i)}
-                    position={currentImage} count={2} />
+                    position={currentImage} count={imgSrc.length} />
             }
             <Carousel
                 className={className}
