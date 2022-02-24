@@ -4,6 +4,7 @@ import { ServerError } from "@apollo/client/link/utils";
 import Token from "./functions/auth/token";
 import { RetryLink } from "@apollo/client/link/retry"
 import auth from './functions/auth'
+import {offsetLimitPagination} from '@apollo/client/utilities';
 
 const token = new Token("id");
 
@@ -77,7 +78,17 @@ const errorLink = onError(({ networkError, graphQLErrors, response, forward, ope
 
 
 const graphQLClient = () => new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache(
+        {
+            typePolicies: {
+              Query: {
+                fields: {
+                    show_nearby_properties: offsetLimitPagination()
+                }
+              }
+            }
+          }
+    ),
     link: from([authLink, errorLink, httpLink])
 });
 
