@@ -59,7 +59,7 @@ function AddPropertyForm1(props: FormPropsType) {
                             dynamicSchemaGenerator({
                                 schema: s,
                                 dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
-                                    const addressComponents = ["street_address", "administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
+                                    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
                                     addressRef.current = d.address_components.reduce((obj: any, curr: any) => {
                                         const type = curr.types.find((e: any) => addressComponents.includes(e))
                                         if (type)
@@ -216,7 +216,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 schema_ && <div style={{ height: "max-content", position: "relative", padding: "1em 0" }}>
                     {Loader}
                     <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
-                        onSubmit={onSubmit} disabled={disabled} />
+                        onSubmit={onSubmit} disabled={disabled} 
+                    />
                 </div>
 
             }
