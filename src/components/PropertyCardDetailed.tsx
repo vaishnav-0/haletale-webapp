@@ -9,14 +9,16 @@ import sqftIcon from "../assets/icons/pro-details-icon4.png";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ImageSlider from './ImageSlider';
 import { IPropertyDetails } from '../queries/property.query';
+import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
 export default function (props: { propertyData: IPropertyDetails }): JSX.Element {
     const [fav, setFav] = React.useState(false);
     const [currentImage, setCurrentImage] = React.useState(0);
+    const images = props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "").slice(0, 5);
     return (
         <div className={style["property-card"]}>
             <div className={style["property-card-container"]}>
-                <ImageSlider imgSrc={props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "").slice(0, 5) ?? []} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
+                <ImageSlider imgSrc={!images || images.length === 0 ? [defaultImage] : images} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
                 <div className={style["property-details"]}>
                     <div className={style["top-container"]}>
                         <div className={style["property-location"]}>
