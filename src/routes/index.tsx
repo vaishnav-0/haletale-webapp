@@ -20,6 +20,7 @@ import SelectRole from "../pages/SelectRole";
 import { useAuth } from '../functions/auth/useAuth';
 import AccountRoutes from "./Account";
 import { NumberVerify } from "../pages/NumberVerify";
+import EditProperty from "../pages/EditProperty";
 export default function () {
     let auth = useAuth();
     return (
@@ -56,6 +57,7 @@ export default function () {
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                             <Route path="addProperty" element={< AddProperty />} />
+                            <Route path="editProperty" element={< EditProperty />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                             <Route path="sendRequest" element={< SendRequest />} />
