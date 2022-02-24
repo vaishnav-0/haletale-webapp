@@ -19,6 +19,7 @@ import LandlordDashboard from '../pages/LandlordDashboard'
 import SelectRole from "../pages/SelectRole";
 import { useAuth } from '../functions/auth/useAuth';
 import AccountRoutes from "./Account";
+import { NumberVerify } from "../pages/NumberVerify";
 export default function () {
     let auth = useAuth();
     return (
@@ -37,6 +38,7 @@ export default function () {
                             <Route path="PropertyDetailed" element={< PropertyDetailed />} />
                             <Route path="dashboard" element={< LandlordDashboard />} />
                             <Route path="signout" element={<Navigate to="/" replace />} />
+                            <Route path="account/*" element={<AccountRoutes />} />
                             <Route
                                 path="*"
                                 element={
@@ -49,9 +51,11 @@ export default function () {
                         <Route path="/" element={<NotRequireAuth />}>
                             <Route path="signup" element={< Signup />} />
                         </Route>
+                        <Route path="/" element={<RequireAuth role={[Roles['landlord'], Roles['tenant']]} />}>
+                            <Route path="verifyNumber" element={< NumberVerify />} />
+                        </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                             <Route path="addProperty" element={< AddProperty />} />
-                            <Route path="account/*" element={<AccountRoutes />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                             <Route path="sendRequest" element={< SendRequest />} />
