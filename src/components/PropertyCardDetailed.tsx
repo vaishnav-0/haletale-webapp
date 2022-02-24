@@ -16,7 +16,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
     return (
         <div className={style["property-card"]}>
             <div className={style["property-card-container"]}>
-                <ImageSlider imgSrc={props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "") ?? []} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
+                <ImageSlider imgSrc={props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "").slice(0, 5) ?? []} aspectRatio={16 / 9} indicatorClassName={style["position-indicator"]} />
                 <div className={style["property-details"]}>
                     <div className={style["top-container"]}>
                         <div className={style["property-location"]}>
