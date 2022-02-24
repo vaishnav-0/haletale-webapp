@@ -3,30 +3,50 @@ import { SchemaType } from "./FormGenerator";
 import cloneDeep from 'clone-deep';
 export type dataMapReturn = { [k: string]: ((item: SchemaType["items"][number]) => void) | dataMapReturn }[];
 function getItem(items: SchemaType["items"], name: string) {
+    if (name === "*")
+        return name;
     for (let i = 0; i < items.length; i++)
         if (items[i].name == name)
             return items[i];
     throw new Error("item not found");
 }
-function modifySchema(dataMap: dataMapReturn, schema: { items: SchemaType["items"] }) {
+function getArrayItems(items: SchemaType["items"]) {
+    return items.filter(item => !!item.isArray);
+}
+function applyToAll(items: SchemaType["items"], fn: (item: SchemaType["items"][number]) => void) {
+    for (let i = 0; i < items.length; i++) {
+        fn(items[i]);
+    }
+}
+function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
     for (let i = 0; i < dataMap.length; i++) {
         const dataMapItem = dataMap[i];
         const [key, fn] = Object.entries(dataMapItem)[0];
-        const schemaItem = getItem(schema.items, key);
-        if (typeof fn === 'function')
-            fn(schemaItem)
-        else
-            if (schemaItem.isArray)
-                modifySchema(fn, schemaItem)
+        const schemaItem = getItem(items, key);
+        if (typeof fn === 'function') {
+            if (schemaItem === "*") {
+                applyToAll(items, fn);
+            }
             else
-                throw new Error("invalid structure for given schema")
+                fn(schemaItem)
+        }
+        else {
+            if (schemaItem === "*")
+                modifySchema(fn, getArrayItems(items))
+            else
+                if (schemaItem.isArray)
+                    modifySchema(fn, schemaItem.items)
+                else
+                    throw new Error("invalid structure for given schema")
+
+        }
     }
 }
 export async function dynamicSchemaGenerator({ schema, dataLoader, dataMap }:
-    { schema: SchemaType, dataLoader: Promise<any>, dataMap: (d: any) => dataMapReturn }) {
+    { schema: SchemaType, dataLoader: any, dataMap: (d: any) => dataMapReturn }) {
     const _schema: SchemaType = cloneDeep(schema);
     const data = await dataLoader;
     const dataMaped = dataMap(data);
-    modifySchema(dataMaped, _schema);
+    modifySchema(dataMaped, _schema.items);
     return _schema;
 }   
