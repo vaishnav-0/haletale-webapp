@@ -128,7 +128,7 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
     function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
         const inputComponent = getInputComponent(item);
         return <div key={keyGen.next().value} className={style["form-item"]}>
-            {item.title === "" &&
+            {item.title && item.title !== "" &&
                 <div className={style["form-item-heading"]}>
                     {item.title}
                 </div>
