@@ -2,9 +2,10 @@ import React from 'react';
 import style from './LandlordDashboard.module.scss';
 import Layout from './Layout';
 import { ButtonSolid, ButtonSolidWithIndicator } from '../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 export default function Example() {
-
+    const navigate = useNavigate();
     return (
         <Layout>
             <div className={style["wrapper"]}>
@@ -15,6 +16,7 @@ export default function Example() {
                     <div className={style["properties-list-card"]}>
                         <div >
                             <div className={style["properties-card-info"]}>
+                                <div>Name</div>
                                 <div>Appartment</div>
                                 <div>14-30 Tichester Road - York,ON</div>
                             </div>
@@ -26,7 +28,7 @@ export default function Example() {
                             <div className={style["properties-card-status"]}>
                                 <span className={style["key"]}>Status: </span>Approved
                             </div>
-                            <ButtonSolid className={style["property-card-edit-btn"]}>
+                            <ButtonSolid className={style["property-card-edit-btn"]} onClick={()=>navigate({pathname:"/editProperty",search:"?id="+"1234"})}>
                                 Edit
                             </ButtonSolid>
 
@@ -49,6 +51,7 @@ export default function Example() {
                     <div className={style["properties-list-card"]}>
                         <div >
                             <div className={style["properties-card-info"]}>
+                                <div>Name</div>
                                 <div>Condo</div>
                                 <div>89 Mcgill Street - Torronto, On</div>
                             </div>

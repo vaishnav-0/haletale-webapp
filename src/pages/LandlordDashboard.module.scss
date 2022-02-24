@@ -60,7 +60,8 @@
     flex-direction: column;
     gap: 0.6em;
 
-    :nth-child(2) {
+    :nth-child(2),
+    :nth-child(3) {
         font-size: 0.9em;
         color: $greyText;
     }
@@ -98,17 +99,19 @@
     display: flex;
     gap: 1em;
     flex-direction: column;
+
     @include media(">=mdMin") {
         flex-direction: row;
-        gap:2em;
+        gap: 2em;
     }
-    & button{
+
+    & button {
         padding: 0.8em 1.1em;
         border-radius: 1.5em;
     }
 }
 
-.btn-indicator{
+.btn-indicator {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -118,6 +121,6 @@
     height: 1.3em;
     padding: 0.1em;
     font-size: 0.8em;
-    color:white;
-    transform: translate(-60%,40%);
+    color: white;
+    transform: translate(-60%, 40%);
 }
