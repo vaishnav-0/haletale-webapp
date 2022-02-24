@@ -23,7 +23,7 @@ export function NumberVerify(): JSX.Element {
                         props: {
                             type: "text"
                         },
-                        validationSchema: yup.string().matches(/\d+/).min(10).typeError("Enter a valid phone number.")
+                        validationSchema: yup.string().matches(/\d+/, "Phone number must only contain numbers").min(10, "Less than 10 digits")
                     }
                 ],
                 submitButton: "Send OTP",
