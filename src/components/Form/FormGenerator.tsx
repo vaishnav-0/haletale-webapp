@@ -105,7 +105,9 @@ export interface SchemaType {
     heading: string,//Form heading
     items: readonly TItem[],
     submitButton: string | ((props: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) => JSX.Element),
-    defaultValue?: object
+    defaultValue?: object,
+    wrapperClassName?: string,
+    wrapperStyle?: React.CSSProperties,
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 
@@ -126,9 +128,12 @@ function generateFields(schema: SchemaType, errors: FieldErrors, useFormRet: Use
     function SingleComponent(item: Extract<TItem, TItemCommon & TSingleItem>, error?: string) {
         const inputComponent = getInputComponent(item);
         return <div key={keyGen.next().value} className={style["form-item"]}>
-            <div className={style["form-item-heading"]}>
-                {item.title}
-            </div>
+            {item.title === "" &&
+                <div className={style["form-item-heading"]}>
+                    {item.title}
+                </div>
+            }
+
             {
                 item.wrapperRender ?
                     item.wrapperRender(inputComponent)
@@ -287,12 +292,13 @@ export default function FormGenerator({ schema, onSubmit, onError, disabled }: P
     const errors = methods.formState.errors;
     return (
         <FormProvider {...methods}>
-            <form className={style["form-container"]} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
-                {
-                    schema.heading && <div className={style["form-header"]}>
-                        {schema.heading}
-                    </div>
-                }
+            {
+                schema.heading && <div className={style["form-header"]}>
+                    {schema.heading}
+                </div>
+            }
+            <form className={schema.wrapperClassName ?? !schema.wrapperStyle ? style["form-container"] : ""} style={schema.wrapperStyle} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
+
                 {
                     generateFields(schema, errors, methods, { disabled })
                 }
