@@ -26,17 +26,7 @@ function HomePage(): JSX.Element {
         console.log(recentPropertyData)
     }, [recentPropertyData])
 
-    // pagination for queries
-    // const perPage = 20
-    // const [page, setPage] = React.useState(0);
-    // const [offset, setOffset] = React.useState(0);
-    // 
-    // limit: perPage,
 
-    // on loading
-    // setPage(page+1)
-    // setOffset(page * perPage)
-    // send limit and offset vars to queries
     const searchProperty = (placeId: string, place: string) => {
         setGlobalLoader(true);
         addressToGeo(placeId).then(d => {
@@ -66,10 +56,11 @@ function HomePage(): JSX.Element {
                 <MinimalPropertyList title="Popular properties"
                     properties={recentPropertyData?.property ?? []}
                 />
-                <MinimalPropertyList title="Newly listed properties"
-                    properties={[]}
-                />
-                <button onClick={async () => await suggest("thalassery")} />
+                {
+                    //               <MinimalPropertyList title="Newly listed properties"
+                    //                 properties={[]}
+                    //               />
+                }
             </div>
         </Layout>
     );
