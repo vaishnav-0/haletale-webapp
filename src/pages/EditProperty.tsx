@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import FormGenerator, { SchemaType } from "../components/Form/FormGenerator";
 import { dataMapReturn, dynamicSchemaGenerator } from "../components/Form/FormGeneratorHelpers";
 import Layout from "./Layout";
+import formStyle from '../components/Form/Form.module.scss';
 import { useLazyQuery } from "@apollo/client";
 import propertyQuery, { IPropertyDetails } from "../queries/property.query";
 import axios from "axios";
@@ -116,21 +117,15 @@ const schema: SchemaType = {
             }
         },
         {
-            title: "Pets",
-            name: "pets",
-            type: "select",
+            title: "Restrictions",
+            name: "restriction",
+            type: "checkboxGroup",
+            wrapperClassName: formStyle["horizontal-list"],
             props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
+                values: ["smoking", "pets"],
             }
         },
-        {
-            title: "Smoking",
-            name: "smoking",
-            type: "select",
-            props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
-            }
-        },
+
         {
             title: "Rent",
             name: "rent",
@@ -225,42 +220,57 @@ export default function EditProperty() {
         if (propertyData) {
             console.log(propertyData);
             const property = propertyData.property[0];
-            const defaultValue = {
-                property_name: property.name,
-                property_address: property.property_address?.address?.full_address,
-               // property_coords: property.coordinates?.coordinates,
-                type: property.type,
-                subtype: property.sub_type
-            }
-            const toDataURL = (url: string) => fetch(url,{mode:"cors"})
-                .then(response => response.blob())
+
+            const toDataURL = (url: string) => fetch(url, { mode: "cors" })
+                .then(response => { console.log(response.body); return response.blob(); })
                 .then(blob => new Promise((resolve, reject) => {
+                    var file = new File([blob], property.property_images![0]?.key ?? "");
                     const reader = new FileReader()
-                    reader.onloadend = () => resolve(reader.result)
+                    reader.onloadend = () => resolve([reader.result, file])
                     reader.onerror = reject
                     reader.readAsDataURL(blob)
                 })).catch(e => {
                     console.log(e)
                 })
-            toDataURL(property.property_images![0]!.s3Url?.url ?? "").then((dataUrl) => {
-                console.log(dataUrl)
-            })
-            console.log(defaultValue)
-            dynamicSchemaGenerator({
-                schema: schema,
-                dataLoader: defaultValue,
-                dataMap: (data) => [
+            toDataURL(property.property_images![0]!.s3Url?.url ?? "").then((data: any) => {
+                const fileList = [
                     {
-                        "*": (item: any) => {
-                            if (item.props && data[item.name])
-                                item.props.defaultValue = data[item.name]
-                        }
+                        dataUrl: data[0],
+                        file: data[1]
                     }
-                ]
-            }).then(s => {
-                console.log("set schema", schema === s);
-                _setSchema(s)
+                ];
+                console.log(fileList)
+                const defaultValue = {
+                    property_name: property.name,
+                    property_address: property.property_address?.address?.full_address,
+                    // property_coords: property.coordinates?.coordinates,
+                    //type: property.type,
+                    type: "2",
+                    subtype: property.sub_type,
+                    features: ["fridge"],
+                    bathroom: 5,
+                    restriction: ["pets"],
+                    images: fileList
+                }
+                dynamicSchemaGenerator({
+                    schema: schema,
+                    dataLoader: defaultValue,
+                    dataMap: (data) => [
+                        {
+                            "*": (item: any) => {
+                                if (item.props && data[item.name])
+                                    item.props.defaultValue = data[item.name]
+                            }
+                        }
+                    ]
+                }).then(s => {
+                    console.log("set schema", schema === s);
+                    _setSchema(s)
+                })
+                console.log(defaultValue)
             })
+
+
         }
     }, [propertyData]);
     React.useEffect(() => {
