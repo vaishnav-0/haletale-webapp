@@ -71,7 +71,7 @@ const errorLink = onError(({ networkError, graphQLErrors, response, forward, ope
                 })
         })
     }
-    if (response) response.errors = undefined;
+   // if (response) response.errors = undefined;
 })
 
 
