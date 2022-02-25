@@ -108,14 +108,13 @@ function SendRequest(): JSX.Element {
 
                                     <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
                                         <div className={style["form-item-heading"]}>
-                                            Number of tenants:
                                         </div>
                                         <NumberInput
                                             name="tenantCount"
                                             onIncrement={(v) => {
                                                 append({ name: '', relation: 0, addToLease: false });
                                             }}
-                                            disabled={[0]}
+                                            disabledBtn={[0]}
                                             setValueRef={setCountRef}
                                         />
                                     </div>
