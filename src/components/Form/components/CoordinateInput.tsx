@@ -10,7 +10,8 @@ export interface PropsType extends MapContainerProps {
     style?: React.CSSProperties,
     className?: string,
     coords?: [number, number],
-    disabled?: boolean
+    disabled?: boolean,
+    defaultValue?: [number, number]
 }
 export default function CoordinateInput({ onChange = () => { }, style, className, coords, disabled, ...props }: PropsType) {
     const [map, setMap] = React.useState<Map>(null!);
