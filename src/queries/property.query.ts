@@ -96,7 +96,7 @@ export default {
       rooms
     }
       property_images {
-      s4Url{
+      s3Url{
         url
       }
     }
