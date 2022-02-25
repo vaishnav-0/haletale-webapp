@@ -22,7 +22,8 @@ export interface PropsType {
     onChange?: (value: ImageListType, addUpdatedIndex?: Array<number>) => void;
     onBlur?: () => void,
     key?: React.Attributes["key"],
-    disabled?: boolean
+    disabled?: boolean,
+    defaultValue?: ImageListType
 
 }
 const tagItems = {
@@ -59,11 +60,11 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                                         }
                                         reader.onload = () => {
                                             imgList[i][CUSTOM_DATA_URL] = reader.result as string;
-                                            imgList[i].file = new File([blob], image.file?.name??"", { type: image.file?.type, lastModified:image.file?.lastModified });
+                                            imgList[i].file = new File([blob], image.file?.name ?? "", { type: image.file?.type, lastModified: image.file?.lastModified });
                                             resolve(true)
                                         }
                                     }
-                                },image.file?.type);
+                                }, image.file?.type);
                             }
                         });
 
@@ -77,7 +78,7 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
     })
 }
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
-    maxFileSize, resolutionType, resolutionHeight, resolutionWidth,
+    maxFileSize, resolutionType, resolutionHeight, resolutionWidth, defaultValue,
     rejectOnResolutionError, onChange = () => { }, key, disabled = false }: PropsType): JSX.Element {
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
@@ -104,6 +105,8 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         }
         divRef_.addEventListener("drag:enter", enterHandler)
         divRef_.addEventListener("drag:leave", leaveHandler)
+        if (defaultValue)
+            setImages(defaultValue)
         return () => {
             drag.unsuscribe();
             divRef_.removeEventListener("drag:enter", enterHandler)
@@ -155,7 +158,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                 }
                 reader.onload = () => {
                     img[CUSTOM_DATA_URL] = reader.result as string;
-                    img.file = new File([blob], (images[i].file as File).name,{type:images[i].file?.type,lastModified:images[i].file?.lastModified});
+                    img.file = new File([blob], (images[i].file as File).name, { type: images[i].file?.type, lastModified: images[i].file?.lastModified });
                     setImages(p => {
                         const newImgList = p.map((e, k) => k === i ? img : e);
                         onChange_(newImgList, [i]);
@@ -163,7 +166,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                     });
                     setEditor(false);
                 }
-            },images[i].file?.type);
+            }, images[i].file?.type);
         }
     }
     const onError = (errors: ErrorsType, files?: ImageListType) => {
