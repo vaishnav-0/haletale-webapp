@@ -119,7 +119,7 @@ export default {
 }
 `,
   GET_PROPERTY_BY_DISTANCE: gql`query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int, $offset: Int, $limit: Int) {
-  show_nearby_properties(args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
+  show_nearby_properties(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
       property_images {
       s3Url{
         url
@@ -137,7 +137,7 @@ export default {
 }
  `,
   GET_RECENT_PROPERTIES: gql`query GET_RECENT_PROPERTIES {
-  property(order_by: { created_at: desc }, limit: 10) {
+  property(where:{property_detail: {}},order_by: { created_at: desc }, limit: 10) {
     id
     name
     description
