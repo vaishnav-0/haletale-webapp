@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import FormGenerator, { SchemaType } from "../components/Form/FormGenerator";
 import { dataMapReturn, dynamicSchemaGenerator } from "../components/Form/FormGeneratorHelpers";
 import Layout from "./Layout";
+import { useLazyQuery } from "@apollo/client";
+import propertyQuery, { IPropertyDetails } from "../queries/property.query";
+import axios from "axios";
 const schema: SchemaType = {
     heading: "Add Property",
     items: [
@@ -199,35 +202,75 @@ const schema: SchemaType = {
 
     ],
     submitButton: "Next",
-    defaultValue: {
-        property_name: "hello",
-        property_coords: [10, 10]
-    }
+
 }
 export default function EditProperty() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [_schema, _setSchema] = React.useState<SchemaType | null>(null);
+
+    let [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
     const navigate = useNavigate();
     React.useEffect(() => {
-        // dynamicSchemaGenerator({
-        //         schema: schema,
-        //         dataLoader: schema.defaultValue,
-        //         dataMap: (data) => [
-        //             {
-        //                 "*": (item: any) => {
-        //                     if (item.props)
-        //                         item.props.defaultValue = data[item.name]
-        //                 }
-        //             }
-        //         ]
-        //     }).then(s => {
-        //         console.log("set schema", schema === s);
-        //         _setSchema(s);
-        //     })
         if (!searchParams.get("id"))
             navigate("/")
+        else {
+            getProperty({
+                variables: {
+                    id: searchParams.get("id")
+                }
+            })
+        }
     }, []);
+    React.useEffect(() => {
+        if (propertyData) {
+            console.log(propertyData);
+            const property = propertyData.property[0];
+            const defaultValue = {
+                property_name: property.name,
+                property_address: property.property_address?.address?.full_address,
+               // property_coords: property.coordinates?.coordinates,
+                type: property.type,
+                subtype: property.sub_type
+            }
+            const toDataURL = (url: string) => fetch(url,{mode:"cors"})
+                .then(response => response.blob())
+                .then(blob => new Promise((resolve, reject) => {
+                    const reader = new FileReader()
+                    reader.onloadend = () => resolve(reader.result)
+                    reader.onerror = reject
+                    reader.readAsDataURL(blob)
+                })).catch(e => {
+                    console.log(e)
+                })
+            toDataURL(property.property_images![0]!.s3Url?.url ?? "").then((dataUrl) => {
+                console.log(dataUrl)
+            })
+            console.log(defaultValue)
+            dynamicSchemaGenerator({
+                schema: schema,
+                dataLoader: defaultValue,
+                dataMap: (data) => [
+                    {
+                        "*": (item: any) => {
+                            if (item.props && data[item.name])
+                                item.props.defaultValue = data[item.name]
+                        }
+                    }
+                ]
+            }).then(s => {
+                console.log("set schema", schema === s);
+                _setSchema(s)
+            })
+        }
+    }, [propertyData]);
+    React.useEffect(() => {
+        console.log(error);
+        if (error)
+            navigate("/");
+    }, [error])
     return <Layout>
-        <FormGenerator schema={schema} onSubmit={(d) => console.log(d)} />
-
+        {_schema &&
+            <FormGenerator schema={_schema} onSubmit={(d) => console.log(d)} />
+        }
     </Layout>
 }
