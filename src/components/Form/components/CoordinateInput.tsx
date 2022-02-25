@@ -11,9 +11,10 @@ export interface PropsType extends MapContainerProps {
     className?: string,
     coords?: [number, number],
     disabled?: boolean,
-    defaultValue?: [number, number]
+    defaultValue?: [number, number],
+    value?: [number, number]
 }
-export default function CoordinateInput({ onChange = () => { }, style, className, coords, disabled, ...props }: PropsType) {
+export default function CoordinateInput({ onChange = () => { }, style, className, coords, disabled, defaultValue, value, ...props }: PropsType) {
     const [map, setMap] = React.useState<Map>(null!);
     React.useEffect(() => {
         if (map) {
@@ -28,12 +29,18 @@ export default function CoordinateInput({ onChange = () => { }, style, className
                 map.removeEventListener('moveend', onMoveEnd);
             }
         }
-    }, [map])
+    }, [map]);
     React.useEffect(() => {
         if (coords && map) {
             map.flyTo(coords, 16, { duration: 1 });
         }
-    }, [coords]);
+    }, [coords, map]);
+    React.useEffect(() => {
+        console.log(defaultValue)
+        if (defaultValue) {
+            map.flyTo(defaultValue, 16, { duration: 1 });
+        }
+    }, [])
     return <div className={CSSstyle["map-container"]}>
         <MapComponent whenCreated={setMap}
             worldCopyJump
