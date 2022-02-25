@@ -13,13 +13,15 @@ export type PropsType = {
     onBlur?: () => void,
     setValueRef?: React.MutableRefObject<((v: number) => void) | undefined>,
     key?: React.Attributes["key"],
-    disabled?: boolean
+    disabled?: boolean,
+    defaultValue?: number
 
 }
-export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange = () => { }, onIncrement, onDecrement, setValueRef, key, disabled }: PropsType): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange = () => { }
+    , onIncrement, onDecrement, setValueRef, key, disabled, defaultValue }: PropsType): JSX.Element {
     if (disabled)
         disabledBtn = [0, 1];
-    const [count, setCount] = React.useState(init);
+    const [count, setCount] = React.useState(defaultValue ?? init);
     if (setValueRef)
         setValueRef.current = setCount;
     React.useEffect(() => onChange(init), []);

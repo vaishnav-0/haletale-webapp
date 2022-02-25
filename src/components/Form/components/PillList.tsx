@@ -11,11 +11,11 @@ export type PropsType = {
     onClick?: (key: string, isActivationClick: boolean) => void
     disabledKeys?: (number | string)[],
     disabledActivatableKeys?: (number | string)[],
-    defaultValues?: (number | string)[],
+    defaultValue?: (number | string)[],
     disabled?: boolean,
     maxActive?: number,
     className?: string,
-    key?: React.Attributes["key"]
+    key?: React.Attributes["key"],
 }
 function getKeyPosition(obj: object, key: string) {
     return Object.keys(obj).indexOf(key);
@@ -29,19 +29,19 @@ function keyArrayToPositionArray(keyArray: Array<number | string>, obj: object) 
 }
 
 export function PillList({ items, onChange, disabledKeys = [], disabled, className: pillClassname = "",
-    maxActive, disabledActivatableKeys = [], defaultValues = [], onClick = () => { }, key }: PropsType): JSX.Element {
+    maxActive, disabledActivatableKeys = [], defaultValue = [], onClick = () => { }, key }: PropsType): JSX.Element {
     const defaultValues_ = React.useMemo(() => {
-        if (defaultValues.length > 0) {
-            return keyArrayToPositionArray(defaultValues, items);
+        if (defaultValue.length > 0) {
+            return keyArrayToPositionArray(defaultValue, items);
         }
-        return defaultValues as number[];
-    }, [defaultValues])
+        return defaultValue as number[];
+    }, [defaultValue])
     const disabledActivatableKeys_ = React.useMemo(() => {
         if (disabledActivatableKeys.length > 0) {
             return keyArrayToPositionArray(disabledActivatableKeys, items);
         }
         return disabledActivatableKeys as number[];
-    }, [defaultValues])
+    }, [defaultValue])
     const items_ = React.useMemo(() => {
         if (Array.isArray(items)) {
             return items.reduce((obj, e) => {
