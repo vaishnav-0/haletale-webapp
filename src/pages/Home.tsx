@@ -17,16 +17,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 function HomePage(): JSX.Element {
     const navigate = useNavigate();
     const { suggestions, suggest } = usePlaceSuggestions();
-    const [popularProperties, setPopularProperties] = React.useState<any[]>([]);
     let { data: recentPropertyData, loading: RecentPropertyloading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
-    React.useEffect(() => {
-        if (recentPropertyData) {
-
-        }
-        console.log(recentPropertyData)
-    }, [recentPropertyData])
-
-
     const searchProperty = (placeId: string, place: string) => {
         setGlobalLoader(true);
         addressToGeo(placeId).then(d => {
