@@ -25,9 +25,13 @@ export default function CoordinateInput({ onChange = () => { }, style, className
                 onChange([center.lat, center.lng]);
             }
             map.addEventListener('moveend', onMoveEnd);
+            if (defaultValue) {
+                map.flyTo(defaultValue, 16, { duration: 1 });
+            }
             return () => {
                 map.removeEventListener('moveend', onMoveEnd);
             }
+
         }
     }, [map]);
     React.useEffect(() => {
@@ -35,12 +39,7 @@ export default function CoordinateInput({ onChange = () => { }, style, className
             map.flyTo(coords, 16, { duration: 1 });
         }
     }, [coords, map]);
-    React.useEffect(() => {
-        console.log(defaultValue)
-        if (defaultValue) {
-            map.flyTo(defaultValue, 16, { duration: 1 });
-        }
-    }, [])
+    console.log(defaultValue)
     return <div className={CSSstyle["map-container"]}>
         <MapComponent whenCreated={setMap}
             worldCopyJump
