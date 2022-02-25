@@ -6,16 +6,19 @@ export type PropsType = {
     init?: number,
     min?: number,
     max?: number | null,
-    disabled?: (0 | 1)[],
+    disabledBtn?: (0 | 1)[],
     onChange?: changeFuncType,
     onIncrement?: changeFuncType,
     onDecrement?: changeFuncType,
     onBlur?: () => void,
     setValueRef?: React.MutableRefObject<((v: number) => void) | undefined>,
-    key?: React.Attributes["key"]
+    key?: React.Attributes["key"],
+    disabled?: boolean
 
 }
-export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange = () => { }, onIncrement, onDecrement, setValueRef, key }: PropsType): JSX.Element {
+export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange = () => { }, onIncrement, onDecrement, setValueRef, key, disabled }: PropsType): JSX.Element {
+    if (disabled)
+        disabledBtn = [0, 1];
     const [count, setCount] = React.useState(init);
     if (setValueRef)
         setValueRef.current = setCount;
@@ -23,9 +26,9 @@ export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange = 
     return (
         <div key={key} className={style["container"]}>
             <button type="button"
-                className={count === min || disabled.includes(0) ? style["inactive"] : ""}
+                className={count === min || disabledBtn.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
-                    if (!disabled.includes(0) && count > min) {
+                    if (!disabledBtn.includes(0) && count > min) {
                         onChange && onChange(count - 1);
                         onDecrement && onDecrement(count - 1);
                         setCount(count - 1);
@@ -37,9 +40,9 @@ export function NumberInput({ init = 0, min = 0, max, disabled = [], onChange = 
                 {count}
             </div>
             <button type="button"
-                className={count === max || disabled.includes(1) ? style["inactive"] : ""}
+                className={count === max || disabledBtn.includes(1) ? style["inactive"] : ""}
                 onClick={() => {
-                    if (!disabled.includes(1) && (max == null || count != max)) {
+                    if (!disabledBtn.includes(1) && (max == null || count != max)) {
                         onChange && onChange(count + 1);
                         onIncrement && onIncrement(count + 1);
                         setCount(count + 1);
