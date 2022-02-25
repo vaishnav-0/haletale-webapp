@@ -30,10 +30,6 @@ type FormPropsType = {
 
 const propertyId: { current: null | string } = { current: null };
 function AddPropertyForm1(props: FormPropsType) {
-    const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
-    const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
-    const [disabled, setDisabled] = React.useState<boolean>(false);
-    const addressRef = React.useRef<any>({});
     const schema = {
         heading: "",
         items: [
@@ -47,59 +43,11 @@ function AddPropertyForm1(props: FormPropsType) {
                 validationSchema: stringFieldRequired
             },
             {
-                name: "address_search",
-                type: "custom",
-                render: function PlaceSuggest(f: UseFormReturn, s: SchemaType) {
-                    const { suggestions, suggest } = usePlaceSuggestions();
-                    return <Searchbar disabled={disabled} suggestionItems={suggestions.map(e => e[0])}
-                        placeholder="Search a place"
-                        onChange={suggest}
-                        onSubmit={(v, i) => {
-                            f.setValue("property_address", v);
-                            dynamicSchemaGenerator({
-                                schema: s,
-                                dataLoader: addressToGeo(suggestions[i!][1]).then(d => {
-                                    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
-                                    addressRef.current = d.address_components.reduce((obj: any, curr: any) => {
-                                        const type = curr.types.find((e: any) => addressComponents.includes(e))
-                                        if (type)
-                                            obj[type] = curr.long_name;
-                                        return obj;
-                                    }, {})
-                                    addressRef.current.full_address = v;
-                                    return ([d.geometry.location.lat, d.geometry.location.lng])
-                                }).catch(e => {
-                                    console.log(e);
-                                })
-                                ,
-                                dataMap: (data) => [
-                                    {
-                                        property_coords: (item: any) => { item.props.coords = data },
-                                    }
-                                ] as dataMapReturn
-                            }).then(sch => {
-                                setSchema_(sch)
-                            })
-                        }}
-                        submitOnSuggestionClick />
-                }
-            },
-            {
-                title: "Property address",
-                name: "property_address",
-                type: "text",
+                title: "Address",
+                name: "address",
+                type: "addressInput",
                 props: {
-                    type: "text"
-                },
-                validationSchema: stringFieldRequired
-            },
-            {
-                title: "Property location",
-                name: "property_coords",
-                type: "coordinateInput",
-                props: {
-                    center: [55.731538, -103.650174],
-                    zoom: 4
+
                 }
             },
             {
@@ -131,10 +79,12 @@ function AddPropertyForm1(props: FormPropsType) {
         ],
         submitButton: "Next",
     } as const;
+    const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
+    const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
 
-    React.useEffect(() => {
-        setSchema_(schema as SchemaType);
-    }, []);
+    const [disabled, setDisabled] = React.useState<boolean>(false);
+    const addressRef = React.useRef<any>({});
+    
 
     type FormData = FormDataShape<typeof schema>;
 
@@ -151,7 +101,7 @@ function AddPropertyForm1(props: FormPropsType) {
             addPropertyAddress({
                 variables: {
                     property_id: propertyId.current,
-                    ...addressRef.current
+                    ...addressRef.current.addressComponents
                 }
 
             })
@@ -164,11 +114,13 @@ function AddPropertyForm1(props: FormPropsType) {
     }, [PropAddData])
     const onSubmit = (d: FormData) => {
         setDisabled(true);
+        addressRef.current = d.address;
+        console.log(d);
         addProperty({
             variables: {
                 coordinates: {
                     "type": "Point",
-                    "coordinates": d.property_coords
+                    "coordinates": d.address.coords
                 },
                 name: d.property_name,
                 description: d.notes,
@@ -198,29 +150,25 @@ function AddPropertyForm1(props: FormPropsType) {
                     }
                 ] as dataMapReturn
             }).then(sch => {
+                console.log(sch)
+                setLoader(false)
                 setSchema_(sch)
             })
         }
     }, [loading]);
     React.useEffect(() => {
-        if (loading) {
+        if (loading)
             setLoader(true);
-        } else {
-            setLoader(false)
-        }
-    }, [loading])
-
+    }, [loading]);
     return (
         <>
-            {
-                schema_ && <div style={{ height: "max-content", position: "relative", padding: "1em 0" }}>
-                    {Loader}
-                    <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
-                        onSubmit={onSubmit} disabled={disabled} 
-                    />
-                </div>
-
-            }
+            <div style={{ height: schema_ ? "max-content" : "60em", position: "relative", padding: "1em 0" }}>
+                {Loader}
+                {schema_ && <FormGenerator schema={schema_ as SchemaType} onError={(e) => console.log(e)}
+                    onSubmit={onSubmit} disabled={disabled}
+                />
+                }
+            </div>
         </ >
     );
 }
