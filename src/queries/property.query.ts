@@ -96,6 +96,7 @@ export default {
       rooms
     }
       property_images {
+        key
       s3Url{
         url
       }
