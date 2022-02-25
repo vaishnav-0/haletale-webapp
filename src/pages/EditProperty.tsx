@@ -183,14 +183,14 @@ const schema: SchemaType = {
             },
             items: [
                 {
-                    title: "Property type",
-                    name: "type",
-                    type: "select",
+                    title: "name",
+                    name: "memberName",
+                    type: "text",
                     props: {
-                        values: { "-": "", "1": "Detatched", "2": "Lawn moving" }
+                        type: "text"
                     },
-                    defaultValue: "abc"
-                },
+                    defaultValue: ""
+                }
             ]
         },
 
@@ -250,7 +250,15 @@ export default function EditProperty() {
                     features: ["fridge"],
                     bathroom: 5,
                     restriction: ["pets"],
-                    images: fileList
+                    images: fileList,
+                    member: [
+                        {
+                            memberName: "abc"
+                        },
+                        {
+                            memberName: "bgs"
+                        }
+                    ]
                 }
                 dynamicSchemaGenerator({
                     schema: schema,
@@ -258,13 +266,21 @@ export default function EditProperty() {
                     dataMap: (data) => [
                         {
                             "*": (item: any) => {
-                                if (item.props && data[item.name])
-                                    item.props.defaultValue = data[item.name]
+                                console.log(data[item.name], item.name, item.isArray)
+                                if (data[item.name]) {
+                                    if (item.isArray) {
+                                        console.log(item, "yeyeyey")
+                                        item.defaultValue = data[item.name]
+                                    }
+                                    else if (item.props)
+                                        item.props.defaultValue = data[item.name]
+                                }
+
                             }
                         }
                     ]
                 }).then(s => {
-                    console.log("set schema", schema === s);
+                    console.log("set schema", s);
                     _setSchema(s)
                 })
                 console.log(defaultValue)
