@@ -32,7 +32,7 @@ import { FileInputButtonPropsType } from "./components/FileInputButton";
 import { PropsType as ImageUploadPropsType } from "./components/Images";
 import { PropsType as AddressPropsType } from "./components/Address";
 import { ButtonSolid } from '../Button';
-import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError, UseFormReturn } from 'react-hook-form';
+import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import FieldArrayWrapper from './FieldArrayWrapper';
 import { DeepReadonly } from '../../types/utilTypes'
@@ -154,6 +154,17 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
     </div>;
 }
 function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
+    console.log(item.defaultValue)
+    const { fields, append, remove } = useFieldArray({ name: item.name });
+    React.useEffect(() => {
+        if (item.defaultValue) {
+            append(item.defaultValue);
+            //item.defaultValue.forEach(e => {
+            //    append(e);
+            //    console.log(e);
+            //})
+        }
+    }, [])
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
     const itemList = React.useCallback((i: number) => item.items.map((_item, k) => <React.Fragment key={k}>{
@@ -166,58 +177,53 @@ function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & T
     }</React.Fragment>
     ), []);
     return <React.Fragment>
-        <FieldArrayWrapper name={item.name} >
-            {({ fields, append, remove }) => <>
-                <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
-                    <div className={style["form-item-heading"]}>
-                        {item.isArray.controlHeading}
-                    </div>
-                    <NumberInput
-                        name={item.name + "_count"}
-                        onIncrement={(v) => {
-                            append(defValues);
-                        }}
-                        disabledBtn={[0]}
-                        setValueRef={setCountRef}
-                    />
-                </div>
-                <div className={`${style["form-item"]}`}>
-                    {
-                        fields.map((e, i) => {
-                            return <div key={e.id} className={style["form-item"]}>
-                                <div className={style["horizontal-list"]}>
-                                    <div>
-                                        {typeof item.isArray.title === "string" ?
-                                            item.isArray.title + " " + (i + 1) :
-                                            item.isArray.title(i + 1)
-                                        }
-                                    </div>
-                                    <button type="button" className={style["remove-btn"]}
-                                        onClick={() => {
-                                            setCountRef.current(fields.length - 1);
-                                            remove(i);
-                                        }}
-                                    >
-                                        <i className="fas fa-minus" /></button>
-                                </div>
-                                {
-                                    item.wrapperRender ?
-                                        item.wrapperRender(itemList(i))
-                                        :
-                                        <div className={item.wrapperClassName ?? !item.wrapperStyle ? style["horizontal-list"] : ""} style={item.wrapperStyle ?? {}}>
-                                            {
-                                                itemList(i)
-                                            }
-                                        </div>
+        <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
+            <div className={style["form-item-heading"]}>
+                {item.isArray.controlHeading}
+            </div>
+            <NumberInput
+                name={item.name + "_count"}
+                onIncrement={(v) => {
+                    append(defValues);
+                }}
+                init={item.defaultValue?.length}
+                disabledBtn={[0]}
+                setValueRef={setCountRef}
+            />
+        </div>
+        <div className={`${style["form-item"]}`}>
+            {
+                fields.map((e, i) => {
+                    return <div key={e.id} className={style["form-item"]}>
+                        <div className={style["horizontal-list"]}>
+                            <div>
+                                {typeof item.isArray.title === "string" ?
+                                    item.isArray.title + " " + (i + 1) :
+                                    item.isArray.title(i + 1)
                                 }
                             </div>
-                        })
-                    }
-                </div>
-            </>
-
+                            <button type="button" className={style["remove-btn"]}
+                                onClick={() => {
+                                    setCountRef.current(fields.length - 1);
+                                    remove(i);
+                                }}
+                            >
+                                <i className="fas fa-minus" /></button>
+                        </div>
+                        {
+                            item.wrapperRender ?
+                                item.wrapperRender(itemList(i))
+                                :
+                                <div className={item.wrapperClassName ?? !item.wrapperStyle ? style["horizontal-list"] : ""} style={item.wrapperStyle ?? {}}>
+                                    {
+                                        itemList(i)
+                                    }
+                                </div>
+                        }
+                    </div>
+                })
             }
-        </FieldArrayWrapper>
+        </div>
     </React.Fragment >
 }
 function FormComponent({ item, errors, disabled }: { item: TItem, errors?: FieldErrors, disabled?: boolean }) {
@@ -296,27 +302,27 @@ export default function FormGenerator({ schema, onSubmit, onError, disabled }: P
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
     return (
-                <FormProvider {...methods}>
-                    {
-                        schema.heading && <div className={style["form-header"]}>
-                            {schema.heading}
-                        </div>
-                    }
-                    <form className={schema.wrapperClassName ?? !schema.wrapperStyle ? style["form-container"] : ""} style={schema.wrapperStyle} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
+        <FormProvider {...methods}>
+            {
+                schema.heading && <div className={style["form-header"]}>
+                    {schema.heading}
+                </div>
+            }
+            <form className={schema.wrapperClassName ?? !schema.wrapperStyle ? style["form-container"] : ""} style={schema.wrapperStyle} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
 
-                        {
-                            <Generate schema={schema} errors={errors} disabled={disabled}
-                            />
-                        }
-                        {
-                            typeof schema.submitButton === "string" ?
-                                <ButtonSolid className={style["form-submit-btn"]} disabled={disabled}>{schema.submitButton}</ButtonSolid>
-                                :
-                                schema.submitButton({ disabled })
+                {
+                    <Generate schema={schema} errors={errors} disabled={disabled}
+                    />
+                }
+                {
+                    typeof schema.submitButton === "string" ?
+                        <ButtonSolid className={style["form-submit-btn"]} disabled={disabled}>{schema.submitButton}</ButtonSolid>
+                        :
+                        schema.submitButton({ disabled })
 
-                        }
-                    </form>
-                </FormProvider>
+                }
+            </form>
+        </FormProvider>
 
     )
 }
