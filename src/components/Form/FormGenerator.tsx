@@ -99,6 +99,7 @@ type TArrayItem = {
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
         sectionHeading?: string
+        single?: boolean //constrict to single item. No + and - buttons
     },
 }
 
@@ -164,6 +165,9 @@ function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & T
             //    console.log(e);
             //})
         }
+        if (item.isArray.single) {
+            append(defValues);
+        }
     }, [])
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
@@ -177,38 +181,42 @@ function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & T
     }</React.Fragment>
     ), []);
     return <React.Fragment>
-        <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
-            <div className={style["form-item-heading"]}>
-                {item.isArray.controlHeading}
+        {!item.isArray.single &&
+            <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
+                <div className={style["form-item-heading"]}>
+                    {item.isArray.controlHeading}
+                </div>
+                <NumberInput
+                    name={item.name + "_count"}
+                    onIncrement={(v) => {
+                        append(defValues);
+                    }}
+                    init={item.defaultValue?.length}
+                    disabledBtn={[0]}
+                    setValueRef={setCountRef}
+                />
             </div>
-            <NumberInput
-                name={item.name + "_count"}
-                onIncrement={(v) => {
-                    append(defValues);
-                }}
-                init={item.defaultValue?.length}
-                disabledBtn={[0]}
-                setValueRef={setCountRef}
-            />
-        </div>
+        }
         <div className={`${style["form-item"]}`}>
             {
                 fields.map((e, i) => {
                     return <div key={e.id} className={style["form-item"]}>
                         <div className={style["horizontal-list"]}>
-                            <div>
+                            <div className={item.isArray.single ? style["form-item-heading"] : ""}>
                                 {typeof item.isArray.title === "string" ?
-                                    item.isArray.title + " " + (i + 1) :
+                                    item.isArray.title :
                                     item.isArray.title(i + 1)
                                 }
                             </div>
-                            <button type="button" className={style["remove-btn"]}
-                                onClick={() => {
-                                    setCountRef.current(fields.length - 1);
-                                    remove(i);
-                                }}
-                            >
-                                <i className="fas fa-minus" /></button>
+                            {!item.isArray.single &&
+                                < button type="button" className={style["remove-btn"]}
+                                    onClick={() => {
+                                        setCountRef.current(fields.length - 1);
+                                        remove(i);
+                                    }}
+                                >
+                                    <i className="fas fa-minus" /></button>
+                            }
                         </div>
                         {
                             item.wrapperRender ?
@@ -292,7 +300,8 @@ function generateYupSchema(items: readonly TItem[]) {
     )
 }
 export type PropsType = {
-    schema: SchemaType, onSubmit: (data: any) => void,
+    schema: SchemaType,
+    onSubmit: (data: any) => void,
     onError?: (e: any) => void,
     disabled?: boolean,
 }
