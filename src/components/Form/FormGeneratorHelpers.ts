@@ -19,13 +19,10 @@ function applyToAll(items: SchemaType["items"], fn: (item: SchemaType["items"][n
     }
 }
 function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
-    console.log(dataMap)
     for (let i = 0; i < dataMap.length; i++) {
         const dataMapItem = dataMap[i];
-        console.log(items);
         const [key, fn] = Object.entries(dataMapItem)[0];
         const schemaItem = getItem(items, key);
-        console.log(schemaItem)
         if (typeof fn === 'function') {
             if (schemaItem === "*") {
                 applyToAll(items, fn);
@@ -62,7 +59,6 @@ export async function defaultValueInjector(schema: SchemaType, defaultValue: any
         dataMap: (data) => [
             {
                 "*": (item: any) => {
-                    console.log(data[item.name], item.name, item.isArray)
                     if (data[item.name]) {
                         if (item.isArray) {
                             item.defaultValue = data[item.name]

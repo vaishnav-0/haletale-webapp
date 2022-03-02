@@ -155,7 +155,6 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
     </div>;
 }
 function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
-    console.log(item.defaultValue)
     const { fields, append, remove } = useFieldArray({ name: item.name });
     React.useEffect(() => {
         if (item.defaultValue) {
