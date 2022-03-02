@@ -12,7 +12,7 @@ export default {
 
 
 
-  UPDATE_PHONE_COUNTRY:  gql`mutation MyMutation($phone: String, $id: uuid, $nationality: String = "") {
+  UPDATE_PHONE_COUNTRY:  gql`mutation UPDATE_PHONE_COUNTRY($phone: String, $id: uuid, $nationality: String = "") {
     update_user(_set: {phone: $phone}, where: {id: {_eq: $id}}) {
       affected_rows
     }
