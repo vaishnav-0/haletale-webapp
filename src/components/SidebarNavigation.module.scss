@@ -4,6 +4,7 @@
 
 .sidenav-container {
     display: flex;
+    height: 100%;
 }
 
 .nav-container {
@@ -13,14 +14,14 @@
 .nav-list {
     list-style-type: none;
     font-weight: 900;
-
+    padding: 0;
     &>li {
         padding: 1em;
     }
 
     & a {
         text-decoration: none;
-        color: $grey;
+        color: $greyText;
         border: none;
     }
 
