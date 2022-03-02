@@ -7,6 +7,8 @@ import formStyle from '../components/Form/Form.module.scss';
 import { useLazyQuery } from "@apollo/client";
 import propertyQuery, { IPropertyDetails } from "../queries/property.query";
 import axios from "axios";
+import { defaultValueInjector } from "../components/Form/FormGeneratorHelpers";
+import { toast } from "react-toastify";
 const schema: SchemaType = {
     heading: "Add Property",
     items: [
@@ -231,6 +233,9 @@ export default function EditProperty() {
                     reader.readAsDataURL(blob)
                 })).catch(e => {
                     console.log(e)
+                }).catch(e => {
+                    toast.error("Network error");
+                    navigate("/");
                 })
             toDataURL(property.property_images![0]!.s3Url?.url ?? "").then((data: any) => {
                 const fileList = [
@@ -260,26 +265,7 @@ export default function EditProperty() {
                         }
                     ]
                 }
-                dynamicSchemaGenerator({
-                    schema: schema,
-                    dataLoader: defaultValue,
-                    dataMap: (data) => [
-                        {
-                            "*": (item: any) => {
-                                console.log(data[item.name], item.name, item.isArray)
-                                if (data[item.name]) {
-                                    if (item.isArray) {
-                                        console.log(item, "yeyeyey")
-                                        item.defaultValue = data[item.name]
-                                    }
-                                    else if (item.props)
-                                        item.props.defaultValue = data[item.name]
-                                }
-
-                            }
-                        }
-                    ]
-                }).then(s => {
+                defaultValueInjector(schema, defaultValue).then(s => {
                     console.log("set schema", s);
                     _setSchema(s)
                 })

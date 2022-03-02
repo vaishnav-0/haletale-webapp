@@ -19,10 +19,13 @@ function applyToAll(items: SchemaType["items"], fn: (item: SchemaType["items"][n
     }
 }
 function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
+    console.log(dataMap)
     for (let i = 0; i < dataMap.length; i++) {
         const dataMapItem = dataMap[i];
+        console.log(items);
         const [key, fn] = Object.entries(dataMapItem)[0];
         const schemaItem = getItem(items, key);
+        console.log(schemaItem)
         if (typeof fn === 'function') {
             if (schemaItem === "*") {
                 applyToAll(items, fn);
@@ -34,8 +37,9 @@ function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
             if (schemaItem === "*")
                 modifySchema(fn, getArrayItems(items))
             else
-                if (schemaItem.isArray)
+                if (schemaItem.isArray) {
                     modifySchema(fn, schemaItem.items)
+                }
                 else
                     throw new Error("invalid structure for given schema")
 
@@ -49,4 +53,27 @@ export async function dynamicSchemaGenerator({ schema, dataLoader, dataMap }:
     const dataMaped = dataMap(data);
     modifySchema(dataMaped, _schema.items);
     return _schema;
-}   
+}
+export async function defaultValueInjector(schema: SchemaType, defaultValue: any) {
+    const _schema: SchemaType = cloneDeep(schema);
+    return dynamicSchemaGenerator({
+        schema: _schema,
+        dataLoader: defaultValue,
+        dataMap: (data) => [
+            {
+                "*": (item: any) => {
+                    console.log(data[item.name], item.name, item.isArray)
+                    if (data[item.name]) {
+                        if (item.isArray) {
+                            item.defaultValue = data[item.name]
+                        }
+                        else if (item.props)
+                            item.props.defaultValue = data[item.name]
+                    }
+
+                }
+            }
+        ]
+    });
+
+}

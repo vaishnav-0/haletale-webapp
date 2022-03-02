@@ -117,3 +117,17 @@
     color: $dangerPrimary;
     width: 100%;
 }
+
+.form-display-heading {
+
+    font-weight: 900;
+
+    &.main {
+        font-size: 1.3em;
+        color: $primary;
+    }
+}
+
+.form-display-item {
+    margin: 0.5em 1em;
+}
