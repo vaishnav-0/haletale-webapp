@@ -7,5 +7,16 @@ export default {
       phone
       email
     }
-  }`
+  }`,
+
+  GET_PHONE_COUNTRY : gql`query GET_PHONE_COUNTRY {
+    user {
+      phone
+      user_detail {
+        nationality
+      }
+    }
+  }
+  `,
+  
 }
