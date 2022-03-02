@@ -6,25 +6,14 @@ import {
 } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import SidebarNavigation from "../components/SidebarNavigation";
-const items = [
-    { label: "Basic details", url: "basics", component: <div>1</div> },
-    { label: "something", url: "something", component: <div>2</div> }
-]
-function Account() {
-    return (
-        <SidebarNavigation items={items} >
-            <Outlet />
-        </SidebarNavigation>
-    )
-}
-
+import Account, { accountItems } from "../pages/Account";
 export default function () {
 
     return (
         <Routes>
             <Route path="*" element={<Account />}>
                 {
-                    items.map(e => <Route path={e.url} element={e.component} />)
+                    accountItems.map(e => <Route path={e.url} element={e.component} />)
                 }
             </Route>
         </Routes>
