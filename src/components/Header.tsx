@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import userPlaceholder from "../assets/images/user.png";
+import userPlaceholder from "../assets/images/profile_placeholder.png";
 import downIcon from "../assets/icons/chevron-down-outline.svg";
 import haletaleLogo from "../assets/images/logo_png_big.png";
 import bellIcon from "../assets/images/noti-icon.png";
