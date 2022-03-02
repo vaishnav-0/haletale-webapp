@@ -1,6 +1,7 @@
+import React from "react";
 import SidebarNavigation from "../components/SidebarNavigation";
 import {
-    Outlet
+    Outlet, useLocation
 } from "react-router-dom";
 import { BasicDetails } from "./subpages/account/BasicDetails";
 export const accountItems = [
@@ -10,8 +11,18 @@ export const accountItems = [
 
 
 export default function Account() {
+    const location = useLocation();
+    const [activePath, setActivePath] = React.useState<number | undefined>();
+    React.useEffect(() => {
+        const paths = location.pathname.split("/");
+        accountItems.forEach((e, i) => {
+            console.log(paths[paths.length - 1], e.url)
+            if (e.url === paths[paths.length - 1])
+                setActivePath(i);
+        })
+    }, [location]);
     return (
-        <SidebarNavigation items={accountItems} >
+        <SidebarNavigation items={accountItems} active={activePath}>
             <Outlet />
         </SidebarNavigation>
     )
