@@ -78,8 +78,7 @@ type TItemCommon = {
     name: string,
     isOptional?: {    //field toggling for including optional fields
         title: string,
-        value: [string, string];//for the radio button input
-        default: boolean,// default value for the radio button.(Making field visible by default)
+        default: boolean,// default value for whether the field should be visible or not.(Making field visible by default)
         sectionHeading?: string,//special title
     },
     wrapperClassName?: string,
