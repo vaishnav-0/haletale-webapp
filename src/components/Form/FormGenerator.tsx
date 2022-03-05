@@ -76,11 +76,11 @@ type FormValueType = string | number | { [k: string]: string } | string[] | bool
 type TItemCommon = {
     title?: string,
     name: string,
-    isOptional?: {    //field toggling
+    isOptional?: {    //field toggling for including optional fields
         title: string,
-        value: [string, string];
-        default: boolean,
-        sectionHeading?: string,
+        value: [string, string];//for the radio button input
+        default: boolean,// default value for the radio button.(Making field visible by default)
+        sectionHeading?: string,//special title
     },
     wrapperClassName?: string,
     wrapperStyle?: React.CSSProperties,
