@@ -245,27 +245,28 @@ function ToggleWrapper({ name, optionalProps, itemComponent }: { name: string, o
     return (
         <div>
             <div className={style["form-item"]} >
-                <div className={style["form-item-heading"]}>
-                    {optionalProps.title}
-                </div>
                 <div className={style["horizontal-list"]}>
-                    <RadioButtonGroup
-                        name={name + "Provided"}
-                        values={optionalProps.value}
-                        defaultValue={optionalProps.value[+!optionalProps.default]}
-                        onChange={(e) => setOpen(e.target.value === optionalProps.value[0])}
-                    />
+                    <CheckBox
+                        name={name + "_provided"}
+                        defaultChecked={optionalProps.default}
+                        onChange={(e) => setOpen(e.target.checked)}
+                    >
+                        <div className={style["form-item-heading"]}>
+                            {optionalProps.title}
+                        </div>
+                    </CheckBox>
                 </div>
             </div>
             {
-                open && <>
+                open && <div className={style["form-item"]}>
+                    <br />
                     {optionalProps.sectionHeading && <div className={style["form-section-heading"]}>
                         {optionalProps.sectionHeading}
                     </div>}
                     {
                         itemComponent
                     }
-                </>
+                </div>
             }
         </div>
     )
