@@ -1,3 +1,2 @@
-wrap pages in Layout and export
-autocomplete
 Loader singleton pattern
+reexamine how changes in schema affect rerender(FormGenerator)
