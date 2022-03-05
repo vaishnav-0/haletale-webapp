@@ -83,6 +83,7 @@ type TItemCommon = {
     },
     wrapperClassName?: string,
     wrapperStyle?: React.CSSProperties,
+    hidden?: boolean
 }
 type TSingleItem = {
     defaultValue?: FormValueType,
@@ -90,14 +91,13 @@ type TSingleItem = {
     isArray?: undefined,
     validationSchema?: yup.AnySchema,
 } & ItemTypes
-type TArrayItem = {
+export type TArrayItem = {
     items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
     defaultValue?: FormValueType[],
     wrapperRender?: (c: JSX.Element[]) => JSX.Element
     isArray: {   //dynamic field
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
-        sectionHeading?: string
         single?: boolean //constrict to single item. No + and - buttons
     },
 }
@@ -177,7 +177,7 @@ function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & T
             }}
             error={errors?.[i]?.[_item.name]?.message} />
     }</React.Fragment>
-    ), []);
+    ), [item]);
     return <React.Fragment>
         {!item.isArray.single &&
             <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
@@ -274,13 +274,18 @@ function ToggleWrapper({ name, optionalProps, itemComponent }: { name: string, o
 function Generate({ schema, errors, disabled }: { schema: SchemaType, errors: { [K: string]: any }, disabled?: boolean }) {
     return <>{schema.items.map((item, i) => {
         return <React.Fragment key={i}>
-            {item.isOptional ?
-                <ToggleWrapper name={item.name}
-                    optionalProps={item.isOptional}
-                    itemComponent={<FormComponent item={item} errors={errors} disabled={disabled} />}
-                />
-                :
-                <FormComponent item={item} errors={errors} disabled={disabled} />
+            {item.hidden ? <></> :
+                <>
+                    {
+                        item.isOptional ?
+                            <ToggleWrapper name={item.name}
+                                optionalProps={item.isOptional}
+                                itemComponent={<FormComponent item={item} errors={errors} disabled={disabled} />}
+                            />
+                            :
+                            <FormComponent item={item} errors={errors} disabled={disabled} />
+                    }
+                </>
             }
         </React.Fragment>
     })
