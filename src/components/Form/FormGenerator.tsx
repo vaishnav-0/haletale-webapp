@@ -308,8 +308,9 @@ export type PropsType = {
     onSubmit: (data: any) => void,
     onError?: (e: any) => void,
     disabled?: boolean,
+    display?: boolean
 }
-export default function FormGenerator({ schema, onSubmit, onError, disabled }: PropsType) {
+export default function FormGenerator({ schema, onSubmit, onError, disabled, display }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
     const methods = useForm({ resolver: yupResolver(yupSchema, { abortEarly: false }) });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
@@ -324,15 +325,15 @@ export default function FormGenerator({ schema, onSubmit, onError, disabled }: P
             <form className={schema.wrapperClassName ?? !schema.wrapperStyle ? style["form-container"] : ""} style={schema.wrapperStyle} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
 
                 {
-                    <Generate schema={schema} errors={errors} disabled={disabled}
+                    <Generate schema={schema} errors={errors} disabled={disabled || display}
                     />
                 }
-                {
+                {!display && (
                     typeof schema.submitButton === "string" ?
                         <ButtonSolid className={style["form-submit-btn"]} disabled={disabled}>{schema.submitButton}</ButtonSolid>
                         :
                         schema.submitButton({ disabled })
-
+                )
                 }
             </form>
         </FormProvider>
