@@ -84,7 +84,7 @@ function AddPropertyForm1(props: FormPropsType) {
 
     const [disabled, setDisabled] = React.useState<boolean>(false);
     const addressRef = React.useRef<any>({});
-    
+
 
     type FormData = FormDataShape<typeof schema>;
 
@@ -141,14 +141,13 @@ function AddPropertyForm1(props: FormPropsType) {
                         type: property_types.property_type.map((e: any) => e.name),
                         subtype: property_types.property_subtype.map((e: any) => e.name),
                     })),
-                dataMap: (data) => [
-                    {
+                dataMap: (data) => {
+                    return {
                         type: (item: any) => { item.props.values = ["", ...data.type]; },
-                    },
-                    {
+
                         subtype: (item: any) => { item.props.values = ["", ...data.subtype] },
                     }
-                ] as dataMapReturn
+                }
             }).then(sch => {
                 console.log(sch)
                 setLoader(false)

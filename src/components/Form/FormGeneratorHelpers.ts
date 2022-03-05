@@ -1,7 +1,7 @@
 
 import { SchemaType } from "./FormGenerator";
 import cloneDeep from 'clone-deep';
-export type dataMapReturn = { [k: string]: ((item: SchemaType["items"][number]) => void) | dataMapReturn }[];
+export type dataMapReturn = { [k: string]: ((item: SchemaType["items"][number]) => void) | dataMapReturn };
 function getItem(items: SchemaType["items"], name: string) {
     if (name === "*")
         return name;
@@ -19,9 +19,9 @@ function applyToAll(items: SchemaType["items"], fn: (item: SchemaType["items"][n
     }
 }
 function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
-    for (let i = 0; i < dataMap.length; i++) {
-        const dataMapItem = dataMap[i];
-        const [key, fn] = Object.entries(dataMapItem)[0];
+    const dataMapEntries = Object.entries(dataMap);
+    for (let i = 0; i < dataMapEntries.length; i++) {
+        const [key, fn] = dataMapEntries[i];
         const schemaItem = getItem(items, key);
         if (typeof fn === 'function') {
             if (schemaItem === "*") {
@@ -56,8 +56,8 @@ export async function defaultValueInjector(schema: SchemaType, defaultValue: any
     return dynamicSchemaGenerator({
         schema: _schema,
         dataLoader: defaultValue,
-        dataMap: (data) => [
-            {
+        dataMap: (data) => {
+            return {
                 "*": (item: any) => {
                     if (data[item.name]) {
                         if (item.isArray) {
@@ -69,7 +69,7 @@ export async function defaultValueInjector(schema: SchemaType, defaultValue: any
 
                 }
             }
-        ]
+        }
     });
 
 }
