@@ -172,11 +172,11 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         console.log(d);
         const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
         updateUserBasic({
-            variables: objectFilter({
+            variables: {
                 phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
                 nationality: nationality ?? d.country,
                 id: auth.user?.user_id
-            }, (k, v) => !!v)
+            }
         });
     }
     React.useEffect(() => {
