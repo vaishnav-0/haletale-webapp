@@ -242,8 +242,10 @@ function SendRequest(): JSX.Element {
         requestMutation({
             variables: {
                 intended_move_in_date: d.movein_date,
-                lease_duration: d.movein_date,
-                other_tenants: d.members
+                lease_duration: d.lease_duration,
+                other_tenants: d.members,
+                reachout_time: d.reachout_time,
+                property_id: searchParams.get("property")
             }
         });
     }
