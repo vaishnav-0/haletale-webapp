@@ -120,7 +120,12 @@ export default {
 }
 `,
   GET_PROPERTY_BY_DISTANCE: gql`query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int, $offset: Int, $limit: Int) {
-  show_nearby_properties(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
+    show_nearby_properties_aggregate(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }) {
+      aggregate{
+        totalCount : count
+      }
+    }
+    show_nearby_properties(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
       property_images {
       s3Url{
         url
@@ -173,7 +178,39 @@ export default {
       }
     }
   }
-}`
+}`,
+GET_PROPERTY_BY_OWNER : gql`query GET_PROPERTY_OWNER{
+  property_owner {
+    property {
+    id
+    name
+    description
+    type
+    sub_type
+    coordinates
+    property_address {
+      address {
+        full_address
+      }
+    }
+    property_detail {
+      max_occupants
+      features
+      description
+      restrictions
+      rent_amount
+      rooms
+    }
+    property_images {
+      key
+      s3Url {
+        url
+      }
+    }
+  }
+  }
+}`,
+
 }
 
 
