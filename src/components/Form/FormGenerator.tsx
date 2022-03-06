@@ -34,7 +34,6 @@ import { PropsType as AddressPropsType } from "./components/Address";
 import { ButtonSolid } from '../Button';
 import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, FieldError, UseFormReturn, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import FieldArrayWrapper from './FieldArrayWrapper';
 import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
 
@@ -153,31 +152,34 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
         }
     </div>;
 }
-function ArrayComponent({ item, errors }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
+function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
     const { fields, append, remove } = useFieldArray({ name: item.name });
     React.useEffect(() => {
+        console.log(item.defaultValue)
         if (item.defaultValue) {
+            console.log(item.defaultValue)
             append(item.defaultValue);
             //item.defaultValue.forEach(e => {
             //    append(e);
             //    console.log(e);
             //})
         }
-        if (item.isArray.single) {
+        if (item.isArray.single && !item.defaultValue) {
             append(defValues);
         }
     }, [])
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
-    const itemList = React.useCallback((i: number) => item.items.map((_item, k) => <React.Fragment key={k}>{
+    const itemList = React.useCallback((i: number) => item.items.map((_item, k) => <div style={{ alignSelf: "flex-start" }} key={k}>{
         <SingleComponent
             item={{
                 ..._item, name: `${item.name}[${i}].${_item.name}`,
-                wrapperStyle: { minHeight: "3.5em", display: "flex", alignItems: "center" }
             }}
-            error={errors?.[i]?.[_item.name]?.message} />
-    }</React.Fragment>
-    ), [item]);
+            error={errors?.[i]?.[_item.name]?.message}
+            disabled={disabled}
+        />
+    }</div>
+    ), [item, errors, disabled]);
     return <React.Fragment>
         {!item.isArray.single &&
             <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
@@ -295,10 +297,11 @@ function Generate({ schema, errors, disabled }: { schema: SchemaType, errors: { 
 function generateYupSchema(items: readonly TItem[]) {
     return yup.object(
         items.reduce((schema, item) => {
-            if (!item.isArray)
-                item.validationSchema && (schema[item.name] = item.validationSchema);
-            else
-                schema[item.name] = yup.array().of(generateYupSchema(item.items))
+            if (!item.hidden)
+                if (!item.isArray)
+                    item.validationSchema && (schema[item.name] = item.validationSchema);
+                else
+                    schema[item.name] = yup.array().of(generateYupSchema(item.items))
             return schema;
         }, {} as any)
     )
