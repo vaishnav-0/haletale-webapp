@@ -178,7 +178,39 @@ export default {
       }
     }
   }
-}`
+}`,
+GET_PROPERTY_BY_OWNER : gql`query GET_PROPERTY_OWNER{
+  property_owner {
+    property {
+    id
+    name
+    description
+    type
+    sub_type
+    coordinates
+    property_address {
+      address {
+        full_address
+      }
+    }
+    property_detail {
+      max_occupants
+      features
+      description
+      restrictions
+      rent_amount
+      rooms
+    }
+    property_images {
+      key
+      s3Url {
+        url
+      }
+    }
+  }
+  }
+}`,
+
 }
 
 
