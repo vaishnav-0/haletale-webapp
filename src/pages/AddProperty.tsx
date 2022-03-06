@@ -181,6 +181,7 @@ function AddPropertyForm2(props: FormPropsType) {
                 name: "images",
                 type: "image",
                 props: {
+                    maxFileSize: 500000,
                     resolutionType: 'ratio',
                     resolutionWidth: 16,
                     resolutionHeight: 9
@@ -376,7 +377,7 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm forms={forms} onFinish={() => {// do stuff
+            <ProgressiveForm parallel forms={forms} onFinish={() => {// do stuff
             }} />
         </Layout >
     );
