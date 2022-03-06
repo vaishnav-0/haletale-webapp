@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import SidebarNavigation from "../components/SidebarNavigation";
-import Account, { accountItems } from "../pages/Account";
+import Account, { accountItems, otherRoutes } from "../pages/Account";
 export default function () {
 
     return (
@@ -14,6 +14,9 @@ export default function () {
             <Route path="*" element={<Account />}>
                 {
                     accountItems.map(e => <Route path={e.url} element={e.component} />)
+                }
+                {
+                    otherRoutes.map(e => <Route path={e.url} element={e.component} />)
                 }
             </Route>
         </Routes>
