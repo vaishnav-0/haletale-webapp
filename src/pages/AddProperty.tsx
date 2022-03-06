@@ -181,7 +181,7 @@ function AddPropertyForm2(props: FormPropsType) {
                 name: "images",
                 type: "image",
                 props: {
-                    maxFileSize: 500000,
+                    maxFileSize: 5000000,
                     resolutionType: 'ratio',
                     resolutionWidth: 16,
                     resolutionHeight: 9
