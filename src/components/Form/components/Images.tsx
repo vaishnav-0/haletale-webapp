@@ -173,16 +173,16 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
         errors && Object.entries(errors).forEach(([k, e]) => {
             if (e) {
                 if (k === "maxFileSize") {
-                    toast.warn("maxFileSize");
+                    toast.warn("Image should be less than 5MB.");
                 }
                 else if (k === "maxNumber") {
-                    toast.warn("maxNumber");
+                    toast.warn(`Maximum of ${max} can only be uploaded.`);
 
                 } else if (k === "acceptType") {
-                    toast.warn("acceptType");
+                    toast.warn("Invalid format for image.");
 
                 } else if (k === "resolution") {
-                    toast.warn("resolution");
+                    toast.warn("Invalid resolution for image.");
 
 
                 }
