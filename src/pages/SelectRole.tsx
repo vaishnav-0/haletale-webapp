@@ -50,7 +50,7 @@ export default function SelectRole() {
                 </div>
             </div>
             <div className={style["role-item"]}>
-                <button onClick={() => setRole(4)}>
+                <button onClick={() => setRole(7)}>
                     <img src={TenentIcon} />
                 </button>
                 <div className={style["role-name"]}>
