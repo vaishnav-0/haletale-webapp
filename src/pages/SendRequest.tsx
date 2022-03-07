@@ -14,6 +14,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import propertyQuery, { IPropertyDetails } from '../queries/property.query';
 import requestMutations from '../queries/request.mutation';
 import requestsQuery from '../queries/requests.query';
+import { toast } from 'react-toastify';
 const schema = {
     heading: "Basic details",
     submitButton: "Send request",
@@ -123,18 +124,18 @@ function SendRequest(): JSX.Element {
                 id: auth.user?.user_id
             }
         });
-    const { data: userRequestData, loading: userRequestLoading, error: userRequestError } = useQuery(requestsQuery.GET_REQUEST_BY_ID,
-        {
-            variables: {
-                id: auth.user?.user_id
-            }
-        });
+    const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID);
 
     const [Loader, setLoader] = useLoder({});
     React.useEffect(() => {
         if (!searchParams.get("property"))
             navigate("/")
         else {
+            getSameRequest({
+                variables: {
+                    id: searchParams.get("property")
+                }
+            });
             getProperty({
                 variables: {
                     id: searchParams.get("property")
@@ -143,9 +144,11 @@ function SendRequest(): JSX.Element {
         }
     }, []);
     React.useEffect(() => {
-        console.log(userRequestData?.property_request.length && !!userRequestData);
-        if (userRequestData?.property_request.length && !!userRequestData)
-            navigate("/");
+        console.log("yessss");
+        if (userRequestData?.property_request.length && !!userRequestData) {
+            toast.warn("Request already sent");
+            navigate("/");//to request listing page
+        }
     }, [userRequestData])
     React.useEffect(() => {
         if (!propertyData?.property.length && !!propertyData)
@@ -222,6 +225,7 @@ function SendRequest(): JSX.Element {
         if (userPhoneNatData) {
             const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
             if (requestMutationData && ((!phone || !nationality) ? updateUserBasicData : 1)) {
+                toast.success("Request sent.");
                 navigate("/");
             }
         }
