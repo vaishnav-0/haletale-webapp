@@ -47,7 +47,7 @@ export default function Header(): JSX.Element {
                                     }}
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    <Link to="/account">Profile</Link>
+                                    <Link to="/account/basic">Profile</Link>
                                     <Link to="#">Change Password</Link>
                                     {//<Link to="#">Account</Link>
                                         //<Link to="#">Notifications</Link>

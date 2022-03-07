@@ -36,7 +36,7 @@ export default function () {
                             <Route index element={< HomePage />} />
                             <Route path="properties" element={< PropertyListing />} />
                             <Route path="propertiesMapView" element={< MapView />} />
-                            <Route path="PropertyDetailed" element={< PropertyDetailed />} />
+                            <Route path="property/view" element={< PropertyDetailed />} />
                             <Route path="dashboard" element={< LandlordDashboard />} />
                             <Route path="signout" element={<Navigate to="/" replace />} />
                             <Route
