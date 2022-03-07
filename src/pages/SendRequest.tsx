@@ -128,23 +128,23 @@ function SendRequest(): JSX.Element {
 
     const [Loader, setLoader] = useLoder({});
     React.useEffect(() => {
-        if (!searchParams.get("property"))
+        if (!searchParams.get("id"))
             navigate("/")
         else {
             getSameRequest({
                 variables: {
-                    id: searchParams.get("property")
+                    id: searchParams.get("id")
                 }
             });
             getProperty({
                 variables: {
-                    id: searchParams.get("property")
+                    id: searchParams.get("id")
                 }
             })
         }
     }, []);
     React.useEffect(() => {
-        console.log("yessss");
+        console.log(userRequestData);
         if (userRequestData?.property_request.length && !!userRequestData) {
             toast.warn("Request already sent");
             navigate("/");//to request listing page
@@ -249,7 +249,7 @@ function SendRequest(): JSX.Element {
                 lease_duration: d.lease_duration,
                 other_tenants: d.members,
                 reachout_time: d.reachout_time,
-                property_id: searchParams.get("property")
+                property_id: searchParams.get("id")
             }
         });
     }
