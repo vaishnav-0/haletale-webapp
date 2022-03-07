@@ -23,7 +23,7 @@ export default function ({ indicatorClassName = "",
     return (
         <div onClick={onClick} className={style["slider-container"]}>
             <PositionIndicator style={{ position: "absolute", zIndex: "10" }} className={indicatorClassName + " " + style["position-indicator"]} onChange={(i) => setCurrentImage(i)}
-                position={currentImage} count={2} />
+                position={currentImage} count={imgSrc.length} />
             <Carousel
                 className={className}
                 showThumbs={showThumbs}
