@@ -11,6 +11,7 @@ import ImageSlider from './ImageSlider';
 import { IPropertyDetails } from '../queries/property.query';
 import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
+import { Link } from 'react-router-dom';
 export default function (props: { propertyData: IPropertyDetails }): JSX.Element {
     const [fav, setFav] = React.useState(false);
     const [currentImage, setCurrentImage] = React.useState(0);
@@ -71,6 +72,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
 
                         </div>
                         <div className={style["property-price"]}>
+                            <Link to={"/property/view/?id=" + props.propertyData.id}>View more</Link>
                             <div>C$ {props.propertyData.property_detail?.rent_amount}</div>
                         </div>
                     </div>

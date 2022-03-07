@@ -113,10 +113,20 @@
     padding-top: 0.5em;
     font-size: 0.95em;
     color: var(--teal-dark);
-
+    justify-content: space-between;
+    align-items: center;
     div {
         font-size: inherit;
         width: max-content;
+    }
+    &>a{
+        text-decoration: none;
+        background-color: $primary;
+        color: white;
+        padding: 0.4em 0.5em;
+        border-radius: 1em;
+        font-size: 0.9em;
+        vertical-align: middle;
     }
 }
 
