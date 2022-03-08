@@ -6,6 +6,7 @@ interface IPropertyQuerty {
   description: string
   type: string
   sub_type: string
+  is_approved: boolean
   coordinates: {
     coordinates: [number, number]
   }
@@ -180,7 +181,7 @@ export default {
     }
   }
 }`,
-GET_PROPERTY_BY_OWNER : gql`query GET_PROPERTY_OWNER{
+  GET_PROPERTY_BY_OWNER: gql`query GET_PROPERTY_OWNER{
   property_owner {
     property {
     id
@@ -211,7 +212,28 @@ GET_PROPERTY_BY_OWNER : gql`query GET_PROPERTY_OWNER{
   }
   }
 }`,
-
+  GET_OWNER_PROPERTIES: gql`query GET_OWNER_PROPERTIES {
+  property_owner {
+    property {
+      id
+      name
+      property_address {
+        address {
+          full_address
+        }
+      }
+      property_detail {
+        features
+        rent_amount
+        rooms
+      }
+      type
+      sub_type
+      is_approved
+    }
+  }
+}
+`
 }
 
 
