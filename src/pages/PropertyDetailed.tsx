@@ -17,6 +17,12 @@ import propertyImg2 from "../assets/images/housewide.jpg";
 import bedIcon from '../assets/icons/bed.svg';
 import bathIcon from '../assets/icons/bath.svg';
 import ImageGallery from '../components/ImageGallery';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import propertyQuery, { IPropertyDetails } from '../queries/property.query';
+import { useLazyQuery } from '@apollo/client';
+import { useLoder } from '../components/Loader';
+import defaultImage from '../assets/images/property_placeholder.jpg'
+import ClampLines from 'react-clamp-lines';
 
 const imageSliderClickHandler = (cb: () => void) => {
     const delta = 6;
@@ -39,6 +45,10 @@ const imageSliderClickHandler = (cb: () => void) => {
     return handlers;
 }
 export default function Example() {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [Loader, setLoader] = useLoder({});
+    const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
+    const navigate = useNavigate();
     const [fav, setFav] = React.useState(false);
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
@@ -63,15 +73,37 @@ export default function Example() {
             BQRef_.removeEventListener('mouseLeave', mouseLeaveHandler)
         }
     }, [])
+    React.useEffect(() => {
+        if (!searchParams.get("id"))
+            navigate("/")
+        else {
+            getProperty({
+                variables: {
+                    id: searchParams.get("id")
+                }
+            })
+        }
+    }, []);
+    console.log(propertyData);
+    React.useEffect(() => {
+        if (propertyloading)
+            setLoader(true);
+        else
+            setLoader(false);
+    }, [propertyloading]);
+    const property = propertyData?.property[0];
     return (
         <Layout>
+            {
+                Loader
+            }
             <div className={style["wrapper"]}>
                 {(imageGalleryOpen !== false) &&
                     <div className={style["image-gallery-container"]}>
                         <button type="button" onClick={() => setImageGalleryOpen(false)} className={style["imagegallary-close-btn"]}>
                             <i className="fas fa-times" />
                         </button>
-                        <ImageGallery showThumbs={true} showArrows={true} imgSrc={[propertyImg1, propertyImg2]} />
+                        <ImageGallery showThumbs={true} showArrows={true} imgSrc={property?.property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]} />
                     </div>
                 }
                 <div className={style["property-card"]}>
@@ -80,30 +112,36 @@ export default function Example() {
                             <i className='far fa-map' />
                         </ButtonSolid>
                         <button className={style["property-id"]}>
-                            Property ID: 1204412322
+                            <ClampLines
+                                text={`Property ID: ${property?.id}`}
+                                id={Math.random() * 100000 + (property?.id ?? "")}
+                                lines={1}
+                                stopPropagation={true}
+                                buttons={false}
+                            />
                         </button>
                     </div>
                     <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
-                        imgSrc={[propertyImg1, propertyImg2]}
+                        imgSrc={propertyData?.property[0].property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]}
                         aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
                     <div className={style["property-feature"]}>
                         <div className={style["property-feature-row1"]}>
                             <div>
                                 <img src={bedIcon} alt='' />
-                                3 BED
+                                {property?.property_detail?.rooms?.bedroom ?? ""} BED
                             </div>
                             <div className={style["seperator"]}></div>
                             <div>
                                 <img src={bathIcon} alt='' />
-                                2 BATH
+                                {property?.property_detail?.rooms?.bathroom ?? ""} BATH
                             </div>
                             <div className={style["seperator"]}></div>
                             <div>1250 SQ.</div>
                         </div>
                         <div className={style["property-feature-row2"]}>
-                            <div>DIRECTION</div>
+                            <div>{property?.type?.toUpperCase()}</div>
                             <div>|</div>
-                            <div>STREET VIEW</div>
+                            <div>{property?.sub_type?.toUpperCase()}</div>
                         </div>
                     </div>
 
@@ -122,7 +160,7 @@ export default function Example() {
                                 </ul>
                             </div>
                             <div className={style["ratebreakdown-item"]}>
-                                <div>C$325: Booking amount</div>
+                                <div>C${property?.property_detail?.rent_amount ?? ""}: Booking amount</div>
                                 <ul>
                                     <li>Rent deposit(first &amp; last)</li>
                                     <li>Key deposit</li>
@@ -130,7 +168,7 @@ export default function Example() {
                             </div>
                         </div>
                     </div>
-                    <div className={style["rateinfo-rate"]} >C$ 150</div>
+                    <div className={style["rateinfo-rate"]} >C$ {property?.property_detail?.rent_amount ?? ""}</div>
                 </div>
                 <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0"]}>
                     <AccordionItem uuid="0">
@@ -151,7 +189,7 @@ export default function Example() {
                     </AccordionItem>
                 </Accordion>
                 <div className={style["bottom-panel"]}>
-                    <ButtonSolid className={style["bottom-panel-sendbtn"]} >Send request</ButtonSolid>
+                    <ButtonSolid className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
                     <button className={style["bottom-panel-icon"]}>
                         <i onClick={() => setFav(!fav)} className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart`}></i>
                     </button>
