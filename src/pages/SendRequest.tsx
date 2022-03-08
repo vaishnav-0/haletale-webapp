@@ -14,6 +14,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import propertyQuery, { IPropertyDetails } from '../queries/property.query';
 import requestMutations from '../queries/request.mutation';
 import requestsQuery from '../queries/requests.query';
+import { toast } from 'react-toastify';
 const schema = {
     heading: "Basic details",
     submitButton: "Send request",
@@ -123,29 +124,31 @@ function SendRequest(): JSX.Element {
                 id: auth.user?.user_id
             }
         });
-    const { data: userRequestData, loading: userRequestLoading, error: userRequestError } = useQuery(requestsQuery.GET_REQUEST_BY_ID,
-        {
-            variables: {
-                id: auth.user?.user_id
-            }
-        });
+    const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID);
 
     const [Loader, setLoader] = useLoder({});
     React.useEffect(() => {
-        if (!searchParams.get("property"))
+        if (!searchParams.get("id"))
             navigate("/")
         else {
+            getSameRequest({
+                variables: {
+                    id: searchParams.get("id")
+                }
+            });
             getProperty({
                 variables: {
-                    id: searchParams.get("property")
+                    id: searchParams.get("id")
                 }
             })
         }
     }, []);
     React.useEffect(() => {
-        console.log(userRequestData?.property_request.length && !!userRequestData);
-        if (userRequestData?.property_request.length && !!userRequestData)
-            navigate("/");
+        console.log(userRequestData);
+        if (userRequestData?.property_request.length && !!userRequestData) {
+            toast.warn("Request already sent");
+            navigate("/");//to request listing page
+        }
     }, [userRequestData])
     React.useEffect(() => {
         if (!propertyData?.property.length && !!propertyData)
@@ -222,6 +225,7 @@ function SendRequest(): JSX.Element {
         if (userPhoneNatData) {
             const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
             if (requestMutationData && ((!phone || !nationality) ? updateUserBasicData : 1)) {
+                toast.success("Request sent.");
                 navigate("/");
             }
         }
@@ -242,8 +246,10 @@ function SendRequest(): JSX.Element {
         requestMutation({
             variables: {
                 intended_move_in_date: d.movein_date,
-                lease_duration: d.movein_date,
-                other_tenants: d.members
+                lease_duration: d.lease_duration,
+                other_tenants: d.members,
+                reachout_time: d.reachout_time,
+                property_id: searchParams.get("id")
             }
         });
     }

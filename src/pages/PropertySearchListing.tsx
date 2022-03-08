@@ -11,7 +11,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import InView from 'react-intersection-observer';
 import Skeleton from 'react-loading-skeleton';
 export default function (): JSX.Element {
-    let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
+    let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
         notifyOnNetworkStatusChange: true
     });
     const [searchParams, setSearchParams] = useSearchParams();
@@ -96,6 +96,7 @@ export default function (): JSX.Element {
                             })
                         }
                     }}
+                    skip={propertyData?.show_nearby_properties_aggregate.aggregate.totalCount === propertyData?.show_nearby_properties.length}
                 />
             </div>
         </Layout >

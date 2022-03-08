@@ -78,24 +78,20 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         if (userPhoneNatData) {
             const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
             console.log(phone, nationality)
-            console.log(phone.split(" ")[1])
             if (phone && nationality)
                 setIscomplete(true);
-            if (phone || nationality) {
-                queryGetCountries();
-                defaultValueInjector(schema, {
-                    country: nationality,
-                    phone: [
-                        {
-                            phone_number: phone.split(" ")[1],
-                            country_code: phone.split(" ")[0]
-                        }
-                    ]
-                }).then(s => {
-                    console.log(s);
-                    _setSchema(s)
-                })
-            }
+            defaultValueInjector(schema, {
+                country: nationality,
+                phone: [
+                    {
+                        phone_number: phone ? phone.split(" ").slice(1).join(" ") : null,
+                        country_code: phone ? phone.split(" ")[0] : null
+                    }
+                ]
+            }).then(s => {
+                console.log(s);
+                _setSchema(s, () => queryGetCountries())
+            })
         }
 
 
@@ -169,7 +165,6 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         setLoader(true);
     }, [])
     const onSubmit = (d: any) => {
-        console.log(d);
         const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
         updateUserBasic({
             variables: {
@@ -189,7 +184,7 @@ export function BasicDetails({ edit }: { edit: boolean }) {
     }, [updateUserBasicLoading])
     React.useEffect(() => {
         if (updateUserBasicData)
-            navigate("/account/basics");
+            navigate("/");
     }, [updateUserBasicData])
     console.log(_schema)
     return (

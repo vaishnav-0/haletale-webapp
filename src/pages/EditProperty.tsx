@@ -6,7 +6,6 @@ import Layout from "./Layout";
 import formStyle from '../components/Form/Form.module.scss';
 import { useLazyQuery } from "@apollo/client";
 import propertyQuery, { IPropertyDetails } from "../queries/property.query";
-import axios from "axios";
 import { defaultValueInjector } from "../components/Form/FormGeneratorHelpers";
 import { toast } from "react-toastify";
 const schema: SchemaType = {

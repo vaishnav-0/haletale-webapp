@@ -5,10 +5,12 @@ import { IPropertyDetails } from '../queries/property.query';
 import ClampLines from 'react-clamp-lines';
 import Image from './Image';
 import placeholderImg from '../assets/images/property_placeholder.jpg';
+import { useNavigate } from 'react-router-dom';
 export default function ({ property }: { property: IPropertyDetails })
     : JSX.Element {
+    const navigate = useNavigate();
     return (
-        <div className={style["card-property"]}>
+        <div onClick={() => navigate("property/view?id=" + property.id)} className={style["card-property"]}>
             <div className={style["card-img-container"]}>
                 <div className={style["AR"]}></div>
                 {
