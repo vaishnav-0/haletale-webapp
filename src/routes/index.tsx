@@ -37,7 +37,6 @@ export default function () {
                             <Route path="properties" element={< PropertyListing />} />
                             <Route path="propertiesMapView" element={< MapView />} />
                             <Route path="property/view" element={< PropertyDetailed />} />
-                            <Route path="dashboard" element={< LandlordDashboard />} />
                             <Route path="signout" element={<Navigate to="/" replace />} />
                             <Route
                                 path="*"
@@ -56,8 +55,9 @@ export default function () {
                             <Route path="account/*" element={<AccountRoutes />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
-                            <Route path="addProperty" element={< AddProperty />} />
-                            <Route path="editProperty" element={< EditProperty />} />
+                            <Route path="property/add" element={< AddProperty />} />
+                            <Route path="dashboard" element={< LandlordDashboard />} />
+                            <Route path="property/edit" element={< EditProperty />} />
                         </Route>
                         <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                             <Route path="sendRequest" element={< SendRequest />} />
