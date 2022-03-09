@@ -30,4 +30,34 @@ export default {
         }
       }
     }`,
+  UPDATE_PROPERTY : gql`mutation UPDATE_PROPERTY($id: uuid, $vars: property_set_input = {}, $details: property_details_set_input) {
+    update_property(where: {id: {_eq: $id}}, _set: $vars) {
+      affected_rows
+    }
+    update_property_details(where: {id: {_eq: $id}},  _set: $details){
+      affected_rows
+    }
+  }`,
+
+  // update example
+  // {
+  //   "id": "78b0a75b-be01-42d2-b6d4-c04b10fd2b2b",
+  //   "vars": {
+  //     "coordinates": {
+  //       "type":"Point",
+  //       "coordinates": [
+  //           76.431884765625,
+  //           10.228437266155943
+  //         ]
+  //     },
+  //     "name": "TestPROPP",
+  //     "sub_type": "Mainlevel",
+  //     "type": "Condos"
+  //   },
+  //   "details": {
+  //     "rooms": {
+  //       "bedroom" : 10
+  //     }
+  //   }
+  // }
 }
