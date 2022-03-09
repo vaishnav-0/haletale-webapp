@@ -20,6 +20,7 @@ import { ButtonSolid } from '../components/Button';
 import ProgressiveForm from '../components/Form/ProgressiveForm';
 import { handleImage } from '../functions/api/imageUpload'
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const stringFieldRequired = yup.string().required("This field is required.")
 
@@ -368,6 +369,7 @@ function AddPropertyForm3(props: FormPropsType) {
     );
 }
 function AddProperty(): JSX.Element {
+    const navigate = useNavigate();
     React.useEffect(() => {
         propertyId.current = null;
     }, [])
@@ -377,7 +379,9 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm parallel forms={forms} onFinish={() => {// do stuff
+            <ProgressiveForm parallel forms={forms} onFinish={() => {
+                toast.success("Property added");
+                navigate("/dashboard");
             }} />
         </Layout >
     );

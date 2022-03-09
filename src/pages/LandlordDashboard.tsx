@@ -3,80 +3,91 @@ import style from './LandlordDashboard.module.scss';
 import Layout from './Layout';
 import { ButtonSolid, ButtonSolidWithIndicator } from '../components/Button';
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
+import propertyQuery, { IPropertyDetails } from '../queries/property.query';
+import { useLoder } from '../components/Loader';
+import ClampLines from 'react-clamp-lines';
 
 export default function Example() {
     const navigate = useNavigate();
+    const { data: propertyData, loading, fetchMore } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER);
+    const [Loader, setLoader] = useLoder({});
+    React.useEffect(() => {
+        if (loading)
+            setLoader(true);
+        else
+            setLoader(false);
+    }, [loading])
+    console.log(propertyData);
     return (
         <Layout>
+            {Loader}
             <div className={style["wrapper"]}>
                 <div className={style["heading"]}>
                     MY PROPERTIES
                 </div>
                 <div className={style["properties-list"]}>
-                    <div className={style["properties-list-card"]}>
-                        <div >
-                            <div className={style["properties-card-info"]}>
-                                <div>Name</div>
-                                <div>Appartment</div>
-                                <div>14-30 Tichester Road - York,ON</div>
-                            </div>
-                            <div className={style["properties-card-price"]}>
-                                $1200
-                            </div>
-                        </div>
-                        <div>
-                            <div className={style["properties-card-status"]}>
-                                <span className={style["key"]}>Status: </span>Approved
-                            </div>
-                            <ButtonSolid className={style["property-card-edit-btn"]} onClick={()=>navigate({pathname:"/editProperty",search:"?id="+"1234"})}>
-                                Edit
-                            </ButtonSolid>
+                    {
+                        propertyData && propertyData?.property_owner.map(_property => {
+                            const property = _property.property;
+                            return (
+                                <div className={style["properties-list-card"]}>
+                                    <div >
+                                        <div className={style["properties-card-info"]}>
+                                            <div>{property.name}</div>
+                                            <div>{property.type}</div>
+                                            <ClampLines
+                                                text={property.property_address?.address?.full_address ?? ""}
+                                                id={Math.random() * 100000 + (property.id ?? "")}
+                                                lines={2}
+                                                stopPropagation={true}
+                                                buttons={false}
+                                            />
+                                        </div>
+                                        {
+                                            property.property_detail?.rent_amount &&
+                                            <div className={style["properties-card-price"]}>
+                                                ${property.property_detail?.rent_amount}
+                                            </div>
+                                        }
 
-                        </div>
-                        <div className={style["property-card-metadata"]}>
-                            <div>
-                                <span className={style["key"]}>Views: </span>120
-                            </div>
-                            <div>
-                                <span className={style["key"]}>Requests: </span>3
-                            </div>
-                            <div>
-                                <span className={style["key"]}>Viewed: </span>2 minutes ago
-                            </div>
-                            <div>
-                                <span className={style["key"]}>Other: </span>3
-                            </div>
-                        </div>
-                    </div>
-                    <div className={style["properties-list-card"]}>
-                        <div >
-                            <div className={style["properties-card-info"]}>
-                                <div>Name</div>
-                                <div>Condo</div>
-                                <div>89 Mcgill Street - Torronto, On</div>
-                            </div>
-                            <div className={style["properties-card-price"]}>
-                                $1500
-                            </div>
-                        </div>
-                        <div>
-                            <div className={style["properties-card-status"]}>
-                                <span className={style["key"]}>Status: </span>Pending approval
-                            </div>
-                            <ButtonSolid className={style["property-card-edit-btn"]}>
-                                Edit
-                            </ButtonSolid>
+                                    </div>
+                                    <div>
+                                        <div className={style["properties-card-status"]}>
+                                            <span className={style["key"]}>Status: </span>{property.is_approved ? "Approved" : "Pending approval"}
+                                        </div>
+                                        <ButtonSolidWithIndicator onClick={() => navigate("/property/edit/?id=" + property.id)} className={style["property-card-edit-btn"]} tooltip={property.property_detail ? "" : "Property data incomplete"} indicator={property.property_detail ? <></> : <div className={style["btn-indicator"]}>!</div>}>
+                                            Edit
+                                        </ButtonSolidWithIndicator>
 
-                        </div>
-                    </div>
-                </div>
-                <div className={style["btn-container"]}>
-                    <ButtonSolid>
-                        List Properties
-                    </ButtonSolid>
-                    <ButtonSolidWithIndicator indicator={<div className={style["btn-indicator"]}>5</div>}>
-                        Tenant Request
-                    </ButtonSolidWithIndicator>
+                                    </div>
+                                    {
+                                        property.is_approved ?
+                                            <div className={style["property-card-metadata"]}>
+                                                <div>
+                                                    <span className={style["key"]}>Requests: </span>x
+                                                </div>
+                                                {
+                                                    //<div>
+                                                    //    <span className={style["key"]}>Views: </span>120
+                                                    //</div>
+
+                                                    //<div>
+                                                    //    <span className={style["key"]}>Viewed: </span>2 minutes ago
+                                                    //</div>
+                                                    //<div>
+                                                    //    <span className={style["key"]}>Other: </span>3
+                                                    //</div>
+                                                }
+                                            </div>
+                                            :
+                                            <></>
+                                    }
+
+                                </div>
+                            )
+                        })
+                    }
                 </div>
             </div>
         </Layout >
