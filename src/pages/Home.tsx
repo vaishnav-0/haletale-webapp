@@ -14,8 +14,11 @@ import { setGlobalLoader } from '../components/Loader';
 import { addressToGeo } from '../functions/api/location';
 import { toast } from 'react-toastify';
 import { createSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../functions/auth/useAuth';
+import { Roles } from '../functions/auth/types';
 function HomePage(): JSX.Element {
     const navigate = useNavigate();
+    const auth = useAuth();
     const { suggestions, suggest } = usePlaceSuggestions();
     let { data: recentPropertyData, loading: RecentPropertyloading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
     const searchProperty = (placeId: string, place: string) => {
@@ -44,7 +47,7 @@ function HomePage(): JSX.Element {
                     submitOnSuggestionClick />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-                <MinimalPropertyList title="Popular properties"
+                <MinimalPropertyList title={(auth?.user?.role.includes(Roles.landlord) ? "Your r" : "R") + "ecent properties"}
                     properties={recentPropertyData?.property ?? []}
                 />
                 {
