@@ -46,6 +46,7 @@
         width: 25em;
         margin: auto;
     }
+
     @include media(">=lgMin") {
         width: 35em;
         margin: auto;
@@ -284,4 +285,9 @@
     i {
         font-size: 0.8em;
     }
+}
+
+.description {
+    padding: 0.7em;
+    font-size: 1.1em;
 }

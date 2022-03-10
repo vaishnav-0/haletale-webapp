@@ -8,7 +8,7 @@ function getItem(items: SchemaType["items"], name: string) {
     for (let i = 0; i < items.length; i++)
         if (items[i].name == name)
             return items[i];
-    throw new Error("item not found");
+    throw new Error("item " + name + " not found");
 }
 function getArrayItems(items: SchemaType["items"]) {
     return items.filter(item => !!item.isArray);
@@ -44,7 +44,7 @@ function modifySchema(dataMap: dataMapReturn, items: SchemaType["items"]) {
     }
 }
 export async function dynamicSchemaGenerator({ schema, dataLoader, dataMap }:
-    { schema: SchemaType, dataLoader: any, dataMap: (d: any) => dataMapReturn }) {
+    { schema: SchemaType, dataLoader?: any, dataMap: (d?: any) => dataMapReturn }) {
     const _schema: SchemaType = cloneDeep(schema);
     const data = await dataLoader;
     const dataMaped = dataMap(data);

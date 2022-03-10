@@ -12,6 +12,7 @@ import { Openable } from './Openable';
 import { useAuth } from '../functions/auth/useAuth';
 import auth from '../functions/auth';
 import { Link } from "react-router-dom";
+import { Roles } from '../functions/auth/types';
 
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -47,12 +48,22 @@ export default function Header(): JSX.Element {
                                     }}
                                     onClick={e => e.stopPropagation()}
                                 >
-                                    <Link to="/account/basic">Profile</Link>
+                                    <Link to="/account/basics">Profile</Link>
                                     <Link to="#">Change Password</Link>
                                     {//<Link to="#">Account</Link>
                                         //<Link to="#">Notifications</Link>
-                                    }<Link to="#">Your Bookings</Link>
-                                    <Link to="#">Wishlist</Link>
+                                    }
+                                    {authContext.user.role.includes(Roles['tenant']) && <>
+                                        <Link to="/bookings">Your Bookings</Link>
+                                        <Link to="/wishlist">Wishlist</Link>
+                                    </>
+
+                                    }
+                                    {authContext.user.role.includes(Roles['landlord']) && <>
+                                        <Link to="/dashboard">Dashboard</Link>
+                                    </>
+
+                                    }
                                     {// <Link to="#">Settings</Link>
                                     }
                                     <Link to="#">Help</Link>
@@ -80,6 +91,6 @@ export default function Header(): JSX.Element {
 
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

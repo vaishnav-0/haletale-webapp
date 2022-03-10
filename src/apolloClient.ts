@@ -4,7 +4,7 @@ import { ServerError } from "@apollo/client/link/utils";
 import Token from "./functions/auth/token";
 import { RetryLink } from "@apollo/client/link/retry"
 import auth from './functions/auth'
-import {offsetLimitPagination} from '@apollo/client/utilities';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 
 const token = new Token("id");
 
@@ -34,7 +34,7 @@ const authLink = new ApolloLink((operation, forward) => {
     operation.setContext(({ headers = {} }: { headers: object }) => ({
         headers: {
             ...headers,
-            Authorization: `Bearer ${token.get()}` || null,
+            ...!token.get() ? { "X-Hasura-Role": "anonymous" } : { Authorization: `Bearer ${token.get()}` || null }
         }
     }));
 
@@ -71,7 +71,7 @@ const errorLink = onError(({ networkError, graphQLErrors, response, forward, ope
                 })
         })
     }
-   // if (response) response.errors = undefined;
+    // if (response) response.errors = undefined;
 })
 
 
@@ -81,13 +81,13 @@ const graphQLClient = () => new ApolloClient({
     cache: new InMemoryCache(
         {
             typePolicies: {
-              Query: {
-                fields: {
-                    show_nearby_properties: offsetLimitPagination()
+                Query: {
+                    fields: {
+                        show_nearby_properties: offsetLimitPagination()
+                    }
                 }
-              }
             }
-          }
+        }
     ),
     link: from([authLink, errorLink, httpLink])
 });

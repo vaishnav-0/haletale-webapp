@@ -23,6 +23,8 @@ import { useLazyQuery } from '@apollo/client';
 import { useLoder } from '../components/Loader';
 import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
+import { useAuth } from '../functions/auth/useAuth';
+import { Roles } from '../functions/auth/types';
 
 const imageSliderClickHandler = (cb: () => void) => {
     const delta = 6;
@@ -47,6 +49,7 @@ const imageSliderClickHandler = (cb: () => void) => {
 export default function Example() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [Loader, setLoader] = useLoder({});
+    const auth = useAuth();
     const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
     const navigate = useNavigate();
     const [fav, setFav] = React.useState(false);
@@ -135,8 +138,10 @@ export default function Example() {
                                 <img src={bathIcon} alt='' />
                                 {property?.property_detail?.rooms?.bathroom ?? ""} BATH
                             </div>
-                            <div className={style["seperator"]}></div>
-                            <div>1250 SQ.</div>
+                            {
+                                //<div className={style["seperator"]}></div>
+                                //<div>1250 SQ.</div>
+                            }
                         </div>
                         <div className={style["property-feature-row2"]}>
                             <div>{property?.type?.toUpperCase()}</div>
@@ -170,6 +175,9 @@ export default function Example() {
                     </div>
                     <div className={style["rateinfo-rate"]} >C$ {property?.property_detail?.rent_amount ?? ""}</div>
                 </div>
+                <div className={style["description"]}>
+                    {property?.description}
+                </div>
                 <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0"]}>
                     <AccordionItem uuid="0">
                         <AccordionItemHeading>
@@ -179,17 +187,19 @@ export default function Example() {
                         </AccordionItemHeading>
                         <AccordionItemPanel>
                             <ul className={style["feature-accordion-list"]}>
-                                <li>Suite Features</li>
-                                <li>Building Amenities</li>
-                                <li>Bedroom x 1</li>
-                                <li>Living Room x 1</li>
-                                <li>Common Bathroom</li>
+                                <li>Building Amenities: {property?.property_detail?.features ? property?.property_detail?.features?.join(",") : "-"}</li>
+                                <li>Bedroom x {property?.property_detail?.rooms?.bedroom}</li>
+                                <li>Bathroom x {property?.property_detail?.rooms?.bathroom}</li>
+                                <li>Parking: {property?.property_detail?.rooms?.parking}</li>
+                                <li>Restrictions: {property?.property_detail?.restrictions?.length ? property?.property_detail?.restrictions?.join(",") : "-"}</li>
+                                <li>Maximum occupants: {property?.property_detail?.max_occupants}</li>
                             </ul>
                         </AccordionItemPanel>
                     </AccordionItem>
                 </Accordion>
+
                 <div className={style["bottom-panel"]}>
-                    <ButtonSolid className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
+                    <ButtonSolid disabled={!!auth?.user?.role.includes(Roles['landlord'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
                     <button className={style["bottom-panel-icon"]}>
                         <i onClick={() => setFav(!fav)} className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart`}></i>
                     </button>

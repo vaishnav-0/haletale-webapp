@@ -4,6 +4,7 @@ import {
     Routes,
     Route,
     Navigate,
+    useNavigate,
 } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import { NotRequireAuth } from "./NotRequireAuth";
@@ -21,6 +22,7 @@ import { useAuth } from '../functions/auth/useAuth';
 import AccountRoutes from "./Account";
 import { NumberVerify } from "../pages/NumberVerify";
 import EditProperty from "../pages/EditProperty";
+import { toast } from "react-toastify";
 export default function () {
     let auth = useAuth();
     return (
@@ -59,7 +61,7 @@ export default function () {
                             <Route path="dashboard" element={< LandlordDashboard />} />
                             <Route path="property/edit" element={< EditProperty />} />
                         </Route>
-                        <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
+                        <Route path="/" element={<RequireAuth onReject={(user) => { toast.warn("Sign in to send request", { toastId: 'warn1' }) }} role={[Roles['tenant']]} />}>
                             <Route path="sendRequest" element={< SendRequest />} />
                         </Route>
 
