@@ -1,7 +1,4 @@
-import { gql } from '@apollo/client'
-
-
-
+import { gql } from '@apollo/client';
 
 export default {
   UPDATE_USER_ROLE: gql`mutation UPDATE_USER_ROLE($role_id:Int, $id:uuid) {
@@ -10,14 +7,18 @@ export default {
         }
     }`,
 
-
-
   UPDATE_PHONE_COUNTRY:  gql`mutation UPDATE_PHONE_COUNTRY($phone: String, $id: uuid, $nationality: uuid) {
     update_user(_set: {phone: $phone}, where: {id: {_eq: $id}}) {
       affected_rows
     }
     update_user_detail( _set: {nationality: $nationality},where: {id: {_eq: $id}}){
       affected_rows
+    }
+  }`,
+
+  ADD_USER_FAV : gql`mutation ADD_USER_FAV($property_id: uuid) {
+    insert_user_favourites_one(object: {property_id: $property_id}) {
+      id
     }
   }`,
 }

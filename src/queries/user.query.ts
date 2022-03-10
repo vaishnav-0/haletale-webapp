@@ -16,7 +16,19 @@ export default {
         nationality
       }
     }
+  }`,
+
+  GET_USER_FAVS : gql`query USER_FAVOURITES {
+    user_favourites {
+      property_id
+      created_at
+    }
+  }`,
+  
+  CHECK_USER_FAV : gql`query CHECK_FAV($property_id: uuid) {
+    user_favourites(where: {property_id: {_eq: $property_id}}){
+      id
+    }
   }
   `,
-
 }
