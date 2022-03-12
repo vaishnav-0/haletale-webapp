@@ -16,11 +16,12 @@ import { toast } from 'react-toastify';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../functions/auth/useAuth';
 import { Roles } from '../functions/auth/types';
+import { useUserContext } from '../functions/auth/userContext';
 function HomePage(): JSX.Element {
     const navigate = useNavigate();
-    const auth = useAuth();
+    const user = useUserContext();
     const { suggestions, suggest } = usePlaceSuggestions();
-    let { data: recentPropertyData, loading: RecentPropertyloading } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
+    const { data: recentPropertyData, loading: recentPropertyloading, refetch: refetchRecentProperty } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
     const searchProperty = (placeId: string, place: string) => {
         setGlobalLoader(true);
         addressToGeo(placeId).then(d => {
@@ -35,7 +36,11 @@ function HomePage(): JSX.Element {
             toast.error("There was an error.");
         })
     }
-
+    React.useEffect(() => {
+        console.log("ASDAS")
+        refetchRecentProperty();
+    }, [user])
+    console.log(recentPropertyData, user)
     return (
         <Layout footer={true}>
             <HomeBanner />
@@ -47,7 +52,7 @@ function HomePage(): JSX.Element {
                     submitOnSuggestionClick />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-                <MinimalPropertyList title={(auth?.user?.role.includes(Roles.landlord) ? "Your r" : "R") + "ecent properties"}
+                <MinimalPropertyList title={(user?.role.includes(Roles.landlord) ? "Your r" : "R") + "ecent properties"}
                     properties={recentPropertyData?.property ?? []}
                 />
                 {

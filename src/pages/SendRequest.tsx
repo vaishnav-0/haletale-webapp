@@ -8,13 +8,13 @@ import { dynamicSchemaGenerator, dataMapReturn } from '../components/Form/FormGe
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import metaQuery from '../queries/meta.query';
 import userQuery from '../queries/user.query';
-import { useAuth } from '../functions/auth/useAuth';
 import { userMutation } from '../queries';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import propertyQuery, { IPropertyDetails } from '../queries/property.query';
 import requestMutations from '../queries/request.mutation';
 import requestsQuery from '../queries/requests.query';
 import { toast } from 'react-toastify';
+import { useUserContext } from '../functions/auth/userContext';
 const schema = {
     heading: "Basic details",
     submitButton: "Send request",
@@ -117,11 +117,11 @@ function SendRequest(): JSX.Element {
     const [getProperty, { data: propertyData, loading: propertyloading, error: propertyQerror }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
     const [_schema, _setSchema] = React.useState<SchemaType | null>(null);
     const [queryGetCountries, { data: countryData, loading: countryloading, error }] = useLazyQuery(metaQuery.GET_COUNTRIES);
-    const auth = useAuth();
+    const user = useUserContext();
     const { data: userPhoneNatData, loading: userLoading, error: userQError } = useQuery(userQuery.GET_PHONE_COUNTRY,
         {
             variables: {
-                id: auth.user?.user_id
+                id: user?.user_id
             }
         });
     const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID);
@@ -238,7 +238,7 @@ function SendRequest(): JSX.Element {
                 variables: {
                     phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
                     nationality: nationality ?? d.country,
-                    id: auth.user?.user_id
+                    id: user?.user_id
                 }
             });
 

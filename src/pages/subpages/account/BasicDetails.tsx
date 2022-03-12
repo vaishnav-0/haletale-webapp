@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { userMutation } from "../../../queries";
 import { objectFilter } from "../../../functions/utils";
 import useStateWithCB from "../../../functions/hooks/useStateWithCB";
+import { useUserContext } from "../../../functions/auth/userContext";
 const schema: SchemaType = {
     heading: "",
     submitButton: "Update",
@@ -64,14 +65,14 @@ export function BasicDetails({ edit }: { edit: boolean }) {
     const [Loader, setLoader] = useLoder({});
     const [isComplete, setIscomplete] = React.useState<boolean>(false);
     const [isDisabled, setIsDisabled] = React.useState<boolean>(false);
-    const auth = useAuth();
+    const user = useUserContext();
     const navigate = useNavigate();
     const [updateUserBasic, { data: updateUserBasicData, loading: updateUserBasicLoading, error: updateUserBasicError }] = useMutation(userMutation.UPDATE_PHONE_COUNTRY);
     const [queryGetCountries, { data: countryData, loading: countryloading, error }] = useLazyQuery(metaQuery.GET_COUNTRIES);
     const { data: userPhoneNatData, loading: userLoading, error: userQError } = useQuery(userQuery.GET_PHONE_COUNTRY,
         {
             variables: {
-                id: auth.user?.user_id
+                id: user?.user_id
             }
         });
     React.useEffect(() => {
@@ -170,7 +171,7 @@ export function BasicDetails({ edit }: { edit: boolean }) {
             variables: {
                 phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
                 nationality: nationality ?? d.country,
-                id: auth.user?.user_id
+                id: user?.user_id
             }
         });
     }
