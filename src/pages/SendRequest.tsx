@@ -122,7 +122,8 @@ function SendRequest(): JSX.Element {
         {
             variables: {
                 id: user?.user_id
-            }
+            },
+            fetchPolicy: "no-cache"
         });
     const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID);
 
@@ -156,7 +157,9 @@ function SendRequest(): JSX.Element {
     }, [propertyData])
     React.useEffect(() => {
         if (userPhoneNatData) {
-            const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
+            console.log(userPhoneNatData)
+            const phone = userPhoneNatData.user[0].phone;
+            const nationality = userPhoneNatData.user[0]?.user_details?.nationality
             dynamicSchemaGenerator({
                 schema: schema as SchemaType,
                 dataLoader: {},
@@ -223,7 +226,8 @@ function SendRequest(): JSX.Element {
     }, [countryloading, userLoading, userRequestLoading, updateUserBasicLoading, requestMutationLoading])
     React.useEffect(() => {
         if (userPhoneNatData) {
-            const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
+            const phone = userPhoneNatData.user[0].phone;
+            const nationality = userPhoneNatData.user[0]?.user_details?.nationality
             if (requestMutationData && ((!phone || !nationality) ? updateUserBasicData : 1)) {
                 toast.success("Request sent.");
                 navigate("/");
@@ -231,9 +235,9 @@ function SendRequest(): JSX.Element {
         }
     }, [updateUserBasicData, requestMutationData])
     const onSubmit = (d: formDataType) => {
-        const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
+        const phone = userPhoneNatData.user[0].phone;
+        const nationality = userPhoneNatData.user[0]?.user_details?.nationality
         if (!phone || !nationality) {
-            const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
             updateUserBasic({
                 variables: {
                     phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
