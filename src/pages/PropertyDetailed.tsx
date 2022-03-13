@@ -94,6 +94,11 @@ export default function Example() {
         else
             setLoader(false);
     }, [propertyloading]);
+    React.useEffect(() => {
+        if (propertyData?.property.length === 0 || error)
+            navigate("/");
+
+    }, [propertyData, error]);
     const property = propertyData?.property[0];
     return (
         <Layout>
@@ -125,7 +130,7 @@ export default function Example() {
                         </button>
                     </div>
                     <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
-                        imgSrc={propertyData?.property[0].property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]}
+                        imgSrc={propertyData?.property[0]?.property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]}
                         aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
                     <div className={style["property-feature"]}>
                         <div className={style["property-feature-row1"]}>
