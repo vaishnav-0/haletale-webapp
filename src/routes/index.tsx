@@ -16,7 +16,7 @@ import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/SendRequest";
 import { Roles } from "../functions/auth/types";
-import LandlordDashboard from '../pages/LandlordDashboard'
+import LandlordDashboard, { ViewRequests } from '../pages/LandlordDashboard'
 import SelectRole from "../pages/SelectRole";
 import { useAuth } from '../functions/auth/useAuth';
 import AccountRoutes from "./Account";
@@ -61,6 +61,7 @@ export default function () {
                             <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                                 <Route path="property/add" element={< AddProperty />} />
                                 <Route path="dashboard" element={< LandlordDashboard />} />
+                                <Route path="dashboard/request/view" element={< ViewRequests />} />
                                 <Route path="property/edit" element={< EditProperty />} />
                             </Route>
                             <Route path="/" element={<RequireAuth onReject={(user) => { toast.warn("Sign in to send request", { toastId: 'warn1' }) }} role={[Roles['tenant']]} />}>
