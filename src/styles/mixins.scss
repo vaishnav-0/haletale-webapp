@@ -27,3 +27,15 @@
     cursor: pointer;
     outline: inherit;
 }
+
+@mixin button-link {
+    @include unstyle-btn;
+    color: $primary;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &:hover {
+        color: $greyText;
+    }
+}
