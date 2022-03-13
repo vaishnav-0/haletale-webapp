@@ -67,8 +67,8 @@ const schema = {
             validationSchema: yup.string().matches(/[a-z]+/, "Password must contain atleast one lowercase alphabet.")
                 .matches(/[A-Z]+/, "Password must contain atleast one uppercase alphabet.")
                 .matches(/\d+/, "Password must contain atleast one number.")
-                .matches(/[@$!%*#?&*()]+/, "Password must contain atleast one special charecter @$!%*#?&*().")
-                .matches(/^[A-Za-z\d@$!%*#?&*()]{8,15}$/, "Password must have minimum 8 charectersa and maximum 15 charecters.")
+                .matches(/[@$!%*#?&*()]+/, "Password must contain atleast one special character @$!%*#?&*().")
+                .matches(/^[A-Za-z\d@$!%*#?&*()]{8,15}$/, "Password must have minimum 8 characters and maximum 15 characters.")
         },
         {
             title: "Confirm Password",
