@@ -1,22 +1,51 @@
 import { gql } from "@apollo/client";
 
 export interface IRequestData {
-  intended_move_in_date: string,
-  lease_duration: number,
-  other_tenents?:
-  {
-    name?: string
+  property_request: {
+    intended_move_in_date: string,
+    lease_duration: number,
+    other_tenents?:
+    {
+      name?: string
+    }[]
+    ,
+    property_id: string,
+    user: {
+      "email": string,
+      "phone": string,
+      "name": string
+    }
   }[]
-  ,
-  property_id: string,
-  user: {
-    "email": string,
-    "phone": string,
-    "name": string
+}
+export interface IRequestCount {
+  property_request: {
+    property: {
+      property_requests_aggregate: {
+        aggregate: {
+          count: number
+        }
+      }
+    },
+    property_id: string
+  }[],
+  property_request_aggregate: {
+    aggregate: {
+      count: number
+    }
   }
 }
 export default {
   GET_ALL_REQUEST_COUNT: gql`query GET_ALL_REQUEST_COUNT {
+  property_request(distinct_on: property_id) {
+    property {
+      property_requests_aggregate {
+        aggregate {
+          count
+        }
+      }
+    },
+    property_id
+  }
   property_request_aggregate {
     aggregate {
       count
