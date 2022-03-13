@@ -1,14 +1,14 @@
 import React from 'react';
 import style from './LandlordDashboard.module.scss';
-import Layout from './Layout';
-import { ButtonSolid, ButtonSolidWithIndicator } from '../components/Button';
+import Layout from '../Layout';
+import { ButtonSolid, ButtonSolidWithIndicator } from '../../components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import propertyQuery, { IPropertyDetails } from '../queries/property.query';
-import { useLoder } from '../components/Loader';
+import propertyQuery, { IPropertyDetails } from '../../queries/property.query';
+import { useLoder } from '../../components/Loader';
 import ClampLines from 'react-clamp-lines';
-import requestsQuery, { IRequestData, IRequestCount } from '../queries/requests.query';
-import RequestCard from '../components/RequestCard';
+import requestsQuery, { IRequestData, IRequestCount } from '../../queries/requests.query';
+import RequestCard from '../../components/RequestCard';
 
 export default function Example() {
     const navigate = useNavigate();

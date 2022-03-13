@@ -10,21 +10,21 @@ import { RequireAuth } from "./RequireAuth";
 import { NotRequireAuth } from "./NotRequireAuth";
 import HomePage from "../pages/Home";
 import PropertyListing from "../pages/PropertySearchListing";
-import AddProperty from '../pages/AddProperty';
+import AddProperty from '../pages/Landlord/AddProperty';
 import Signup from "../pages/SignUp";
 import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
-import SendRequest from "../pages/SendRequest";
+import SendRequest from "../pages/Tenant/SendRequest";
 import { Roles } from "../functions/auth/types";
-import LandlordDashboard, { ViewRequests } from '../pages/LandlordDashboard'
+import LandlordDashboard, { ViewRequests } from '../pages/Landlord/LandlordDashboard'
 import SelectRole from "../pages/SelectRole";
 import { useAuth } from '../functions/auth/useAuth';
 import AccountRoutes from "./Account";
 import { NumberVerify } from "../pages/NumberVerify";
-import EditProperty from "../pages/EditProperty";
+import EditProperty from "../pages/Landlord/EditProperty";
 import { toast } from "react-toastify";
 import UserContext from "../functions/auth/userContext";
-import TenantRequestView from "../pages/TenantRequestView";
+import TenantRequestView from "../pages/Tenant/TenantRequestView";
 export default function () {
     const auth = useAuth();
     return (

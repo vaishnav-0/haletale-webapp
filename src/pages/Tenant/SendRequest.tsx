@@ -1,20 +1,20 @@
 
 import React from 'react';
-import Layout from './Layout';
-import FormGenerator, { FormDataShape, SchemaType } from '../components/Form/FormGenerator';
+import Layout from '../Layout';
+import FormGenerator, { FormDataShape, SchemaType } from '../../components/Form/FormGenerator';
 import * as yup from 'yup';
-import { useLoder } from '../components/Loader';
-import { dynamicSchemaGenerator, dataMapReturn } from '../components/Form/FormGeneratorHelpers';
+import { useLoder } from '../../components/Loader';
+import { dynamicSchemaGenerator, dataMapReturn } from '../../components/Form/FormGeneratorHelpers';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
-import metaQuery from '../queries/meta.query';
-import userQuery from '../queries/user.query';
-import { userMutation } from '../queries';
+import metaQuery from '../../queries/meta.query';
+import userQuery from '../../queries/user.query';
+import { userMutation } from '../../queries';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import propertyQuery, { IPropertyDetails } from '../queries/property.query';
-import requestMutations from '../queries/request.mutation';
-import requestsQuery from '../queries/requests.query';
+import propertyQuery, { IPropertyDetails } from '../../queries/property.query';
+import requestMutations from '../../queries/request.mutation';
+import requestsQuery from '../../queries/requests.query';
 import { toast } from 'react-toastify';
-import { useUserContext } from '../functions/auth/userContext';
+import { useUserContext } from '../../functions/auth/userContext';
 const schema = {
     heading: "Basic details",
     submitButton: "Send request",

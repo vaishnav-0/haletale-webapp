@@ -1,24 +1,24 @@
 import React from 'react';
-import Layout from './Layout';
-import FormGenerator from '../components/Form/FormGenerator';
-import { SchemaType } from '../components/Form/FormGenerator';
-import formStyle from '../components/Form/Form.module.scss';
+import Layout from '../Layout';
+import FormGenerator from '../../components/Form/FormGenerator';
+import { SchemaType } from '../../components/Form/FormGenerator';
+import formStyle from '../../components/Form/Form.module.scss';
 import * as yup from 'yup';
-import propertyMutation from '../queries/property.mutation'
-import { FormDataShape } from '../components/Form/FormGenerator';
-import Searchbar from '../components/Searchbar';
-import { PropertyQuery } from '../queries'
+import propertyMutation from '../../queries/property.mutation'
+import { FormDataShape } from '../../components/Form/FormGenerator';
+import Searchbar from '../../components/Searchbar';
+import { PropertyQuery } from '../../queries'
 import { useQuery, useMutation } from '@apollo/client';
-import propertyQuery from '../queries/property.query';
-import { useLoder } from '../components/Loader';
-import { cropToAspectRatio } from '../components/Form/components/Images';
-import { dataMapReturn, dynamicSchemaGenerator } from '../components/Form/FormGeneratorHelpers';
-import { usePlaceSuggestions } from '../functions/hooks/usePlaceSuggestions';
+import propertyQuery from '../../queries/property.query';
+import { useLoder } from '../../components/Loader';
+import { cropToAspectRatio } from '../../components/Form/components/Images';
+import { dataMapReturn, dynamicSchemaGenerator } from '../../components/Form/FormGeneratorHelpers';
+import { usePlaceSuggestions } from '../../functions/hooks/usePlaceSuggestions';
 import { UseFormReturn } from 'react-hook-form';
-import { addressToGeo } from '../functions/api/location';
-import { ButtonSolid } from '../components/Button';
-import ProgressiveForm from '../components/Form/ProgressiveForm';
-import { handleImage } from '../functions/api/imageUpload'
+import { addressToGeo } from '../../functions/api/location';
+import { ButtonSolid } from '../../components/Button';
+import ProgressiveForm from '../../components/Form/ProgressiveForm';
+import { handleImage } from '../../functions/api/imageUpload'
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,8 +1,8 @@
 import { useQuery } from "@apollo/client";
-import requestsQuery, { IRequestData } from "../queries/requests.query";
-import Layout from "./Layout";
-import RequestCard from "../components/RequestCard";
-import landLordDashboardStyle from './LandlordDashboard.module.scss';
+import requestsQuery, { IRequestData } from "../../queries/requests.query";
+import Layout from "../Layout";
+import RequestCard from "../../components/RequestCard";
+import landLordDashboardStyle from '../Landlord/LandlordDashboard.module.scss';
 
 export default function () {
     const { data: requestData, loading, fetchMore } = useQuery<IRequestData>(requestsQuery.GET_REQUESTED_PROPERTIES);

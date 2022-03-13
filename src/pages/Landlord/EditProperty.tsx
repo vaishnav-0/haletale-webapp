@@ -1,12 +1,12 @@
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import FormGenerator, { SchemaType } from "../components/Form/FormGenerator";
-import { dataMapReturn, dynamicSchemaGenerator } from "../components/Form/FormGeneratorHelpers";
-import Layout from "./Layout";
-import formStyle from '../components/Form/Form.module.scss';
+import FormGenerator, { SchemaType } from "../../components/Form/FormGenerator";
+import { dataMapReturn, dynamicSchemaGenerator } from "../../components/Form/FormGeneratorHelpers";
+import Layout from "../Layout";
+import formStyle from '../../components/Form/Form.module.scss';
 import { useLazyQuery } from "@apollo/client";
-import propertyQuery, { IPropertyDetails } from "../queries/property.query";
-import { defaultValueInjector } from "../components/Form/FormGeneratorHelpers";
+import propertyQuery, { IPropertyDetails } from "../../queries/property.query";
+import { defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
 import { toast } from "react-toastify";
 const schema: SchemaType = {
     heading: "Add Property",
@@ -221,58 +221,41 @@ export default function EditProperty() {
         if (propertyData) {
             console.log(propertyData);
             const property = propertyData.property[0];
-
-            const toDataURL = (url: string) => fetch(url, { mode: "cors" })
-                .then(response => { console.log(response.body); return response.blob(); })
-                .then(blob => new Promise((resolve, reject) => {
-                    var file = new File([blob], property.property_images![0]?.key ?? "");
-                    const reader = new FileReader()
-                    reader.onloadend = () => resolve([reader.result, file])
-                    reader.onerror = reject
-                    reader.readAsDataURL(blob)
-                })).catch(e => {
-                    console.log(e)
-                }).catch(e => {
-                    toast.error("Network error");
-                    navigate("/");
-                })
-            toDataURL(property.property_images![0]!.s3Url?.url ?? "").then((data: any) => {
-                const fileList = [
+            const defaultValue = {
+                property_name: property.name,
+                property_address: property.property_address?.address?.full_address,
+                // property_coords: property.coordinates?.coordinates,
+                //type: property.type,
+                type: "2",
+                subtype: property.sub_type,
+                features: ["fridge"],
+                bathroom: 5,
+                restriction: ["pets"],
+                member: [
                     {
-                        dataUrl: data[0],
-                        file: data[1]
+                        memberName: "abc"
+                    },
+                    {
+                        memberName: "bgs"
                     }
-                ];
-                console.log(fileList)
-                const defaultValue = {
-                    property_name: property.name,
-                    property_address: property.property_address?.address?.full_address,
-                    // property_coords: property.coordinates?.coordinates,
-                    //type: property.type,
-                    type: "2",
-                    subtype: property.sub_type,
-                    features: ["fridge"],
-                    bathroom: 5,
-                    restriction: ["pets"],
-                    images: fileList,
-                    member: [
-                        {
-                            memberName: "abc"
-                        },
-                        {
-                            memberName: "bgs"
+                ]
+            }
+            defaultValueInjector(schema, defaultValue).then(s => {
+                console.log("set schema", s);
+                dynamicSchemaGenerator({
+                    schema: s, dataMap: () => {
+                        return {
+                            images: (item: any) => {
+                                console.log(property.property_images?.map(e => { return { url: e?.s3Url, name: e?.key } }))
+                                item.props.fetchList = property.property_images ? property.property_images.map(e => { return { url: e?.s3Url?.url, name: e?.key } }) : []
+                            }
                         }
-                    ]
-                }
-                defaultValueInjector(schema, defaultValue).then(s => {
-                    console.log("set schema", s);
-                    _setSchema(s)
-                })
-                console.log(defaultValue)
+                    }
+                }).then(sch => _setSchema(sch))
             })
 
-
         }
+
     }, [propertyData]);
     React.useEffect(() => {
         console.log(error);
