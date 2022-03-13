@@ -13,7 +13,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [getUserData, { data: userData, loading: userDataloading, refetch: userDataRefetch, called }] = useLazyQuery(userQuery.GET_USER_DETAILS, {
     fetchPolicy: "no-cache"
   });
-  const apollo = useApolloClient();
   React.useLayoutEffect(() => {
     if (user === null)
       setGlobalLoader(true, { backgroundColor: "white" })
@@ -28,9 +27,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
             getUserData({ variables: { id: u.user_id } });
           else
             userDataRefetch({ id: u.user_id });
-        else
-          apollo.clearStore();
-        console.log(userData?.user[0]?.id);
         if (u && (userData?.user[0]?.id === u?.user_id)) { //apollo client fetch policy doesn't work as expected
           const { id, ...uData } = userData.user[0];
           setUser({ user: { ...u!, user_details: uData } });
