@@ -16,7 +16,7 @@ export const ButtonHollow: ButtonComponentType = function ({ children, onClick =
 }
 export const ButtonSolid: ButtonComponentType = function ({ children, onClick = () => { }, className = "", tooltip, ...rest }) {
     return <button onClick={onClick} className={style["btn-smoothround-solid"] + " " + className} {...rest}>
-        {(tooltip || !(tooltip === "")) && <div className={style["tooltip"]}>{tooltip}</div>}
+        {(!!tooltip && (tooltip !== "")) && <div className={style["tooltip"]}>{tooltip}</div>}
         {children}
     </button>
 
