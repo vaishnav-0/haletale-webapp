@@ -152,32 +152,6 @@
     padding: 1em;
 }
 
-.request-card {
-    display: flex;
-    flex-direction: column;
-    @include def-shadow;
-    padding: 1.1em;
-    border-radius: 1em;
-    min-width: 0;
-
-    &>div>.title {
-        font-weight: 900;
-    }
-
-    &>.othertenants>div {
-        &:nth-child(1) {
-            padding: 0;
-        }
-
-        padding-left: 1em;
-    }
-}
-
-.request-card .request-card-property {
-    display: flex;
-    gap: 0.5em;
-}
-
 .btn-link {
     @include button-link;
 }
