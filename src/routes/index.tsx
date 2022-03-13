@@ -24,6 +24,7 @@ import { NumberVerify } from "../pages/NumberVerify";
 import EditProperty from "../pages/EditProperty";
 import { toast } from "react-toastify";
 import UserContext from "../functions/auth/userContext";
+import TenantRequestView from "../pages/TenantRequestView";
 export default function () {
     const auth = useAuth();
     return (
@@ -64,10 +65,18 @@ export default function () {
                                 <Route path="dashboard/request/view" element={< ViewRequests />} />
                                 <Route path="property/edit" element={< EditProperty />} />
                             </Route>
-                            <Route path="/" element={<RequireAuth onReject={(user) => { toast.warn("Sign in to send request", { toastId: 'warn1' }) }} role={[Roles['tenant']]} />}>
+                            <Route path="/" element={<RequireAuth
+                                onReject={(user) => {
+                                    toast.warn("Sign in to send request", { toastId: 'warn1' })
+                                }
+                                }
+                                openLoginModal
+                                role={[Roles['tenant']]} />}>
                                 <Route path="sendRequest" element={< SendRequest />} />
                             </Route>
-
+                            <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
+                                <Route path="requests/view" element={< TenantRequestView />} />
+                            </Route>``
                         </Routes>
                 }
             </BrowserRouter >
