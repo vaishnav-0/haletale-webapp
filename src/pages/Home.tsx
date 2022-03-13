@@ -37,10 +37,8 @@ function HomePage(): JSX.Element {
         })
     }
     React.useEffect(() => {
-        console.log("ASDAS")
         refetchRecentProperty();
     }, [user])
-    console.log(recentPropertyData, user)
     return (
         <Layout footer={true}>
             <HomeBanner />
