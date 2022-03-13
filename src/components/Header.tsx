@@ -9,15 +9,17 @@ import style from "./Header.module.scss";
 import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { Openable } from './Openable';
-import { useAuth } from '../functions/auth/useAuth';
 import auth from '../functions/auth';
 import { Link } from "react-router-dom";
 import { Roles } from '../functions/auth/types';
+import { useUserContext } from '../functions/auth/userContext';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function Header(): JSX.Element {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [loginModalOpen, setloginModalOpen] = useState(false);
-    const authContext = useAuth();//temporary
+    const user = useUserContext();
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -28,14 +30,23 @@ export default function Header(): JSX.Element {
                 </div>
                 <div className={style["topnav-right-container"]}>
 
-                    {authContext?.user ?
+                    {user ?
                         <div className={style["profile-container"]}>
                             <img src={userPlaceholder} />
                             <Openable                           //seems hacky
                                 open={[true, setDropdownOpen]}
                                 className={style["profile-dropdown"]}
                                 onClick={() => setDropdownOpen(!dropdownOpen)}>
-                                <p>Welcome <span className={style["name-highlight"]}>{authContext.user?.user_details?.name ?? "User"}!</span></p>
+                                <p>Welcome
+                                    <span className={style["name-highlight"]}>
+                                        {
+                                            user && !user.user_details ?
+                                                <Skeleton style={{ width: "100%", height: "100%" }} />
+                                                :
+                                                ` ${user?.user_details?.name ?? "User"}!`
+                                        }
+
+                                    </span></p>
                                 <div className={style["profile-dropdown-down"]} >
                                     <img src={downIcon} />
                                 </div>
@@ -53,13 +64,13 @@ export default function Header(): JSX.Element {
                                     {//<Link to="#">Account</Link>
                                         //<Link to="#">Notifications</Link>
                                     }
-                                    {authContext.user.role.includes(Roles['tenant']) && <>
+                                    {user.role.includes(Roles['tenant']) && <>
                                         <Link to="/bookings">Your Bookings</Link>
                                         <Link to="/wishlist">Wishlist</Link>
                                     </>
 
                                     }
-                                    {authContext.user.role.includes(Roles['landlord']) && <>
+                                    {user.role.includes(Roles['landlord']) && <>
                                         <Link to="/dashboard">Dashboard</Link>
                                     </>
 
