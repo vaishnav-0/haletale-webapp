@@ -26,7 +26,7 @@ export default function CoordinateInput({ onChange = () => { }, style, className
             }
             map.addEventListener('moveend', onMoveEnd);
             if (defaultValue) {
-                map.flyTo(defaultValue, 16, { duration: 1 });
+                map.setView(defaultValue, 16);
             }
             return () => {
                 map.removeEventListener('moveend', onMoveEnd);
@@ -36,7 +36,7 @@ export default function CoordinateInput({ onChange = () => { }, style, className
     }, [map]);
     React.useEffect(() => {
         if (coords && map) {
-            map.flyTo(coords, 16, { duration: 1 });
+            map.setView(coords, 18);//reduce tile loads. Otherwise use flyTo for the eyecandy.
         }
     }, [coords, map]);
     console.log(defaultValue)
