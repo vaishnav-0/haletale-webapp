@@ -10,6 +10,8 @@ import { useLazyQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import InView from 'react-intersection-observer';
 import Skeleton from 'react-loading-skeleton';
+import PropertySearchBar from '../components/PropertySearchBar';
+
 export default function (): JSX.Element {
     let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
         notifyOnNetworkStatusChange: true
@@ -19,7 +21,6 @@ export default function (): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
     const sortButtonRef = React.useRef<HTMLButtonElement>(null!);
     const [openSort, setOpenSort] = React.useState(false);
-    console.log(propertyData);
     React.useEffect(() => {
 
         //navigate({ pathname: "/properties", search: "?" + searchParams.toString() });
@@ -44,6 +45,7 @@ export default function (): JSX.Element {
     }, [])
     return (
         <Layout>
+            <PropertySearchBar />
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
                     <div>{searchParams.get("place")}</div>
