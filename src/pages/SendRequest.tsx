@@ -125,7 +125,7 @@ function SendRequest(): JSX.Element {
             },
             fetchPolicy: "no-cache"
         });
-    const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID);
+    const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID, { fetchPolicy: "no-cache" });
 
     const [Loader, setLoader] = useLoder({});
     React.useEffect(() => {
@@ -145,7 +145,6 @@ function SendRequest(): JSX.Element {
         }
     }, []);
     React.useEffect(() => {
-        console.log(userRequestData);
         if (userRequestData?.property_request.length && !!userRequestData) {
             toast.warn("Request already sent");
             navigate("/");//to request listing page
@@ -157,7 +156,6 @@ function SendRequest(): JSX.Element {
     }, [propertyData])
     React.useEffect(() => {
         if (userPhoneNatData) {
-            console.log(userPhoneNatData)
             const phone = userPhoneNatData.user[0].phone;
             const nationality = userPhoneNatData.user[0]?.user_details?.nationality
             dynamicSchemaGenerator({
@@ -176,7 +174,6 @@ function SendRequest(): JSX.Element {
                     }
                 }
             }).then(s => {
-                console.log("set schema", s);
                 _setSchema(s)
             })
             if (!phone || !nationality)
@@ -186,7 +183,6 @@ function SendRequest(): JSX.Element {
 
 
     }, [userPhoneNatData]);
-    console.log(_schema)
     React.useEffect(() => {
         if (schema)
             if (countryData) {
@@ -195,27 +191,27 @@ function SendRequest(): JSX.Element {
                     countries[country.id] = country.name;
                     code[country.dialCode] = country.isoCode + " " + country.dialCode;
                 })
-                dynamicSchemaGenerator({
-                    schema: _schema!,
-                    dataLoader: { countries, code },
-                    dataMap: (data) => {
-                        return {
-                            country: (item: any) => {
-                                item.props.values = data.countries
+                if (_schema)
+                    dynamicSchemaGenerator({
+                        schema: _schema,
+                        dataLoader: { countries, code },
+                        dataMap: (data) => {
+                            return {
+                                country: (item: any) => {
+                                    item.props.values = data.countries
 
-                            },
-                            phone: {
-                                country_code: (item: any) => {
-                                    item.props.values = data.code
                                 },
-                            }
+                                phone: {
+                                    country_code: (item: any) => {
+                                        item.props.values = data.code
+                                    },
+                                }
 
+                            }
                         }
-                    }
-                }).then(s => {
-                    console.log("set schema", s);
-                    _setSchema(s)
-                })
+                    }).then(s => {
+                        _setSchema(s)
+                    })
             }
     }, [countryData])
     React.useEffect(() => {
