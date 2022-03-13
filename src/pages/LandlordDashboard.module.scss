@@ -28,8 +28,8 @@
     padding: 1em;
     border-radius: 0.8em;
 
-    &>:nth-child(1),
-    &>:nth-child(2) {
+    &>:nth-child(2),
+    &>:nth-child(3) {
         gap: 1.5em;
     }
 
@@ -38,6 +38,13 @@
     }
 
     @include def-shadow;
+}
+
+.properties-list-card-idbtn {
+    @include button-link;
+    padding: 0.5em;
+    width: fit-content;
+    margin: auto;
 }
 
 .properties-card-info,
@@ -78,7 +85,7 @@
     display: flex;
     align-items: center;
     padding: 0 0.8em;
-    gap:0.5em
+    gap: 0.5em
 }
 
 .key {
@@ -102,7 +109,7 @@
     flex-direction: column;
 
     @include media(">=mdMin") {
-        flex-direction: row;
+        flex-direction: row-reverse;
         gap: 2em;
     }
 
@@ -124,4 +131,53 @@
     font-size: 0.8em;
     color: white;
     transform: translate(-60%, 40%);
+}
+
+.viewrequest-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-flow: row;
+    gap: 0.8em;
+
+    @include media("<=lgMin") {
+        grid-template-columns: 1fr;
+    }
+}
+
+.viewrequest-heading {
+    display: flex;
+    gap: 0.6em;
+    font-size: 1.3em;
+    font-weight: 900;
+    padding: 1em;
+}
+
+.request-card {
+    display: flex;
+    flex-direction: column;
+    @include def-shadow;
+    padding: 1.1em;
+    border-radius: 1em;
+    min-width: 0;
+
+    &>div>.title {
+        font-weight: 900;
+    }
+
+    &>.othertenants>div {
+        &:nth-child(1) {
+            padding: 0;
+        }
+
+        padding-left: 1em;
+    }
+}
+
+.request-card .request-card-property {
+    display: flex;
+    gap: 0.5em;
+}
+
+.btn-link {
+    @include button-link;
 }
