@@ -11,7 +11,7 @@ export default function Footer(): JSX.Element {
                     <ul>Company</ul>
                     <ul><a href="#">Home</a></ul>
                     <ul><a onClick={() => {
-                        navigate("/signup");
+                        navigate({ pathname: "/" }, { state: { openLoginModal: true } });
                     }}>Sign In / Sign Up</a></ul>
                     <ul><a href="#">About Us</a></ul>
                     <ul><a href="#">Contact Us</a></ul>
