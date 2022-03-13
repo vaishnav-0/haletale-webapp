@@ -27,21 +27,7 @@ export default function Footer(): JSX.Element {
                     <ul><a href="#">Wishlist</a></ul>
                     <ul><a href="#">Settings</a></ul>
                 </li>
-                <li>
-                    <ul>Tenant services</ul>
-                    <ul><a href="#">Verification</a></ul>
-                    <ul><a href="#">Update Booking</a></ul>
-                    <ul><a href="#">Cancel Booking</a></ul>
-                    <ul><a href="#">Maintenance Requests</a></ul>
-                    <ul><a href="#">Check in Details</a></ul>
-                </li>
-                <li>
-                    <ul>Landlord services</ul>
-
-                    <ul><a href="#">My propertyperties</a></ul>
-                    <ul><a href="#">Booking Requests</a></ul>
-                    <ul><a href="#">Maintenance Requests</a></ul>
-                </li></div>
+            </div>
 
             <div className="footer-bottom">
                 <div className="footer-bottom-left">
