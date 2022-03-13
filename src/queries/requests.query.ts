@@ -89,6 +89,14 @@ export default {
         }
   }
 }
-`
+`,
+  GET_REQUESTED_PROPERTIES: gql`query PROPERTY_REQUEST {
+        property_request {
+        intended_move_in_date
+        lease_duration
+        other_tenents
+        property_id
+        }
+      }`
 
 }
