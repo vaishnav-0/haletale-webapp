@@ -19,6 +19,10 @@
 .footer-top {
     display: flex;
     flex-wrap: wrap;
+    margin: auto;
+    @include media(">=lgMin") {
+        width: 1000px;
+    }
 
     li {
         list-style-type: none;
