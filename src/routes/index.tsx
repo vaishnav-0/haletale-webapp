@@ -25,7 +25,7 @@ import EditProperty from "../pages/EditProperty";
 import { toast } from "react-toastify";
 import UserContext from "../functions/auth/userContext";
 export default function () {
-    let auth = useAuth();
+    const auth = useAuth();
     return (
         <UserContext.Provider value={auth?.user ?? null}>
             <BrowserRouter>
