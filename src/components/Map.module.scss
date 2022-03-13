@@ -1,3 +1,13 @@
-.location-pin{
+.location-pin {
     background-color: #00000000;
+}
+.map-container{
+    position: relative;
+}
+.attribution-logo {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    height: 25px;
+    z-index: 1000;
 }

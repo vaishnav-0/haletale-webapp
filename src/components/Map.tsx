@@ -5,6 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import pinIcon from '../assets/icons/map_pin.svg';
 import style from './Map.module.scss';
+import mapBoxLogo from '../assets/icons/mapbox-logo-black.png';
 
 export type MarkerType = { onClick: () => void, coords: [number, number] }[]
 const iconPin = new L.Icon({
@@ -22,20 +23,23 @@ export default function ({ whenCreated, markers = [], ...props }: propType): JSX
         if (whenCreated)
             whenCreated(map);
     }, [map])
-    return <MapContainer whenCreated={(map: LeafletMap) => setMap(map)} {...props}>
-        <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {
-            markers.map((marker) => <Marker eventHandlers={{
-                click: (e) => {
-                    marker.onClick();
-                },
-            }}
-                position={[marker.coords[0], marker.coords[1]]} icon={iconPin} />
-            )
+    return <div className={style["map-container"]}>
+        <img src={mapBoxLogo} className={style["attribution-logo"]} />
+        <MapContainer whenCreated={(map: LeafletMap) => setMap(map)} {...props}>
+            <TileLayer
+                attribution='&copy; <a href="https://www.mapbox.com/about/maps/">Mapbox</a>| &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="https://www.mapbox.com/map-feedback/"" target="_blank">Improve this map</a>'
+                url="https://api.mapbox.com/styles/v1/vaishnav-/cl0pigcft006214qi39qf49fz/tiles/{z}/{x}/{y}?access_token=sk.eyJ1IjoidmFpc2huYXYtIiwiYSI6ImNsMHBpb2R4bTAzdnYzbHFyeXBneWpnbDMifQ.gQ5AC7e_gLkvAjMkTuvbag"
+            />
+            {
+                markers.map((marker) => <Marker eventHandlers={{
+                    click: (e) => {
+                        marker.onClick();
+                    },
+                }}
+                    position={[marker.coords[0], marker.coords[1]]} icon={iconPin} />
+                )
 
-        }
-    </MapContainer>
+            }
+        </MapContainer>
+    </div>
 }
