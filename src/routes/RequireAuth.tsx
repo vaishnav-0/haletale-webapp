@@ -10,14 +10,15 @@ import UserContext from "../functions/auth/userContext";
  * @returns 
  */
 
-export const RequireAuth = ({ role, redirect = "/", onReject = () => { } }: { role: Roles[] | [], redirect?: string, onReject?: (user: IUser | null) => void }) => {
+export const RequireAuth = ({ role, redirect = "/", onReject = () => { }, openLoginModal = false }:
+  { role: Roles[] | [], redirect?: string, onReject?: (user: IUser | null) => void, openLoginModal?: boolean }) => {
   let auth = useAuth();
   let location = useLocation();
   if (auth === null)  //auth initializing
     return null;
   if (role.length && (auth.user === null || !role.some(e => auth!.user?.role.includes(e)))) {
     onReject(auth.user);
-    return <Navigate to={redirect} state={{ from: location, openLoginModel: true }} replace />;
+    return <Navigate to={redirect} state={{ from: location, openLoginModal: openLoginModal }} replace />;
   } else {
     return <Outlet />;
   }
