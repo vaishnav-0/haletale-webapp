@@ -28,7 +28,7 @@ export default function Example() {
             {Loader}
             <div className={style["wrapper"]}>
                 <div className={style["btn-container"]}>
-                    <ButtonSolid onClick={() => navigate("/addProperty")}>
+                    <ButtonSolid onClick={() => navigate("/property/add")}>
                         List Property
                     </ButtonSolid>
                     <ButtonSolidWithIndicator
