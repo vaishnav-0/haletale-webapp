@@ -190,6 +190,7 @@ export default {
     type
     sub_type
     coordinates
+    is_approved
     property_address {
       address {
         full_address
