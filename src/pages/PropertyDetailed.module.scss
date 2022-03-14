@@ -148,6 +148,11 @@
     color: $dangerPrimary;
 }
 
+.heart-loading {
+    transform: scale(1.5);
+    transition: transform 0.2s;
+}
+
 .notifyfilled {
     color: black;
 }

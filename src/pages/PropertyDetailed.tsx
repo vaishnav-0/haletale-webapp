@@ -25,6 +25,7 @@ import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
 import { useAuth } from '../functions/auth/useAuth';
 import { Roles } from '../functions/auth/types';
+import useFavourite from '../functions/hooks/useFavourite';
 
 const imageSliderClickHandler = (cb: () => void) => {
     const delta = 6;
@@ -48,11 +49,11 @@ const imageSliderClickHandler = (cb: () => void) => {
 }
 export default function Example() {
     const [searchParams, setSearchParams] = useSearchParams();
+    const [fav, updateFav, favUpdating] = useFavourite(searchParams.get("id")!)
     const [Loader, setLoader] = useLoder({});
     const auth = useAuth();
     const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
     const navigate = useNavigate();
-    const [fav, setFav] = React.useState(false);
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
     const [imageGalleryOpen, setImageGalleryOpen] = React.useState(false);
@@ -87,7 +88,6 @@ export default function Example() {
             })
         }
     }, []);
-    console.log(propertyData);
     React.useEffect(() => {
         if (propertyloading)
             setLoader(true);
@@ -206,7 +206,8 @@ export default function Example() {
                 <div className={style["bottom-panel"]}>
                     <ButtonSolid disabled={!!auth?.user?.role.includes(Roles['landlord'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
                     <button className={style["bottom-panel-icon"]}>
-                        <i onClick={() => setFav(!fav)} className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart`}></i>
+                        <i onClick={updateFav}
+                            className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart ${favUpdating ? style["heart-loading"] : ""}`}></i>
                     </button>
                     <button className={style["bottom-panel-icon"]}>
                         <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
