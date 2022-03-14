@@ -1,5 +1,22 @@
 import { gql } from '@apollo/client'
-
+import { IPropertyDetails, propertyFragment } from './property.query'
+export interface IFavoriteData {
+  user_favourites: {
+    created_at: string,
+    property_id: string,
+    property: IPropertyDetails
+  }[],
+  user_favourites_aggregate: {
+    aggregate: {
+      count: number
+    }
+  }
+}
+export interface IGetUserFav {
+  user_favourites: {
+    id: string
+  }[]
+}
 export default {
   GET_USER_DETAILS: gql`query GET_USER_DETAILS($id:uuid) {
     user(where: {id: {_eq: $id}}) {
@@ -20,12 +37,22 @@ export default {
     }
   }`,
 
-  GET_USER_FAVS: gql`query USER_FAVOURITES {
-    user_favourites {
+  GET_USER_FAVS: gql`query USER_FAVOURITES($offset: Int, $limit: Int) {
+    user_favourites(offset: $offset, limit: $limit) {
       property_id
       created_at
+      property{
+        ...propertyFragment
+      }
     }
-  }`,
+    user_favourites_aggregate {
+      aggregate {
+        count
+      }
+    }
+  }
+  ${propertyFragment}
+  `,
 
   CHECK_USER_FAV: gql`query CHECK_FAV($property_id: uuid) {
     user_favourites(where: {property_id: {_eq: $property_id}}){

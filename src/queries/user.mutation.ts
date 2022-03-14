@@ -1,5 +1,10 @@
 import { gql } from '@apollo/client';
 
+export interface IAddUserFav {
+  insert_user_favourites_one: {
+    id: string
+  }
+}
 export default {
   UPDATE_USER_ROLE: gql`mutation UPDATE_USER_ROLE($role_id:Int, $id:uuid) {
         update_user_role(where: {user_id: {_eq: $id}}, _set: {role_id: $role_id}) {
@@ -7,7 +12,7 @@ export default {
         }
     }`,
 
-  UPDATE_PHONE_COUNTRY:  gql`mutation UPDATE_PHONE_COUNTRY($phone: String, $id: uuid, $nationality: uuid) {
+  UPDATE_PHONE_COUNTRY: gql`mutation UPDATE_PHONE_COUNTRY($phone: String, $id: uuid, $nationality: uuid) {
     update_user(_set: {phone: $phone}, where: {id: {_eq: $id}}) {
       affected_rows
     }
@@ -16,11 +21,19 @@ export default {
     }
   }`,
 
-  ADD_USER_FAV : gql`mutation ADD_USER_FAV($property_id: uuid) {
+  ADD_USER_FAV: gql`mutation ADD_USER_FAV($property_id: uuid) {
     insert_user_favourites_one(object: {property_id: $property_id}) {
       id
     }
   }`,
+  DELETE_FAV: gql`mutation DELETE_FAV($property_id: uuid) {
+    delete_user_favourites(where: {property_id: {_eq: $property_id}}) {
+      returning {
+        id
+      }
+    }
+  }
+`
 }
 
 
