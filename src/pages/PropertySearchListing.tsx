@@ -11,7 +11,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import InView from 'react-intersection-observer';
 import Skeleton from 'react-loading-skeleton';
 import PropertySearchBar from '../components/PropertySearchBar';
-
+import InfiniteList from '../components/InfiniteList';
+type nearbyPropertyQueryResult = { show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }
 export default function (): JSX.Element {
     let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
         notifyOnNetworkStatusChange: true
@@ -21,6 +22,7 @@ export default function (): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
     const sortButtonRef = React.useRef<HTMLButtonElement>(null!);
     const [openSort, setOpenSort] = React.useState(false);
+    const [queryParams, setQueryParams] = React.useState<object | null>(null);
     React.useEffect(() => {
 
         //navigate({ pathname: "/properties", search: "?" + searchParams.toString() });
@@ -28,8 +30,8 @@ export default function (): JSX.Element {
     }, [searchParams]);
     React.useEffect(() => {
         if (searchParams.get("lat") && searchParams.get("lng")) {
-            const coords = [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)];
-            getPropertyByDistance({
+            const coords = (searchParams.get("lat") || searchParams.get("lng")) ? [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)] : null;
+            setQueryParams({
                 variables: {
                     cur_coords: {
                         type: "Point",
@@ -42,7 +44,7 @@ export default function (): JSX.Element {
             });
 
         }
-    }, [])
+    }, [searchParams])
     return (
         <Layout>
             <PropertySearchBar />
@@ -81,26 +83,26 @@ export default function (): JSX.Element {
 
 
             </div>
-            <div className={style["search-list"]}>
-                {
-                    propertyData?.show_nearby_properties.map(property => <PropertyCardDetailed propertyData={property} />)
-                }
-                {
-                    loading && [1, 2].map(k => { console.log("loading"); return <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} /> })
-                }
-                <InView
-                    onChange={inView => {
-                        if (inView) {
-                            fetchMore({
-                                variables: {
-                                    offset: propertyData?.show_nearby_properties.length
-                                }
-                            })
-                        }
-                    }}
-                    skip={propertyData?.show_nearby_properties_aggregate.aggregate.totalCount === propertyData?.show_nearby_properties.length}
-                />
-            </div>
+            {
+                queryParams &&
+                <InfiniteList<nearbyPropertyQueryResult>
+                    query={propertyQuery.GET_PROPERTY_BY_DISTANCE}
+                    initialParams={queryParams}
+                    wrapperClassName={style["search-list"]}
+                    checkSkip={(propertyData) => propertyData?.show_nearby_properties_aggregate.aggregate.totalCount === propertyData?.show_nearby_properties.length}
+                >
+                    {
+                        (propertyData, loading) => <>
+                            {
+                                propertyData?.show_nearby_properties.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                            }
+                            {
+                                loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
+                            }
+                        </>
+                    }
+                </InfiniteList>
+            }
         </Layout >
     );
 }
