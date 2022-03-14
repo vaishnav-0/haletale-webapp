@@ -29,6 +29,11 @@
     .regular {
         color: $grey;
     }
+
+    .heart-loading {
+        transform: scale(1.5);
+        transition: transform 0.2s;
+    }
 }
 
 .image-slider {
@@ -115,11 +120,13 @@
     color: var(--teal-dark);
     justify-content: space-between;
     align-items: center;
+
     div {
         font-size: inherit;
         width: max-content;
     }
-    &>a{
+
+    &>a {
         text-decoration: none;
         background-color: $primary;
         color: white;
@@ -147,7 +154,7 @@
 .position-indicator {
     position: absolute;
     z-index: 10;
-    bottom: 4.3em;
+    bottom: 4.6em;
     right: 0;
     left: 0;
     margin: 0 auto;
