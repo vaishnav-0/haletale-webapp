@@ -37,9 +37,9 @@ export default function ({ indicatorClassName = "",
                 dynamicHeight={true}
             >
                 {
-                    imgSrc.map(i => {
-                        return <div className={style["image-container"]}>
-                            <img src={i} />
+                    imgSrc.map((src, i) => {
+                        return <div key={i} className={style["image-container"]}>
+                            <img src={src} />
                         </div>
                     })
                 }
