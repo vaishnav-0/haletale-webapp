@@ -139,7 +139,7 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
                             <img src={googleLogo} />
 
                         </button>
-                        <button type='button' onClick={() => auth.oauth('FaceBook')}>
+                        <button type='button' onClick={() => auth.oauth('Facebook')}>
                             <img src={fbLogo} />
 
                         </button>

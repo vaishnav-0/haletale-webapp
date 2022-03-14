@@ -31,7 +31,7 @@ export interface AuthContextType {
 }
 
 
-export type authTypes = 'email_pass' | 'otp' | 'Google' | 'FaceBook'
+export type authTypes = 'email_pass' | 'otp' | 'Google' | 'Facebook'
 export interface IUser {
     token: string | null
     tokenExpiry: Date
