@@ -12,8 +12,10 @@ import { IPropertyDetails } from '../queries/property.query';
 import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
 import { Link } from 'react-router-dom';
+import useFavourite from '../functions/hooks/useFavourite';
+
 export default function (props: { propertyData: IPropertyDetails }): JSX.Element {
-    const [fav, setFav] = React.useState(false);
+    const [fav, updateFav, favUpdating] = useFavourite(props.propertyData.id!)
     const [currentImage, setCurrentImage] = React.useState(0);
     const images = props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "").slice(0, 5);
     return (
@@ -32,9 +34,11 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                                 buttons={false}
                             />
                         </div>
-                        <div className={style["fav-icon"]}>
-                            <i onClick={() => setFav(!fav)} className={`${fav ? style.filled + " fas" : style.regular + " far"} fa-heart`}></i>
-                        </div>
+                        {fav !== null &&
+                            <div className={style["fav-icon"]}>
+                                <i onClick={updateFav} className={`${fav ? style.filled + " fas" : style.regular + " far"} fa-heart ${favUpdating ? style["heart-loading"] : ""}`}></i>
+                            </div>
+                        }
                     </div>
                     <div className={style["bottom-container"]}>
                         <div className={style["property-features"]}>
