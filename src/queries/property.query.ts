@@ -43,6 +43,44 @@ interface IPropertyQuerty {
   }[]
 }
 export interface IPropertyDetails extends DeepPartial<IPropertyQuerty> { }
+export const propertyFragment = gql`
+  fragment propertyFragment on property {
+    id
+    name
+    description
+    type
+    sub_type
+    coordinates
+      property_address {
+        address {
+        full_address
+          ${""//locality
+  //country
+  //id
+  //postal_code
+  //administrative_area_level_1
+  //administrative_area_level_2
+  //route
+  //street_number
+  }
+      }
+    }
+      property_detail {
+      id
+      max_occupants
+      features
+      description
+      restrictions
+      rent_amount
+      rooms
+    }
+      property_images {
+        key
+      s3Url{
+        url
+      }
+    }
+  }`
 
 export default {
   GET_ADDRESS_BY_ID: gql`query GET_ADDRESS_BY_ID {
@@ -68,42 +106,11 @@ export default {
 
   GET_PROPERTY_BY_ID: gql`query GET_PROPERTY_BY_ID($id: uuid) {
   property(where: { id: { _eq: $id } }) {
-    id
-    name
-    description
-    type
-    sub_type
-    coordinates
-      property_address {
-        address {
-        full_address
-          ${""//locality
-    //country
-    //id
-    //postal_code
-    //administrative_area_level_1
-    //administrative_area_level_2
-    //route
-    //street_number
-    }
-      }
-    }
-      property_detail {
-      max_occupants
-      features
-      description
-      restrictions
-      rent_amount
-      rooms
-    }
-      property_images {
-        key
-      s3Url{
-        url
-      }
-    }
-  }
-} `,
+    ...propertyFragment
+  } 
+}
+  ${propertyFragment}
+`,
 
   PROPERTY_ATTRIBUTES: gql`query PROPERTY_ATTRIBUTES {
     property_room_list {
@@ -121,11 +128,6 @@ export default {
 }
 `,
   GET_PROPERTY_BY_DISTANCE: gql`query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int, $offset: Int, $limit: Int) {
-    show_nearby_properties_aggregate(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }) {
-      aggregate{
-        totalCount : count
-      }
-    }
     show_nearby_properties(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
       property_images {
       s3Url{
@@ -142,77 +144,29 @@ export default {
       restrictions
     }
   }
+    show_nearby_properties_aggregate(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }) {
+      aggregate{
+        totalCount : count
+      }
+    }
 }
  `,
   GET_RECENT_PROPERTIES: gql`query GET_RECENT_PROPERTIES {
   property(where:{property_detail: {}},order_by: { created_at: desc }, limit: 10) {
-    id
-    name
-    description
-    type
-    sub_type
-    coordinates
-      property_address {
-        address {
-        full_address
-          ${""//locality
-    //country
-    //id
-    //postal_code
-    //administrative_area_level_1
-    //administrative_area_level_2
-    //route
-    //street_number
-    }
-        }
-      }
-      property_detail {
-      max_occupants
-      features
-      description
-      restrictions
-      rent_amount
-      rooms
-    }
-      property_images {
-      s3Url{
-        url
-      }
-    }
+    ...propertyFragment
   }
-}`,
+}
+  ${propertyFragment}
+`,
   GET_PROPERTY_BY_OWNER: gql`query GET_PROPERTY_OWNER{
   property_owner {
     property {
-    id
-    name
-    description
-    type
-    sub_type
-    coordinates
-    is_approved
-    property_address {
-      address {
-        full_address
-      }
-    }
-    property_detail {
-      max_occupants
-      features
-      description
-      restrictions
-      rent_amount
-      rooms
-    }
-    property_images {
-      key
-      s3Url {
-        url
-      }
-    }
+    ...propertyFragment
   }
   }
-}`,
+}
+  ${propertyFragment}
+`,
   GET_OWNER_PROPERTIES: gql`query GET_OWNER_PROPERTIES {
   property_owner {
     property {
@@ -224,6 +178,7 @@ export default {
         }
       }
       property_detail {
+        id
         features
         rent_amount
         rooms
