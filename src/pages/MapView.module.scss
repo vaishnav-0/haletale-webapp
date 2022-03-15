@@ -2,17 +2,48 @@
 @import 'src/breakpoints.scss';
 
 .wrapper {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    margin: 0;
+    top: 0;
+    left: 0;
+    flex: 1;
+    padding: 0;
+}
+
+.map-container {
+    height: 100%;
+}
+
+.item-wrapper {
     position: absolute;
     bottom: 0;
     z-index: 10;
+    width: 100%;
+    height: auto;
+    overflow: scroll;
+
+    @include media(">=lgMin") {
+        @media screen and (max-height:950px) {
+            background-color: $transparentBlack_glass;
+            top: 0;
+            height: 100%;
+            width: fit-content;
+        }
+    }
 }
 
-.container {
+.item-container {
     z-index: 10;
     display: flex;
-    overflow: scroll;
-    width: 100vw;
-    height: auto;
+
+    @include media(">=lgMin") {
+        @media screen and (max-height:950px) {
+            height: 100%;
+            flex-direction: column;
+        }
+    }
 }
 
 .filter-btn {
@@ -68,6 +99,20 @@
 }
 
 .map {
-    height: 100vh;
+    height: 100%;
     z-index: 5;
+}
+
+.close-btn {
+    position: absolute;
+    right: 1em;
+    z-index: 1000;
+    color: white;
+    background-color: $dangerPrimary;
+    height: 2.2em;
+    width: 2.2em;
+    top: 1em;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.3em;
 }
