@@ -26,6 +26,7 @@ import ClampLines from 'react-clamp-lines';
 import { useAuth } from '../functions/auth/useAuth';
 import { Roles } from '../functions/auth/types';
 import useFavourite from '../functions/hooks/useFavourite';
+import { toast } from 'react-toastify';
 
 const imageSliderClickHandler = (cb: () => void) => {
     const delta = 6;
@@ -212,7 +213,9 @@ export default function Example() {
                     <button className={style["bottom-panel-icon"]}>
                         <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
                     </button>
-                    <button className={style["bottom-panel-shareicon"]}>
+                    <button onClick={() => {
+                        navigator.clipboard.writeText(window.location.href).then(d => toast.success("Link copied."))
+                    }} className={style["bottom-panel-shareicon"]}>
                         <img src={forwardIcon} alt="" />
                     </button>
                 </div>
