@@ -2,11 +2,13 @@ import React from 'react';
 import './MinimalPropertyList.scss';
 import PropertyCard from './PropertyCard';
 import { IPropertyDetails } from '../queries/property.query';
+import { useNavigate } from 'react-router-dom';
 type props = {
     title: string;
     properties: IPropertyDetails[];
 }
 export default function ({ title, properties }: props): JSX.Element {
+    const navigate = useNavigate();
     const listRef = React.useRef<HTMLDivElement>(null);
     const scrollLeftList = () => {
         if (!listRef.current) throw Error("divRef is not assigned");
@@ -28,7 +30,7 @@ export default function ({ title, properties }: props): JSX.Element {
         <div className="property-list">
             <div className="list-heading-container">
                 <div className="list-heading">{title}</div>
-                <button className="list-more-btn">SEE ALL</button>
+                <button onClick={()=>navigate("/properties")} className="list-more-btn">SEE ALL</button>
             </div>
             <div className="minimal-list-container-wrapper">
                 <div ref={listRef} className="minimal-list-container">
