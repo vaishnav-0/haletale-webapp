@@ -1,15 +1,8 @@
 import { gql } from '@apollo/client'
 import { DeepPartial } from '../types/utilTypes'
-interface IPropertyQuerty {
-  id: string
-  name: string
+interface IPropertyQueryOptional {
+
   description: string
-  type: string
-  sub_type: string
-  is_approved: boolean
-  coordinates: {
-    coordinates: [number, number]
-  }
   property_address: {
     address: {
       full_address: string
@@ -42,7 +35,16 @@ interface IPropertyQuerty {
     }
   }[]
 }
-export interface IPropertyDetails extends DeepPartial<IPropertyQuerty> { }
+export interface IPropertyDetails extends DeepPartial<IPropertyQueryOptional> {
+  id: string
+  name: string
+  type: string
+  sub_type: string
+  is_approved: boolean
+  coordinates: {
+    coordinates: [number, number]
+  }
+}
 export const propertyFragment = gql`
   fragment propertyFragment on property {
     id
@@ -129,27 +131,16 @@ export default {
 `,
   GET_PROPERTY_BY_DISTANCE: gql`query GET_PROPERTY_BY_DISTANCE($cur_coords: geography, $distance: Int, $offset: Int, $limit: Int) {
     show_nearby_properties(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }, offset: $offset, limit: $limit) {
-      property_images {
-      s3Url{
-        url
-      }
-    }
-    id
-    name
-    sub_type
-    type
-      property_detail {
-      rooms
-      rent_amount
-      restrictions
-    }
-  }
+    ...propertyFragment
+    } 
+
     show_nearby_properties_aggregate(where:{property_detail: {}},args: { cur_coords: $cur_coords, distance: $distance }) {
       aggregate{
         totalCount : count
       }
     }
-}
+  }
+${propertyFragment}
  `,
   GET_RECENT_PROPERTIES: gql`query GET_RECENT_PROPERTIES {
   property(where:{property_detail: {}},order_by: { created_at: desc }, limit: 10) {
