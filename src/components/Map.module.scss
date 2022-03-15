@@ -1,13 +1,22 @@
+@import 'src/colors.scss';
+
 .location-pin {
     background-color: #00000000;
 }
-.map-container{
+
+.location-pin-highlight {
+    filter: invert(100%);
+    color: $primary;
+}
+
+.map-container {
     position: relative;
 }
+
 .attribution-logo {
     position: absolute;
-    bottom: 1em;
-    left: 1em;
+    bottom: 1.3em;
+    right: 1em;
     height: 25px;
     z-index: 1000;
 }
