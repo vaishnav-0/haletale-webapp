@@ -1,0 +1,18 @@
+@import 'src/colors.scss';
+
+.heart-btn {
+    flex-grow: 1;
+    font-size: 1.1em;
+    color: $grey;
+    background-color: #00000000;
+    border: none;
+}
+
+.heartfilled {
+    color: $dangerPrimary;
+}
+
+.heart-loading {
+    transform: scale(1.5);
+    transition: transform 0.2s;
+}

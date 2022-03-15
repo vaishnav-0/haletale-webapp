@@ -2,7 +2,10 @@ import React from 'react';
 import { useMutation, useQuery } from '@apollo/client';
 import userQuery, { IGetUserFav } from '../../queries/user.query';
 import { userMutation } from '../../queries';
-export default function (propertyId: string): [boolean | null, () => void, boolean] {
+import style from './useFavourite.module.scss'
+
+type TUseFavReturn = [boolean | null, () => void, boolean] //fav state, change fav state, updating state]
+export default function (propertyId: string): TUseFavReturn {
     const [fav, setFav] = React.useState<boolean | null>(null);
     const { data: favCheck, loading: favCheckLoading, error: favCheckError, refetch: favRecheck } = useQuery<IGetUserFav>(userQuery.CHECK_USER_FAV, {
         variables: {
@@ -35,5 +38,15 @@ export default function (propertyId: string): [boolean | null, () => void, boole
         if (insertFavData || delFavData)
             favRecheck({ property_id: propertyId })
     }, [insertFavData, delFavData]);
-    return [fav, changeFavourite, delFavLoading || insertFavLoading]; //3rd item is updating state
+    return [fav, changeFavourite, delFavLoading || insertFavLoading]; 
+}
+
+export function FavButton(props:{control:TUseFavReturn}) {
+    const [fav,changeFav,favUpdating] = props.control;
+    return (
+        <button className={style["heart-btn"]}>
+            <i onClick={changeFav}
+                className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart ${favUpdating ? style["heart-loading"] : ""}`}></i>
+        </button>
+    );
 }
