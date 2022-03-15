@@ -73,7 +73,7 @@ export default function Header(): JSX.Element {
                                     }
                                     {user.role.includes(Roles['tenant']) && <>
                                         <Link to="/requests/view">Your Bookings</Link>
-                                        <Link to="/wishlist">Wishlist</Link>
+                                        <Link to="/favourites">Favorites</Link>
                                     </>
 
                                     }
