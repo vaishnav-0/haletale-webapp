@@ -25,6 +25,8 @@ import EditProperty from "../pages/Landlord/EditProperty";
 import { toast } from "react-toastify";
 import UserContext from "../functions/auth/userContext";
 import TenantRequestView from "../pages/Tenant/TenantRequestView";
+import ViewFavourites from "../pages/Tenant/ViewFavourites";
+import CenterContent from "../components/CenterContent";
 export default function () {
     const auth = useAuth();
     return (
@@ -40,15 +42,16 @@ export default function () {
                             <Route path="/">
                                 <Route index element={< HomePage />} />
                                 <Route path="properties" element={< PropertyListing />} />
-                                <Route path="propertiesMapView" element={< MapView />} />
                                 <Route path="property/view" element={< PropertyDetailed />} />
                                 <Route path="signout" element={<Navigate to="/" replace />} />
                                 <Route
                                     path="*"
                                     element={
-                                        <main style={{ padding: "1rem", display: "flex", alignItems: "center", justifyContent: "center", height: "100vh", fontSize: "2rem" }}>
-                                            <p>There's nothing here!</p>
-                                        </main>
+                                        <div style={{ height: "100vh", fontSize: "2rem" }}>
+                                            <CenterContent >
+                                                <p>There's nothing here!</p>
+                                            </CenterContent>
+                                        </div>
                                     }
                                 />
                             </Route>
@@ -76,6 +79,7 @@ export default function () {
                             </Route>
                             <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                                 <Route path="requests/view" element={< TenantRequestView />} />
+                                <Route path="favourites" element={< ViewFavourites />} />
                             </Route>``
                         </Routes>
                 }
