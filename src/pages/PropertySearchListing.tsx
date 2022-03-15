@@ -6,12 +6,15 @@ import Layout from './Layout';
 import { RadioButtonGroup } from '../components/Form/components/RadiobuttonGroup';
 import { Openable } from '../components/Openable';
 import propertyQuery, { IPropertyDetails } from '../queries/property.query';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import InView from 'react-intersection-observer';
 import Skeleton from 'react-loading-skeleton';
 import PropertySearchBar from '../components/PropertySearchBar';
 import InfiniteList from '../components/InfiniteList';
+import { ButtonSolid } from '../components/Button';
+import MapView from './MapView';
+
 type nearbyPropertyQueryResult = { show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }
 export default function (): JSX.Element {
     let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
@@ -23,30 +26,39 @@ export default function (): JSX.Element {
     const sortButtonRef = React.useRef<HTMLButtonElement>(null!);
     const [openSort, setOpenSort] = React.useState(false);
     const [queryParams, setQueryParams] = React.useState<object | null>(null);
+    const [mapOpen, setMapOpen] = React.useState<boolean>(false);
     React.useEffect(() => {
 
         //navigate({ pathname: "/properties", search: "?" + searchParams.toString() });
 
     }, [searchParams]);
     React.useEffect(() => {
-        if (searchParams.get("lat") && searchParams.get("lng")) {
-            const coords = (searchParams.get("lat") || searchParams.get("lng")) ? [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)] : null;
-            setQueryParams({
-                variables: {
-                    cur_coords: {
-                        type: "Point",
-                        coordinates: coords
-                    },
-                    distance: 10,
-                    limit: 4,
-                    offset: 0
-                }
-            });
-
-        }
+        const coords = (searchParams.get("lat") || searchParams.get("lng")) ? [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)] : null;
+        const cur_coords = coords ? {
+            type: "Point",
+            coordinates: coords
+        } : null
+        getPropertyByDistance({
+            variables: {
+                cur_coords: cur_coords,
+                distance: 10,
+            }
+        });
+        setQueryParams({
+            variables: {
+                cur_coords: cur_coords,
+                distance: 10,
+                limit: 4,
+                offset: 0
+            }
+        });
     }, [searchParams])
     return (
         <Layout>
+            {
+                mapOpen && propertyData &&
+                <MapView properties={propertyData.show_nearby_properties} onClose={() => setMapOpen(false)} />
+            }
             <PropertySearchBar />
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
@@ -54,6 +66,9 @@ export default function (): JSX.Element {
                     <div> {propertyData?.show_nearby_properties.length ?? 0} properties</div>
                 </div>
                 <div className={style["btn-container"]}>
+                    <ButtonSolid onClick={() => setMapOpen(true)}>
+                        <i className='far fa-map' />
+                    </ButtonSolid>
                     <button onClick={() => { setFilterOpen(true); }}><i className="fas fa-sliders-h"></i></button>
                     <button ref={sortButtonRef} onClick={() => { setOpenSort(!openSort) }}>
                         <i className="fas fa-sort"></i>
