@@ -5,40 +5,54 @@ import { Openable } from "../components/Openable";
 import FilterModel from "../components/FilterModal";
 import { MarkerType } from "../components/Map";
 import MapViewTile from "../components/MapViewTile";
-const coordList: [number, number][] = [[49.964714, -97.189074], [49.961505, -97.196203], [49.964422, -97.152835], [49.943581, -97.167384],[49.943481, -97.157384],[49.943181, -97.152384]];
-export default function MapView(): JSX.Element {
+import Layout from "./Layout";
+import cloneDeep from "clone-deep";
+import { IPropertyDetails } from "../queries/property.query";
+import CenterContent from "../components/CenterContent";
+
+function MapView({ properties, onClose = () => { } }: { properties: IPropertyDetails[], onClose?: () => void }): JSX.Element {
     const [filterOpen, setFilterOpen] = React.useState(false);
     const [map, setMap] = React.useState<any>(null!);
+    const [selected, setSelected] = React.useState<number>(-1);
     const itemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
     const [markers, setMarkers] = React.useState<MarkerType>([]);
     React.useEffect(() => {
         if (itemRefs.current?.length > 0) {
             const mark: MarkerType = [];
-            coordList.forEach((coords, i) => {
+            properties.forEach((property, i) => {
                 mark[i] = {
                     onClick: () => {
+                        setSelected(i);
                         itemRefs.current[i]?.scrollIntoView({ behavior: "smooth", inline: "center" });
                     },
-                    coords: coords
+                    coords: property.coordinates.coordinates
                 }
             });
             setMarkers(mark);
+
         }
     }, [])
     React.useEffect(() => {
         if (map) {
             map.invalidateSize();
-            map.fitBounds(coordList);
+            map.fitBounds(properties.map(p => p.coordinates.coordinates));
             map.zoomOut(2);
         }
     }, [map]);
-    return <div>
+    return <div className={style["wrapper"]}>
+        <button className={style["close-btn"]} onClick={onClose}>
+            <i className="fas fa-times" />
+        </button>
         {
-            markers.length > 0 &&
-            <Map markers={markers} className={style["map"]} whenCreated={setMap}></Map>
+            markers.length > 0 ?
+                <Map markers={markers} className={style["map"]} containerClassName={style["map-container"]} whenCreated={setMap}></Map>
+                :
+                <CenterContent>
+                    <p style={{ fontSize: "2rem" }}>No Properties to display</p>
+                </CenterContent>
 
         }
-        <div className={style["wrapper"]}>
+        <div className={style["item-wrapper"]}>
             <button className={style["filter-btn"]} onClick={() => { setFilterOpen(true); }}><i className="fas fa-sliders-h"></i></button>
             <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
                 <Openable
@@ -49,13 +63,23 @@ export default function MapView(): JSX.Element {
 
                 </Openable>
             </div>
-            <div className={style["container"]}>
+            <div className={style["item-container"]}>
                 {
-                    coordList.map((coords, i) => {
+                    properties.map((property, i) => {
                         return <MapViewTile
-                            onClick={() =>
-                                map?.flyTo(coords, 18, { animate: true, duration: 1 })}
+                            property={property}
+                            onClick={() => {
+                                setMarkers(markers => {
+                                    const _markers = cloneDeep(markers);
+                                    _markers[i].highlight = true;
+                                    return _markers;
+                                })
+                                map?.flyTo(property.coordinates.coordinates, 18, { animate: true, duration: 0.6 });
+                                setSelected(i);
+                            }
+                            }
                             ref={(el) => itemRefs.current[i] = el}
+                            highlight={selected === i}
                         />
                     })
                 }
@@ -63,3 +87,5 @@ export default function MapView(): JSX.Element {
         </div>
     </div>
 }
+
+export default React.memo(MapView);
