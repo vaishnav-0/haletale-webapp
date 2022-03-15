@@ -7,23 +7,30 @@ import pinIcon from '../assets/icons/map_pin.svg';
 import style from './Map.module.scss';
 import mapBoxLogo from '../assets/icons/mapbox-logo-black.png';
 
-export type MarkerType = { onClick: () => void, coords: [number, number] }[]
+export type MarkerType = { onClick: () => void, coords: [number, number], highlight?: boolean }[]
 const iconPin = new L.Icon({
     iconUrl: pinIcon,
     iconRetinaUrl: pinIcon,
     iconSize: new L.Point(60, 75),
     className: style['location-pin']
 });
+const iconPinHighlight = new L.Icon({
+    iconUrl: pinIcon,
+    iconRetinaUrl: pinIcon,
+    iconSize: new L.Point(80, 95),
+    className: style['location-pin-highlight']
+});
 interface propType extends MapContainerProps {
-    markers?: MarkerType
+    markers?: MarkerType,
+    containerClassName?: string
 }
-export default function ({ whenCreated, markers = [], ...props }: propType): JSX.Element {
+export default function ({ whenCreated, markers = [], containerClassName, ...props }: propType): JSX.Element {
     const [map, setMap] = React.useState<LeafletMap>(null!);
     React.useEffect(() => {
         if (whenCreated)
             whenCreated(map);
     }, [map])
-    return <div className={style["map-container"]}>
+    return <div className={`${style["map-container"]} ${containerClassName ?? ""}`}>
         <img src={mapBoxLogo} className={style["attribution-logo"]} />
         <MapContainer whenCreated={(map: LeafletMap) => setMap(map)} {...props}>
             <TileLayer
@@ -36,7 +43,7 @@ export default function ({ whenCreated, markers = [], ...props }: propType): JSX
                         marker.onClick();
                     },
                 }}
-                    position={[marker.coords[0], marker.coords[1]]} icon={iconPin} />
+                    position={[marker.coords[0], marker.coords[1]]} icon={!!marker.highlight ? iconPinHighlight : iconPin} />
                 )
 
             }
