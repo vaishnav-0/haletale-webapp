@@ -1,8 +1,8 @@
 import React from 'react';
 import "./Body.scss";
-const Body = function ({ children }: { children: React.ReactNode; }): JSX.Element {
+const Body = function ({ children, className, ...props }: React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>): JSX.Element {
     return (
-        <div className="body">
+        <div className={"body" + (className ? ` ${className}` : "")} {...props}>
             {children}
 
         </div>
