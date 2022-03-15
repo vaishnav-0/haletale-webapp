@@ -1,4 +1,5 @@
 @import 'src/colors.scss';
+@import 'src/styles/mixins.scss';
 
 .item {
     position: relative;
@@ -19,7 +20,7 @@
 }
 
 .item-top-container {
-    padding: 0 0.3em;
+    padding: 0 0.5em;
     z-index: 10;
     position: absolute;
     display: flex;
@@ -29,6 +30,31 @@
     background-color: #00000000;
     justify-content: space-around;
 
+
+}
+
+.item-bottom-container {
+    position: absolute;
+    z-index: inherit;
+    bottom: 1em;
+    padding: 0 0.5em;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 1em;
+    justify-content: space-between;
+
+    a {
+        background-color: $primary;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        height: 2.2em;
+        width: 2.2em;
+        border-radius: 50%;
+    }
 
 }
 
@@ -45,10 +71,9 @@
     height: 100%;
 }
 
-.fav-icon {
+.fav-icon-container {
     display: flex;
     align-items: center;
-    font-size: 1.2em;
     background-color: white;
     height: 100%;
     border: 0;
@@ -56,13 +81,6 @@
     border: 3px solid adjust-color($primary, $alpha:-0.8);
     font-size: 0.8em;
 
-    .filled {
-        color: red;
-    }
-
-    .regular {
-        color: $grey;
-    }
 }
 
 .property-feature {
@@ -75,6 +93,7 @@
     background-color: $transparentBlack_glass;
     border-radius: 1em;
     font-size: 0.8em;
+
     img {
         margin-right: 0.3em;
         height: 1em;
@@ -91,13 +110,9 @@
 }
 
 .property-location {
-    position: absolute;
-    z-index: inherit;
-    bottom: 1em;
-    left: 0.4em;
     color: white;
     background-color: $transparentBlack_glass;
-    padding: 0.2em;
+    padding: 0.3em;
     border-radius: 0.5em;
     max-width: 80%;
 
@@ -111,3 +126,8 @@
 
     }
 }
+
+.highlight {
+    border: 2px solid $primary;
+}
+
