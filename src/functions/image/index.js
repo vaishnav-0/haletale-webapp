@@ -22,9 +22,7 @@ import Token from '../auth/token';
 // export { }
 const instance = axios.create({
     baseURL: `${process.env.REACT_APP_API_SERVER_URL}`,
-    headers: {
-        'Authorization': new Token("id").get(),
-    }
+
 });
 
 
@@ -34,6 +32,10 @@ export const s3PostUrl = (file) => {
     return instance.post("/s3/preSignedUrl", {
         name: file.name,
         type: file.type
+    }, {
+        headers: {
+            'Authorization': new Token("id").get(),
+        }
     }
     )
 
@@ -41,7 +43,11 @@ export const s3PostUrl = (file) => {
 }
 
 export const s3GetUrl = ({ key }) => {
-    return instance.get(`/s3/preSignedUrl/${key}`).then(res => res.data.url).catch(e => console.log(e))
+    return instance.get(`/s3/preSignedUrl/${key}`, {
+        headers: {
+            'Authorization': new Token("id").get(),
+        }
+    }).then(res => res.data.url).catch(e => console.log(e))
 }
 
 
