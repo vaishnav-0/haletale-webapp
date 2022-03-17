@@ -12,7 +12,7 @@ import RequestCard from '../../components/RequestCard';
 
 export default function Example() {
     const navigate = useNavigate();
-    const { data: propertyData, loading, fetchMore } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER);
+    const { data: propertyData, loading, fetchMore } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER, { fetchPolicy: "no-cache" });
     const { data: allRequestCountData, loading: allRequestCountLoading } = useQuery<IRequestCount>(requestsQuery.GET_ALL_REQUEST_COUNT, { fetchPolicy: "no-cache" });
     const allRequestCount = allRequestCountData ? allRequestCountData.property_request_aggregate.aggregate.count : null;
     const [Loader, setLoader] = useLoder({});
