@@ -54,7 +54,8 @@ const schema = {
         type: "select",
         props: {
             values: {}
-        }
+        },
+        validationSchema: yup.string().required("This field is required")
     },
     {
         title: "Best time to reach out",
@@ -70,7 +71,7 @@ const schema = {
         props: {
             type: "number",
         },
-        validationSchema: yup.number().required("This field is required")
+        validationSchema: yup.number().typeError("This field should be a number").required("This field is required")
     },
     {
         title: "Intended move in date",
@@ -79,7 +80,7 @@ const schema = {
         props: {
             type: "date"
         },
-        validationSchema: yup.string().required("Name is required")
+        validationSchema: yup.date().typeError("Invalid date").max(new Date(2024,1), "Invalid date").min(new Date(),"Invalid date")
     },
     {
         name: "members",
