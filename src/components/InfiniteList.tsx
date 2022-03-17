@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLazyQuery, DocumentNode, TypedDocumentNode, QueryLazyOptions, OperationVariables } from '@apollo/client';
 import InView from 'react-intersection-observer';
+import { useLoder } from './Loader';
 //Infinite scroll using offset. Query must contain variable named offset.
 export default function <T>({ query, initialParams, children, wrapperClassName, checkSkip }:
     {
@@ -11,17 +12,26 @@ export default function <T>({ query, initialParams, children, wrapperClassName, 
         checkSkip: (data: T | undefined) => boolean
 
     }): JSX.Element {
-    let [lazyQuery, { data, loading, fetchMore }] = useLazyQuery<T>(query, {
+    let [lazyQuery, { data, loading, fetchMore, called }] = useLazyQuery<T>(query, {
         notifyOnNetworkStatusChange: true
     });
+    const [Loader, setLoader] = useLoder({});
     React.useEffect(() => {
         lazyQuery(initialParams);
-    }, [])
+    }, [initialParams]);
+    React.useEffect(() => {
+        if (!data && loading)
+            setLoader(true);
+        else
+            setLoader(false);
+    }, [called, loading])
+    console.log(loading)
     return (
         <div className={wrapperClassName}>
             {
                 children(data, loading)
             }
+            {Loader}
             <InView
                 onChange={inView => {
                     if (inView) {
