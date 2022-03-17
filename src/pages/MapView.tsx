@@ -16,6 +16,7 @@ function MapView({ properties, onClose = () => { } }: { properties: IPropertyDet
     const [selected, setSelected] = React.useState<number>(-1);
     const itemRefs = React.useRef<(HTMLDivElement | null)[]>([]);
     const [markers, setMarkers] = React.useState<MarkerType>([]);
+    const highlightedMarker = React.useRef<number | null>(null);
     React.useEffect(() => {
         if (itemRefs.current?.length > 0) {
             const mark: MarkerType = [];
@@ -71,7 +72,11 @@ function MapView({ properties, onClose = () => { } }: { properties: IPropertyDet
                             onClick={() => {
                                 setMarkers(markers => {
                                     const _markers = cloneDeep(markers);
+                                    if (highlightedMarker.current !== null)
+                                        _markers[highlightedMarker.current].highlight = false;
                                     _markers[i].highlight = true;
+                                    highlightedMarker.current = i;
+                                    console.log(_markers, highlightedMarker)
                                     return _markers;
                                 })
                                 map?.flyTo(property.coordinates.coordinates, 18, { animate: true, duration: 0.6 });
