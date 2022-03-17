@@ -84,7 +84,8 @@ const graphQLClient = () => new ApolloClient({
                 Query: {
                     fields: {
                         show_nearby_properties: offsetLimitPagination(),
-                        search_property: offsetLimitPagination()
+                        search_property: offsetLimitPagination(),
+                        property: offsetLimitPagination()
                     }
                 }
             }
