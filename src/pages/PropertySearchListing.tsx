@@ -14,10 +14,11 @@ import PropertySearchBar from '../components/PropertySearchBar';
 import InfiniteList from '../components/InfiniteList';
 import { ButtonSolid } from '../components/Button';
 import MapView from './MapView';
-
 type nearbyPropertyQueryResult = { show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }
+
+type searchPropertyQueryResult = { search_property: IPropertyDetails[], search_property_aggregate: { aggregate: { totalCount: number } } }
 export default function (): JSX.Element {
-    let [getPropertyByDistance, { data: propertyData, loading, fetchMore }] = useLazyQuery<{ show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }>(propertyQuery.GET_PROPERTY_BY_DISTANCE, {
+    let [searchProperties, { data: propertyData, loading, fetchMore }] = useLazyQuery<searchPropertyQueryResult>(propertyQuery.SEARCH_PROPERTY, {
         notifyOnNetworkStatusChange: true
     });
     const [searchParams, setSearchParams] = useSearchParams();
@@ -27,6 +28,7 @@ export default function (): JSX.Element {
     const [openSort, setOpenSort] = React.useState(false);
     const [queryParams, setQueryParams] = React.useState<object | null>(null);
     const [mapOpen, setMapOpen] = React.useState<boolean>(false);
+    const [params, setParams] = React.useState<any>({});
     React.useEffect(() => {
 
         //navigate({ pathname: "/properties", search: "?" + searchParams.toString() });
@@ -34,20 +36,34 @@ export default function (): JSX.Element {
     }, [searchParams]);
     React.useEffect(() => {
         const coords = (searchParams.get("lat") || searchParams.get("lng")) ? [parseFloat(searchParams.get("lat")!), parseFloat(searchParams.get("lng")!)] : null;
-        const cur_coords = coords ? {
-            type: "Point",
-            coordinates: coords
-        } : null
-        getPropertyByDistance({
-            variables: {
-                cur_coords: cur_coords,
-                distance: 10,
-            }
+        console.log(searchParams.get("sort-by"))
+
+        let sort = null;
+        try {
+            sort = JSON.parse(searchParams.get("sort-by")!);
+            if (!(sort.created_at === "asc" || sort.created_at === "desc" || sort.property_detail.rent_amount === "asc" || sort.property_detail.rent_amount === "desc"))
+                sort = null
+        } catch (e) {
+            console.log(e);
+        }
+        console.log(sort);
+        const vars = {
+            country: searchParams.get("c"),
+            locality: searchParams.get("loc"),
+            postal_code: searchParams.get("postal"),
+            route: searchParams.get("route"),
+            street_number: searchParams.get("sn"),
+            administrative_area_level_2: searchParams.get("a2"),
+            administrative_area_level_1: searchParams.get("a1"),
+            ...sort ? { order_by: sort } : {}
+        }
+        console.log(vars);
+        searchProperties({
+            variables: vars
         });
         setQueryParams({
             variables: {
-                cur_coords: cur_coords,
-                distance: 10,
+                ...vars,
                 limit: 4,
                 offset: 0
             }
@@ -57,13 +73,13 @@ export default function (): JSX.Element {
         <Layout>
             {
                 mapOpen && propertyData &&
-                <MapView properties={propertyData.show_nearby_properties} onClose={() => setMapOpen(false)} />
+                <MapView properties={propertyData.search_property} onClose={() => setMapOpen(false)} />
             }
             <PropertySearchBar />
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
                     <div>{searchParams.get("place")}</div>
-                    <div> {propertyData?.show_nearby_properties.length ?? 0} properties</div>
+                    <div> {propertyData?.search_property?.length ?? 0} properties</div>
                 </div>
                 <div className={style["btn-container"]}>
                     <ButtonSolid onClick={() => setMapOpen(true)}>
@@ -81,7 +97,40 @@ export default function (): JSX.Element {
                 >
                     <div className={style["sortradio-container"]}>
                         {
-                            <RadioButtonGroup name="sort" values={["Default", "Recent"]} />
+                            <RadioButtonGroup style={{ width: "100%" }} name="sort"
+                                defaultValue={(function () {
+                                    try {
+                                        const j = JSON.parse(searchParams.get("sort-by")!);
+                                        if (j.created_at === "asc")
+                                            return "Recent";
+                                        else if (j.created_at === "desc")
+                                            return "Oldest";
+                                        else if (j.property_detail.rent_amount === "asc")
+                                            return "Rent asc.";
+                                        else if (j.property_detail.rent_amount === "desc")
+                                            return "Rent desc."
+                                        else
+                                            return "Recent"
+
+                                    } catch (e) {
+                                        return "Recent";
+                                    }
+                                }())}
+                                values={["Oldest", "Recent", "Rent asc.", "Rent desc."]} onChange={(e) => {
+                                    if (e.target.value === "Oldest")
+                                        searchParams.set("sort-by", JSON.stringify({ created_at: "desc" }))
+
+                                    else if (e.target.value === "Recent") {
+                                        searchParams.set("sort-by", JSON.stringify({ created_at: "asc" }))
+                                    }
+                                    else if (e.target.value === "Rent asc.") {
+                                        searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "asc" } }))
+                                    } else if (e.target.value === "Rent desc.") {
+                                        searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "desc" } }))
+                                    }
+                                    navigate("?" + searchParams.toString());
+                                }
+                                } />
                         }
                     </div>
                 </Openable>
@@ -100,16 +149,20 @@ export default function (): JSX.Element {
             </div>
             {
                 queryParams &&
-                <InfiniteList<nearbyPropertyQueryResult>
-                    query={propertyQuery.GET_PROPERTY_BY_DISTANCE}
-                    initialParams={queryParams}
+                <InfiniteList< searchPropertyQueryResult>
+                    query={propertyQuery.SEARCH_PROPERTY}
+                    initialParams={
+                        queryParams
+                    }
                     wrapperClassName={style["search-list"]}
-                    checkSkip={(propertyData) => propertyData?.show_nearby_properties_aggregate.aggregate.totalCount === propertyData?.show_nearby_properties.length}
+                    checkSkip={(propertyData) => {
+                        return propertyData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
+                    }}
                 >
                     {
                         (propertyData, loading) => <>
                             {
-                                propertyData?.show_nearby_properties.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                                propertyData?.search_property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
                             }
                             {
                                 loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
