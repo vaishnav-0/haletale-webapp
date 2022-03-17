@@ -5,7 +5,7 @@ import style from './PropertySearchListing.module.scss';
 import Layout from './Layout';
 import { RadioButtonGroup } from '../components/Form/components/RadiobuttonGroup';
 import { Openable } from '../components/Openable';
-import propertyQuery, { IGetAllPropertyAggr, IGetAllPropertyData, IPropertyDetails } from '../queries/property.query';
+import propertyQuery, { IGetAllPropertyAggr, IGetAllPropertyData, IPropertyAttribute, IPropertyDetails } from '../queries/property.query';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import InView from 'react-intersection-observer';
@@ -26,7 +26,6 @@ export default function (): JSX.Element {
         notifyOnNetworkStatusChange: true,
         fetchPolicy: "cache-and-network"
     });
-    const [viewAll, setViewAll] = React.useState<boolean>(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const [filterOpen, setFilterOpen] = React.useState(false);
@@ -44,14 +43,7 @@ export default function (): JSX.Element {
         let vars: any = {};
         if (searchParams.get("all")) {
         } else {
-            let sort = null;
-            try {
-                sort = JSON.parse(searchParams.get("sort-by")!);
-                if (!(sort.created_at === "asc" || sort.created_at === "desc" || sort.property_detail.rent_amount === "asc" || sort.property_detail.rent_amount === "desc"))
-                    sort = null
-            } catch (e) {
-                console.log(e);
-            }
+
             vars = {
                 country: searchParams.get("c"),
                 locality: searchParams.get("loc"),
@@ -60,23 +52,33 @@ export default function (): JSX.Element {
                 street_number: searchParams.get("sn"),
                 administrative_area_level_2: searchParams.get("a2"),
                 administrative_area_level_1: searchParams.get("a1"),
-                ...sort ? { order_by: sort } : {}
             }
         }
+        let sort = null;
+        try {
+            sort = JSON.parse(searchParams.get("sort-by")!);
+            if (!(sort.created_at === "asc" || sort.created_at === "desc" || sort.property_detail.rent_amount === "asc" || sort.property_detail.rent_amount === "desc"))
+                sort = null
+        } catch (e) {
+            console.log(e);
+        }
+        vars = {
+            ...vars,
+            ...sort ? { order_by: sort } : {}
+        }
+        console.log(vars);
         setParams(vars);
     }, [searchParams]);
     React.useEffect(() => {
-        if (searchParams.get("all")) {
 
-        } else
-            if (params)
-                setQueryParams({
-                    variables: {
-                        ...params,
-                        limit: 4,
-                        offset: 0
-                    }
-                });
+        if (params)
+            setQueryParams({
+                variables: {
+                    ...params,
+                    limit: 4,
+                    offset: 0
+                }
+            });
     }, [params])
     React.useEffect(() => {
         if (mapOpen)
@@ -159,7 +161,9 @@ export default function (): JSX.Element {
                         className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
                         <FilterModel onClose={() => {
                             setFilterOpen(false);
-                        }} />
+                        }}
+                            onSubmit={(d) => { }}
+                        />
 
                     </Openable>
                 </div>
@@ -168,51 +172,52 @@ export default function (): JSX.Element {
 
             </div>
             {
-                searchParams.get("all") ?
-                    <InfiniteList<IGetAllPropertyData, IGetAllPropertyAggr>
-                        query={propertyQuery.GET_ALL_PROPERTIES}
-                        initialParams={{ variables: {} }}
-                        aggregateQuery={propertyQuery.GET_ALL_PROPERTY_AGGREGATE}
-                        wrapperClassName={style["search-list"]}
-                        checkSkip={(propertyData, aggregateData) => {
-                            return aggregateData?.property_aggregate?.aggregate?.totalCount === propertyData?.property?.length
-                        }}
-                    >
-                        {
-                            (propertyData, loading) => <>
-                                {
-                                    propertyData?.property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
-                                }
-                                {
-                                    loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
-                                }
-                            </>
-                        }
-                    </InfiniteList>
-                    :
-                    queryParams &&
-                    <InfiniteList<searchPropertyQueryResult, searchPropertyAggregate>
-                        query={propertyQuery.SEARCH_PROPERTY}
-                        initialParams={
-                            queryParams
-                        }
-                        aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
-                        wrapperClassName={style["search-list"]}
-                        checkSkip={(propertyData, aggregateData) => {
-                            return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
-                        }}
-                    >
-                        {
-                            (propertyData, loading) => <>
-                                {
-                                    propertyData?.search_property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
-                                }
-                                {
-                                    loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
-                                }
-                            </>
-                        }
-                    </InfiniteList>
+                queryParams && (
+                    searchParams.get("all") ?
+                        <InfiniteList<IGetAllPropertyData, IGetAllPropertyAggr>
+                            query={propertyQuery.GET_ALL_PROPERTIES}
+                            initialParams={queryParams}
+                            aggregateQuery={propertyQuery.GET_ALL_PROPERTY_AGGREGATE}
+                            wrapperClassName={style["search-list"]}
+                            checkSkip={(propertyData, aggregateData) => {
+                                return aggregateData?.property_aggregate?.aggregate?.totalCount === propertyData?.property?.length
+                            }}
+                        >
+                            {
+                                (propertyData, loading) => <>
+                                    {
+                                        propertyData?.property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                                    }
+                                    {
+                                        loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
+                                    }
+                                </>
+                            }
+                        </InfiniteList>
+                        :
+                        <InfiniteList<searchPropertyQueryResult, searchPropertyAggregate>
+                            query={propertyQuery.SEARCH_PROPERTY}
+                            initialParams={
+                                queryParams
+                            }
+                            aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
+                            wrapperClassName={style["search-list"]}
+                            checkSkip={(propertyData, aggregateData) => {
+                                return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
+                            }}
+                        >
+                            {
+                                (propertyData, loading) => <>
+                                    {
+                                        propertyData?.search_property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                                    }
+                                    {
+                                        loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
+                                    }
+                                </>
+                            }
+                        </InfiniteList>
+                )
             }
         </Layout >
     );
