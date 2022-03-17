@@ -45,7 +45,11 @@ export interface IPropertyDetails extends DeepPartial<IPropertyQueryOptional> {
     coordinates: [number, number]
   }
 }
-
+export interface IPropertyAttribute {
+  property_features_list: { name: string, comment: string }[],
+  property_restrictions_list: { name: string, comment: string }[],
+  property_room_list: { name: string, comment: string }[]
+}
 export const propertyFragment = gql`
   fragment propertyFragment on property {
     id
