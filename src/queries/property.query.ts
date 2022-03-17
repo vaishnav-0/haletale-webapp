@@ -191,26 +191,35 @@ ${propertyFragment}
   search_property(where:{property_detail: {rooms: {_contains: $room}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}, order_by:[$order_by],offset: $offset, limit: $limit) {
     ...propertyFragment
   }
-  search_property_aggregate(where:{property_detail:{}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}){
+
+}
+  ${propertyFragment}
+`,
+  SEARCH_PROPERTY_AGGREGATE: gql`query SEARCH_PROPERTY_AGGREGATE($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={created_at:asc},$offset:Int,$limit:Int,$room: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity){
+    search_property_aggregate(where:{property_detail:{}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}){
       aggregate{
         totalCount : count
       }
     }
-}
-  ${propertyFragment}
-`,
+  }
+  `,
   GET_ALL_PROPERTIES: gql`query GET_ALL_PROPERTIES($offset:Int,$limit:Int ) {
   property(where:{property_detail:{}},offset: $offset, limit: $limit) {
     ...propertyFragment
   }
-  property_aggregate(where:{property_detail:{}},offset: $offset, limit: $limit) {
+
+}
+  ${propertyFragment}
+`,
+  GET_ALL_PROPERTY_AGGREGATE: gql`query GET_ALL_PROPERTIES_AGGREGATE($offset:Int,$limit:Int ){
+    property_aggregate(where:{property_detail:{}},offset: $offset, limit: $limit) {
       aggregate{
         totalCount : count
       }
     }
-}
-  ${propertyFragment}
-`,
+  }
+  `
+  ,
 }
 
 

@@ -6,6 +6,8 @@ export interface IFavoriteData {
     property_id: string,
     property: IPropertyDetails
   }[],
+}
+export interface IFavoriteAggrData {
   user_favourites_aggregate: {
     aggregate: {
       count: number
@@ -45,13 +47,15 @@ export default {
         ...propertyFragment
       }
     }
+  }
+  ${propertyFragment}
+  `, GET_USER_FAVS_AGGREGATE: gql`query USER_FAVOURITES_AGGREGATE($offset: Int, $limit: Int) {
     user_favourites_aggregate {
       aggregate {
         count
       }
     }
-  }
-  ${propertyFragment}
+  },
   `,
 
   CHECK_USER_FAV: gql`query CHECK_FAV($property_id: uuid) {
