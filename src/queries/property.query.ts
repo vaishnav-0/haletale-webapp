@@ -182,8 +182,9 @@ ${propertyFragment}
   }
 }
 `,
-  SEARCH_PROPERTY: gql`query SEARCH_PROPERTY($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={created_at:asc},$offset:Int,$limit:Int ) {
-  search_property(where:{property_detail:{}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}, order_by:[$order_by],offset: $offset, limit: $limit) {
+
+  SEARCH_PROPERTY: gql`query SEARCH_PROPERTY($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={created_at:asc},$offset:Int,$limit:Int,$room: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity) {
+  search_property(where:{property_detail: {rooms: {_contains: $room}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}, order_by:[$order_by],offset: $offset, limit: $limit) {
     ...propertyFragment
   }
   search_property_aggregate(where:{property_detail:{}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}){
