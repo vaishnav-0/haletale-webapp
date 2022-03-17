@@ -30,7 +30,9 @@ export default function ({ title, properties }: props): JSX.Element {
         <div className="property-list">
             <div className="list-heading-container">
                 <div className="list-heading">{title}</div>
-                <button onClick={()=>navigate("/properties")} className="list-more-btn">SEE ALL</button>
+                <button
+                    onClick={() => navigate("/properties?all=true")}
+                    className="list-more-btn">SEE ALL</button>
             </div>
             <div className="minimal-list-container-wrapper">
                 <div ref={listRef} className="minimal-list-container">
