@@ -50,6 +50,17 @@ export interface IPropertyAttribute {
   property_restrictions_list: { name: string, comment: string }[],
   property_room_list: { name: string, comment: string }[]
 }
+
+export interface IGetAllPropertyData {
+  property: IPropertyDetails[]
+}
+export interface IGetAllPropertyAggr {
+  property_aggregate: {
+    aggregate: {
+      totalCount: number
+    }
+  }
+}
 export const propertyFragment = gql`
   fragment propertyFragment on property {
     id
@@ -211,8 +222,8 @@ ${propertyFragment}
 }
   ${propertyFragment}
 `,
-  GET_ALL_PROPERTY_AGGREGATE: gql`query GET_ALL_PROPERTIES_AGGREGATE($offset:Int,$limit:Int ){
-    property_aggregate(where:{property_detail:{}},offset: $offset, limit: $limit) {
+  GET_ALL_PROPERTY_AGGREGATE: gql`query GET_ALL_PROPERTIES_AGGREGATE{
+    property_aggregate(where:{property_detail:{}}) {
       aggregate{
         totalCount : count
       }
