@@ -9,7 +9,7 @@ import { FormDataShape } from '../../components/Form/FormGenerator';
 import Searchbar from '../../components/Searchbar';
 import { PropertyQuery } from '../../queries'
 import { useQuery, useMutation } from '@apollo/client';
-import propertyQuery from '../../queries/property.query';
+import propertyQuery, { IPropertyAttribute } from '../../queries/property.query';
 import { useLoder } from '../../components/Loader';
 import { cropToAspectRatio } from '../../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../../components/Form/FormGeneratorHelpers';
@@ -245,6 +245,11 @@ function AddPropertyForm2(props: FormPropsType) {
 }
 function AddPropertyForm3(props: FormPropsType) {
     const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
+    let { data: property_attributes, loading } = useQuery<IPropertyAttribute>(propertyQuery.PROPERTY_ATTRIBUTES);
+    React.useEffect(() => {
+        if (loading)
+            setLoader(true);
+    }, [loading]);
     const [schema_, setSchema_] = React.useState<SchemaType | null>(null);
     const schema = {
         heading: "",
@@ -290,10 +295,7 @@ function AddPropertyForm3(props: FormPropsType) {
                 name: "features",
                 type: "pillList",
                 props: {
-                    items: {
-                        fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
-                        nosmoking: "No smoking", stove2: "Stove", outdoor_maintainance: "Outdoor maintainance"
-                    }
+                    items: {}
                 }
             },
             {
@@ -302,7 +304,7 @@ function AddPropertyForm3(props: FormPropsType) {
                 type: "checkboxGroup",
                 wrapperClassName: formStyle["horizontal-list"],
                 props: {
-                    values: ["smoking", "pets"],
+                    values: [],
                 }
             },
             {
@@ -329,8 +331,27 @@ function AddPropertyForm3(props: FormPropsType) {
     } as const;
 
     React.useEffect(() => {
-        setSchema_(schema as SchemaType);
-    }, [])
+        if (property_attributes && !loading) {
+            dynamicSchemaGenerator({
+                schema: schema as SchemaType,
+                dataLoader: new Promise(res => res(
+                    {
+                        features: property_attributes?.property_features_list.map((e: any) => e.name),
+                        restriction: property_attributes?.property_restrictions_list.map((e: any) => e.name),
+                    })),
+                dataMap: (data) => {
+                    return {
+                        features: (item: any) => { item.props.items = data.features },
+                        restriction: (item: any) => { item.props.values = data.restriction },
+                    }
+                }
+            }).then(sch => {
+                console.log(sch)
+                setLoader(false)
+                setSchema_(sch)
+            })
+        }
+    }, [loading, property_attributes])
 
     type FormData = FormDataShape<typeof schema>;
 
@@ -382,7 +403,8 @@ function AddProperty(): JSX.Element {
             <ProgressiveForm parallel forms={forms} onFinish={() => {
                 toast.success("Property added");
                 navigate("/dashboard");
-            }} />
+            }}
+            />
         </Layout >
     );
 
