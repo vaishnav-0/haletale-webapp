@@ -22,12 +22,14 @@ export default function <TDataQuery, TAggrQuery>({ query, initialParams, childre
         lazyAggrQuery(initialParams);
         lazyQuery(initialParams);
     }, [initialParams]);
-    React.useEffect(() => {
-        if (!data && loading)
-            setLoader(true);
-        else
-            setLoader(false);
-    }, [called, loading])
+    // React.useEffect(() => {
+    //     //setLoader(true);
+    // }, [initialParams]);
+    // console.log(loading)
+    // React.useEffect(() => {
+    //     if (called)
+    //         setLoader(false);
+    // }, [called])
     return (
         <div className={wrapperClassName}>
             {
