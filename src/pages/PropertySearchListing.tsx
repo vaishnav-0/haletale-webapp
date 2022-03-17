@@ -14,9 +14,9 @@ import PropertySearchBar from '../components/PropertySearchBar';
 import InfiniteList from '../components/InfiniteList';
 import { ButtonSolid } from '../components/Button';
 import MapView from './MapView';
-type nearbyPropertyQueryResult = { show_nearby_properties: IPropertyDetails[], show_nearby_properties_aggregate: { aggregate: { totalCount: number } } }
 
-type searchPropertyQueryResult = { search_property: IPropertyDetails[], search_property_aggregate: { aggregate: { totalCount: number } } }
+type searchPropertyQueryResult = { search_property: IPropertyDetails[] }
+type searchPropertyAggregate = { search_property_aggregate: { aggregate: { totalCount: number } } }
 export default function (): JSX.Element {
     let [searchProperties, { data: propertyData, loading, fetchMore }] = useLazyQuery<searchPropertyQueryResult>(propertyQuery.SEARCH_PROPERTY, {
         notifyOnNetworkStatusChange: true
@@ -149,14 +149,15 @@ export default function (): JSX.Element {
             </div>
             {
                 queryParams &&
-                <InfiniteList< searchPropertyQueryResult>
+                <InfiniteList<searchPropertyQueryResult, searchPropertyAggregate>
                     query={propertyQuery.SEARCH_PROPERTY}
                     initialParams={
                         queryParams
                     }
+                    aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
                     wrapperClassName={style["search-list"]}
-                    checkSkip={(propertyData) => {
-                        return propertyData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
+                    checkSkip={(propertyData,aggregateData) => {
+                        return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
                     }}
                 >
                     {

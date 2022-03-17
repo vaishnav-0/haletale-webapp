@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "../Layout";
 import propertySearchListingStyle from '../PropertySearchListing.module.scss';
-import userQuery, { IFavoriteData } from "../../queries/user.query";
+import userQuery, { IFavoriteAggrData, IFavoriteData } from "../../queries/user.query";
 import InfiniteList from "../../components/InfiniteList";
 import PropertyCardDetailed from "../../components/PropertyCardDetailed";
 import Skeleton from "react-loading-skeleton";
@@ -20,11 +20,12 @@ export default function () {
         <div style={{ fontSize: "1.4em", fontWeight: 900, margin: "1em 0.5em" }}>My favourites</div>
         {
             queryParams &&
-            <InfiniteList<IFavoriteData>
+            <InfiniteList<IFavoriteData, IFavoriteAggrData>
                 query={userQuery.GET_USER_FAVS}
+                aggregateQuery={userQuery.GET_USER_FAVS_AGGREGATE}
                 initialParams={queryParams}
                 wrapperClassName={propertySearchListingStyle["search-list"]}
-                checkSkip={(favs) => favs?.user_favourites_aggregate.aggregate.count === favs?.user_favourites.length}
+                checkSkip={(favs, favsAggr) => favsAggr?.user_favourites_aggregate.aggregate.count === favs?.user_favourites.length}
             >
                 {
                     (favs, loading) => <>
