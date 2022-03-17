@@ -122,11 +122,11 @@ function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     })
     return inputComponent;
 }
-function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItemCommon & TSingleItem>, error?: string, disabled?: boolean }) {
+function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItemCommon & TSingleItem>, error?: any, disabled?: boolean }) {
     React.useEffect(() => {
     }, [])
     const InputComponent = getInputComponent(item);
-
+    console.log(error)
     return <div className={style["form-item"]}>
         {item.title && item.title !== "" &&
             <div className={style["form-item-heading"]}>
@@ -148,7 +148,9 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
                     <InputComponent as any {...{ disabled, ...item.props, name: item.name }} />
         }
         {
-            error && <div className={style["field-error"]}>{error}</div>
+            error && <div className={style["field-error"]}>{
+                Object.values(error.types).flatMap(e => e).map((err,i,arr) => <div>{arr.length>1?"\u2022 ":""}{err as string}</div>)
+            }</div>
         }
     </div>;
 }
@@ -238,7 +240,7 @@ function FormComponent({ item, errors, disabled }: { item: TItem, errors?: Field
     if (item.isArray)
         return <ArrayComponent disabled={disabled} item={item} errors={errors?.[item.name]} />
     else
-        return <SingleComponent disabled={disabled} item={item} error={errors?.[item.name]?.message} />
+        return <SingleComponent disabled={disabled} item={item} error={errors?.[item.name]} />
 }
 
 function ToggleWrapper({ name, optionalProps, itemComponent }: { name: string, optionalProps: Exclude<TItem['isOptional'], undefined>, itemComponent: JSX.Element }) {
@@ -315,7 +317,7 @@ export type PropsType = {
 }
 export default function FormGenerator({ schema, onSubmit, onError, disabled, display }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
-    const methods = useForm({ resolver: yupResolver(yupSchema, { abortEarly: false }) });
+    const methods = useForm({ resolver: yupResolver(yupSchema, { abortEarly: false }), criteriaMode: "all" });
     const handleSubmit = methods.handleSubmit(onSubmit, onError);
     const errors = methods.formState.errors;
     return (
