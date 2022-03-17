@@ -88,7 +88,7 @@ const schema = {
             wrapperRender: (C: JSX.Element) => <div style={{ display: "flex" }}>
                 {C}
                 <div>
-                    By creating your account you agree to our <a href='#'>terms and condtions</a>
+                    By creating your account you agree to our <a onClick={() => window.open('https://haletale.com/terms-and-conditions/', '_blank')} style={{ textDecoration: "underline" }}>terms and condtions</a>
                 </div>
             </div>,
             props: {
