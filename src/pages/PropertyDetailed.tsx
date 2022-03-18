@@ -53,7 +53,7 @@ export default function Example() {
     const [fav, updateFav, favUpdating] = useFavourite(searchParams.get("id")!)
     const [Loader, setLoader] = useLoder({});
     const auth = useAuth();
-    const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
+    const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
     const navigate = useNavigate();
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
@@ -88,7 +88,7 @@ export default function Example() {
                 }
             })
         }
-    }, []);
+    }, [searchParams]);
     React.useEffect(() => {
         if (propertyloading)
             setLoader(true);
@@ -150,9 +150,9 @@ export default function Example() {
                             }
                         </div>
                         <div className={style["property-feature-row2"]}>
-                            <div>{property?.type?.toUpperCase()}</div>
+                            <div>{property?.property_type.name?.toUpperCase()}</div>
                             <div>|</div>
-                            <div>{property?.sub_type?.toUpperCase()}</div>
+                            <div>{property?.property_subtype.name?.toUpperCase()}</div>
                         </div>
                     </div>
 

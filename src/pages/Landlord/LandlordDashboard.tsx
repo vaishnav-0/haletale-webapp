@@ -22,7 +22,6 @@ export default function Example() {
         else
             setLoader(false);
     }, [loading])
-    console.log(allRequestCountData);
     return (
         <Layout>
             {Loader}
@@ -43,6 +42,7 @@ export default function Example() {
                 <div className={style["properties-list"]}>
                     {
                         propertyData && propertyData?.property_owner.map(_property => {
+                            console.log(_property.property)
                             const property = _property.property;
                             const properyRequestCount = allRequestCountData?.property_request.find(e => e.property_id === property.id)?.property.property_requests_aggregate.aggregate.count ?? 0;
                             return (
@@ -55,7 +55,8 @@ export default function Example() {
                                     <div >
                                         <div className={style["properties-card-info"]}>
                                             <div>{property.name}</div>
-                                            <div>{property.type}</div>
+                                            <div>{property.property_type.name}</div>
+
                                             <ClampLines
                                                 text={property.property_address?.address?.full_address ?? ""}
                                                 id={Math.random() * 100000 + (property.id ?? "")}

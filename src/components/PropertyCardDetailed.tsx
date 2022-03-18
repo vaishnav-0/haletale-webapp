@@ -25,7 +25,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                 <div className={style["property-details"]}>
                     <div className={style["top-container"]}>
                         <div className={style["property-location"]}>
-                            <div>{props.propertyData.type}</div>
+                            <div>{props.propertyData.property_type.name}</div>
                             <ClampLines
                                 text={props.propertyData.property_address?.address?.full_address ?? ""}
                                 id={Math.random() * 100000 + (props.propertyData.id ?? "")}

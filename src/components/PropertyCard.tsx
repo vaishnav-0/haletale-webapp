@@ -34,7 +34,7 @@ export default function ({ property }: { property: IPropertyDetails })
                     buttons={false}
                 />
                 <ClampLines
-                    text={property.type ?? ""}
+                    text={property.property_type.name ?? ""}
                     id={Math.random() * 100000 + (property.id ?? "")}
                     lines={1}
                     stopPropagation={true}

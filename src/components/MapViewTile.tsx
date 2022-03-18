@@ -39,7 +39,7 @@ const MapViewTile = React.forwardRef<HTMLDivElement, PropsType>((props, ref) => 
         </div>
         <div className={style["item-bottom-container"]}>
             <div className={style["property-location"]}>
-                <div>{property.type}</div>
+                <div>{property.property_type.name}</div>
                 <ClampLines
                     text={property.property_address?.address?.full_address ?? ""}
                     id={Math.random() * 100000 + (property.id ?? "")}

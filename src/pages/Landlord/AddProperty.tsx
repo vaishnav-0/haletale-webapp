@@ -139,14 +139,27 @@ function AddPropertyForm1(props: FormPropsType) {
                 schema: schema as SchemaType,
                 dataLoader: new Promise(res => res(
                     {
-                        type: property_types.property_type.map((e: any) => e.name),
-                        subtype: property_types.property_subtype.map((e: any) => e.name),
+                        type: property_types.property_type.map((e: any) => { return { [e.id]: e.name } }),
+                        subtype: property_types.property_subtype.map((e: any) => { return { [e.id]: e.name } }),
                     })),
                 dataMap: (data) => {
                     return {
-                        type: (item: any) => { item.props.values = ["", ...data.type]; },
+                        type: (item: any) => {
+                            item.props.values = {
+                                "": "", ...data.type.reduce((obj:any, curr:any) => {
+                                    obj = {...obj,...curr}
+                                    return obj;
+                                }, {})
+                            };
+                        },
 
-                        subtype: (item: any) => { item.props.values = ["", ...data.subtype] },
+
+                        subtype: (item: any) => { item.props.values = {
+                                "": "", ...data.subtype.reduce((obj:any, curr:any) => {
+                                    obj = {...obj,...curr}
+                                    return obj;
+                                }, {})
+                            };},
                     }
                 }
             }).then(sch => {

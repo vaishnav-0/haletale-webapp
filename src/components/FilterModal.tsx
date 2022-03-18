@@ -53,7 +53,10 @@ function FilterModel({ onClose = () => { }, onSubmit }: props): JSX.Element {
                     <div className={style["filter-item-content"]}>
                         <PillList
                             onChange={(v) => setTypes(v)}
-                            items={property_types?.property_type.map((e: any) => e.name) ?? []}
+                            items={property_types?.property_type.reduce((obj:any,curr:any)=>{
+                                obj= {...obj,[curr.id]:curr.name};
+                                return obj;
+                            },{}) ?? {}}
                         />
                     </div>
 
