@@ -14,17 +14,22 @@ export type PropsType = {
     setValueRef?: React.MutableRefObject<((v: number) => void) | undefined>,
     key?: React.Attributes["key"],
     disabled?: boolean,
-    defaultValue?: number
+    defaultValue?: number,
+    minLabel?: string
 
 }
 export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange = () => { }
-    , onIncrement, onDecrement, setValueRef, key, disabled, defaultValue }: PropsType): JSX.Element {
+    , onIncrement, onDecrement, setValueRef, key, disabled, defaultValue, minLabel }: PropsType): JSX.Element {
     if (disabled)
         disabledBtn = [0, 1];
-    const [count, setCount] = React.useState(defaultValue ?? init);
+    const _defaultValue = defaultValue ?
+        defaultValue >= min ? defaultValue : min
+        : defaultValue;
+    const _init = init >= min ? init : min
+    const [count, setCount] = React.useState(_defaultValue ?? _init);
     if (setValueRef)
         setValueRef.current = setCount;
-    React.useEffect(() => onChange(init), []);
+    React.useEffect(() => onChange(_init), []);
     return (
         <div key={key} className={style["container"]}>
             <button type="button"
@@ -39,7 +44,12 @@ export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange
                 <i className="fas fa-minus"></i>
             </button>
             <div className={style["count"]}>
-                {count}
+                {
+                    count === min ?
+                        minLabel ?? count
+                        :
+                        count
+                }
             </div>
             <button type="button"
                 className={count === max || disabledBtn.includes(1) ? style["inactive"] : ""}
