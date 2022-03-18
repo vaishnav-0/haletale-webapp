@@ -10,6 +10,7 @@
     left: 0;
     flex: 1;
     padding: 0;
+    z-index: 100;
 }
 
 .map-container {
@@ -35,9 +36,8 @@
 }
 
 .item-container {
-    z-index: 10;
+    z-index: 100;
     display: flex;
-
     @include media(">=lgMin") {
         @media screen and (max-height:950px) {
             height: 100%;
