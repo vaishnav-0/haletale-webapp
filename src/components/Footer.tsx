@@ -16,17 +16,7 @@ export default function Footer(): JSX.Element {
                     <ul><a href="#">About Us</a></ul>
                     <ul><a href="#">Contact Us</a></ul>
                 </li>
-                <li>
-                    <ul>Quick Links</ul>
 
-                    <ul><a onClick={() => {
-                        navigate("/addProperty");
-                    }} >propertyfile</a></ul>
-                    <ul><a href="#">Notifications</a></ul>
-                    <ul><a href="#">Your Bookings</a></ul>
-                    <ul><a href="#">Wishlist</a></ul>
-                    <ul><a href="#">Settings</a></ul>
-                </li>
             </div>
 
             <div className="footer-bottom">

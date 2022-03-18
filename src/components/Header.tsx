@@ -10,7 +10,7 @@ import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { Openable } from './Openable';
 import auth from '../functions/auth';
-import { Link, useLocation,useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Roles } from '../functions/auth/types';
 import { useUserContext } from '../functions/auth/userContext';
 import Skeleton from 'react-loading-skeleton'
@@ -39,62 +39,66 @@ export default function Header(): JSX.Element {
                 <div className={style["topnav-right-container"]}>
 
                     {user ?
-                        <div className={style["profile-container"]}>
-                            <img src={userPlaceholder} />
-                            <Openable                           //seems hacky
-                                open={[true, setDropdownOpen]}
-                                className={style["profile-dropdown"]}
-                                onClick={() => setDropdownOpen(!dropdownOpen)}>
-                                <p>Welcome
-                                    <span className={style["name-highlight"]}>
-                                        {
-                                            user && !user.user_details ?
-                                                <Skeleton style={{ width: "100%", height: "100%" }} />
-                                                :
-                                                ` ${user?.user_details?.name ?? "User"}!`
+                        <>
+                            {
+                                user.role.includes(Roles['landlord']) &&
+                                <ButtonSolid onClick={() => navigate("/property/add")}> List property </ButtonSolid>
+                            }
+                            <div className={style["profile-container"]}>
+                                <img src={userPlaceholder} />
+                                <Openable                           //seems hacky
+                                    open={[true, setDropdownOpen]}
+                                    className={style["profile-dropdown"]}
+                                    onClick={() => setDropdownOpen(!dropdownOpen)}>
+                                    <p>Welcome
+                                        <span className={style["name-highlight"]}>
+                                            {
+                                                user && !user.user_details ?
+                                                    <Skeleton style={{ width: "100%", height: "100%" }} />
+                                                    :
+                                                    ` ${user?.user_details?.name ?? "User"}!`
+                                            }
+
+                                        </span></p>
+                                    <div className={style["profile-dropdown-down"]} >
+                                        <img src={downIcon} />
+                                    </div>
+                                    <Openable
+                                        open={[dropdownOpen, setDropdownOpen]}
+                                        closeOnClickOutside={false}
+                                        className={style["dropdown-box"]}
+                                        animation={{
+                                            type: "slide"
+                                        }}
+                                        onClick={e => e.stopPropagation()}
+                                    >
+                                        <Link to="/account/basics">Profile</Link>
+                                        <Link to="#">Change Password</Link>
+                                        {//<Link to="#">Account</Link>
+                                            //<Link to="#">Notifications</Link>
                                         }
+                                        {user.role.includes(Roles['tenant']) && <>
+                                            <Link to="/requests/view">Your Bookings</Link>
+                                            <Link to="/favourites">Favorites</Link>
+                                        </>
 
-                                    </span></p>
-                                <div className={style["profile-dropdown-down"]} >
-                                    <img src={downIcon} />
-                                </div>
-                                <Openable
-                                    open={[dropdownOpen, setDropdownOpen]}
-                                    closeOnClickOutside={false}
-                                    className={style["dropdown-box"]}
-                                    animation={{
-                                        type: "slide"
-                                    }}
-                                    onClick={e => e.stopPropagation()}
-                                >
-                                    <Link to="/account/basics">Profile</Link>
-                                    <Link to="#">Change Password</Link>
-                                    {//<Link to="#">Account</Link>
-                                        //<Link to="#">Notifications</Link>
-                                    }
-                                    {user.role.includes(Roles['tenant']) && <>
-                                        <Link to="/requests/view">Your Bookings</Link>
-                                        <Link to="/favourites">Favorites</Link>
-                                    </>
+                                        }
+                                        {user.role.includes(Roles['landlord']) && <>
+                                            <Link to="/dashboard">Dashboard</Link>
+                                        </>
 
-                                    }
-                                    {user.role.includes(Roles['landlord']) && <>
-                                        <Link to="/dashboard">Dashboard</Link>
-                                    </>
-
-                                    }
-                                    {// <Link to="#">Settings</Link>
-                                    }
-                                    <Link to="#">Help</Link>
-                                    <Link to="/signout" onClick={() => auth.signOut()}>Logout</Link>
+                                        }
+                                        {// <Link to="#">Settings</Link>
+                                        }
+                                        <Link to="#">Help</Link>
+                                        <Link to="/signout" onClick={() => auth.signOut()}>Logout</Link>
+                                    </Openable>
                                 </Openable>
-                            </Openable>
-                        </div>
-
+                            </div>
+                        </>
                         :
                         <>
-                            <ButtonHollow onClick={() => setloginModalOpen(true)}> Sign in </ButtonHollow>
-                            <ButtonSolid onClick={()=>navigate("/signUp")}>Sign up</ButtonSolid>
+                            <ButtonHollow onClick={() => setloginModalOpen(true)}> Sign in / Sign up </ButtonHollow>
                             <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
 
                                 <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>

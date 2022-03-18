@@ -27,7 +27,7 @@ function HomePage(): JSX.Element {
                 <PropertySearchBar />
             </div>
             <div style={{ marginTop: 60, marginBottom: 60 }}>
-                <MinimalPropertyList title={(user?.role.includes(Roles.landlord) ? "Your r" : "R") + "ecent properties"}
+                <MinimalPropertyList title={user?.role.includes(Roles.landlord) ? "Your Properties:" : "Recent Properties"}
                     properties={recentPropertyData?.property ?? []}
                 />
                 {
