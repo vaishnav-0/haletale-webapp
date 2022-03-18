@@ -80,7 +80,7 @@ const schema = {
         props: {
             type: "date"
         },
-        validationSchema: yup.date().typeError("Invalid date").max(new Date(2024,1), "Invalid date").min(new Date(),"Invalid date")
+        validationSchema: yup.date().typeError("Invalid date").max(new Date(2024, 1), "Invalid date").min(new Date(), "Invalid date")
     },
     {
         name: "members",
@@ -158,7 +158,8 @@ function SendRequest(): JSX.Element {
     React.useEffect(() => {
         if (userPhoneNatData) {
             const phone = userPhoneNatData.user[0].phone;
-            const nationality = userPhoneNatData.user[0]?.user_details?.nationality
+            const nationality = userPhoneNatData.user[0]?.user_detail?.nationality
+            console.log(userPhoneNatData.user[0].ise);
             dynamicSchemaGenerator({
                 schema: schema as SchemaType,
                 dataLoader: {},
@@ -187,7 +188,7 @@ function SendRequest(): JSX.Element {
     React.useEffect(() => {
         if (schema)
             if (countryData) {
-                let countries: any = { "": "" }, code: any = { "": "" };
+                let countries: { [k: string]: string } = { "": "" }, code: any = { "": "" };
                 countryData.countries.forEach((country: any) => {
                     countries[country.id] = country.name;
                     code[country.dialCode] = country.isoCode + " " + country.dialCode;
@@ -196,11 +197,10 @@ function SendRequest(): JSX.Element {
                     dynamicSchemaGenerator({
                         schema: _schema,
                         dataLoader: { countries, code },
-                        dataMap: (data) => {
+                        dataMap: (data: { countries: typeof countries, code: any }) => {
                             return {
                                 country: (item: any) => {
-                                    item.props.values = data.countries
-
+                                    item.props.values = Object.entries(data.countries).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
                                 },
                                 phone: {
                                     country_code: (item: any) => {
@@ -224,7 +224,7 @@ function SendRequest(): JSX.Element {
     React.useEffect(() => {
         if (userPhoneNatData) {
             const phone = userPhoneNatData.user[0].phone;
-            const nationality = userPhoneNatData.user[0]?.user_details?.nationality
+            const nationality = userPhoneNatData.user[0]?.user_detail?.nationality
             if (requestMutationData && ((!phone || !nationality) ? updateUserBasicData : 1)) {
                 toast.success("Request sent.");
                 navigate("/");
@@ -233,7 +233,7 @@ function SendRequest(): JSX.Element {
     }, [updateUserBasicData, requestMutationData])
     const onSubmit = (d: formDataType) => {
         const phone = userPhoneNatData.user[0].phone;
-        const nationality = userPhoneNatData.user[0]?.user_details?.nationality
+        const nationality = userPhoneNatData.user[0]?.user_detail?.nationality
         if (!phone || !nationality) {
             updateUserBasic({
                 variables: {
