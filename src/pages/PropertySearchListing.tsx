@@ -22,6 +22,10 @@ export default function (): JSX.Element {
         notifyOnNetworkStatusChange: true,
         fetchPolicy: "cache-and-network"
     });
+    const { data: propertyAggregate } = useQuery<IGetAllPropertyAggr>(propertyQuery.GET_ALL_PROPERTY_AGGREGATE, {
+        notifyOnNetworkStatusChange: true,
+        fetchPolicy: "cache-and-network"
+    });
     const [getAllProperties, { data: allPropertyData }] = useLazyQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
         notifyOnNetworkStatusChange: true,
         fetchPolicy: "cache-and-network"
@@ -98,7 +102,7 @@ export default function (): JSX.Element {
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
                     <div>{searchParams.get("place")}</div>
-                    <div> {propertyData?.search_property?.length ?? 0} properties</div>
+                    <div> {propertyAggregate?.property_aggregate.aggregate.totalCount ?? 0} properties</div>
                 </div>
                 <div className={style["btn-container"]}>
                     <ButtonSolid onClick={() => setMapOpen(true)}>
