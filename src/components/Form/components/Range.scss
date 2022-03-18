@@ -1,12 +1,14 @@
 @import 'src/breakpoints.scss';
 @import 'src/colors.scss';
 
-.range-slider{
+.range-slider {
     display: flex;
     align-items: center;
     height: 1em;
 }
-.Range-track-style {
+
+.Range-track-style,
+.Range-track-style-untouched {
     height: 0.2em;
 
     &#{&}-0,
@@ -14,8 +16,19 @@
         background-color: adjust-color($primary, $alpha:-0.7);
     }
 
+}
+
+.Range-track-style {
+
     &#{&}-1 {
         background-color: $primary;
+    }
+}
+
+.Range-track-style-untouched {
+
+    &#{&}-1 {
+        background-color: $greyText;
     }
 }
 
@@ -26,9 +39,14 @@
     border: 0;
     border-radius: 50%;
     background-color: $primary;
-    &>*{
+
+    &.untouched {
+        background-color: $grey;
+    }
+
+    &>* {
         position: absolute;
         top: 100%;
     }
-    
+
 }
