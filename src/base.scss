@@ -3,7 +3,7 @@
 
 html {
   box-sizing: border-box;
-  font-family: "HelveticaNeue";
+  font-family: "gotham-rounded";
   @include responsiveFontsize((14px));
 
 }
@@ -40,27 +40,21 @@ img {
 @font-face {
   font-family: "HelveticaNeue";
   font-weight: 800;
-  src: url(assets/fonts/helvetica/HelveticaNeue-MediumExt.otf);
+  src: url(assets/fonts/gotham-rounded/GothamRounded-Bold.otf);
 }
 
 @font-face {
-  font-family: "HelveticaNeue";
+  font-family: "gotham-rounded";
   font-weight: 200;
 
-  src: url(assets/fonts/helvetica/HelveticaNeue-LightExt.otf);
+  src: url(assets/fonts/gotham-rounded/GothamRounded-Light.otf);
 }
 
-@font-face {
-  font-family: "HelveticaNeue";
-  font-weight: 400;
-
-  src: url(assets/fonts/helvetica/HelveticaNeue-Extended.otf);
-}
 
 @font-face {
-  font-family: "HelveticaNeueRegular";
+  font-family: "gotham-rounded";
   font-weight: 400;
-  src: url(assets/fonts/helvetica/HelveticaNeue-Medium.otf);
+  src: url(assets/fonts/gotham-rounded/GothamRounded-Book.otf);
 }
 
 a {
@@ -88,7 +82,7 @@ a:active {
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
+input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 textarea:-webkit-autofill,
 textarea:-webkit-autofill:hover,
