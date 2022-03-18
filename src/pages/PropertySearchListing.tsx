@@ -60,17 +60,14 @@ export default function (): JSX.Element {
             if (!(sort.created_at === "asc" || sort.created_at === "desc" || sort.property_detail.rent_amount === "asc" || sort.property_detail.rent_amount === "desc"))
                 sort = null
         } catch (e) {
-            console.log(e);
         }
         vars = {
             ...vars,
             ...sort ? { order_by: sort } : {}
         }
-        console.log(vars);
         setParams(vars);
     }, [searchParams]);
     React.useEffect(() => {
-
         if (params)
             setQueryParams({
                 variables: {
@@ -162,7 +159,7 @@ export default function (): JSX.Element {
                         <FilterModel onClose={() => {
                             setFilterOpen(false);
                         }}
-                            onSubmit={(d) => { }}
+                            onSubmit={(d) => { console.log(d); setParams({ ...params, ...d }) }}
                         />
 
                     </Openable>
