@@ -8,7 +8,7 @@ export default {
     }
   }`,
 
-  ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: property_subtype_enum, $type: property_type_enum) {
+  ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: uuid, $type: uuid) {
     insert_property_owner(objects: {property: {data: {coordinates: $coordinates, description: $description, name: $name, sub_type: $sub_type, type: $type}}}) {
       returning {
         property_id

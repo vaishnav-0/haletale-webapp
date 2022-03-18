@@ -39,9 +39,11 @@ export interface IPropertyDetails extends DeepPartial<IPropertyQueryOptional> {
   id: string
   name: string
   property_type: {
+    id:string
     name: string
   }
   property_subtype: {
+    id:string
     name: string
   }
   is_approved: boolean
@@ -70,8 +72,14 @@ export const propertyFragment = gql`
     id
     name
     description
-    type
-    sub_type
+   property_type {
+    id
+    name
+  }
+  property_subtype {
+    id
+    name
+  }
     coordinates
       property_address {
         address {
@@ -175,6 +183,7 @@ ${propertyFragment}
   property_owner {
     property {
     ...propertyFragment
+    is_approved
   }
   }
 }
@@ -204,7 +213,7 @@ ${propertyFragment}
 }
 `,
 
-  SEARCH_PROPERTY: gql`query SEARCH_PROPERTY($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={created_at:asc},$offset:Int,$limit:Int,$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [property_type_enum!] = [],$typeFilter:Boolean!=false) {
+  SEARCH_PROPERTY: gql`query SEARCH_PROPERTY($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={created_at:asc},$offset:Int,$limit:Int,$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [uuid!] = [],$typeFilter:Boolean!=false) {
   search_property(where:{type: {_in: $types},property_detail: {rooms: {_contains: $rooms}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}, order_by:[$order_by],offset: $offset, limit: $limit) @include(if: $typeFilter) {
     ...propertyFragment
   }
@@ -215,7 +224,7 @@ ${propertyFragment}
 }
   ${propertyFragment}
 `,
-  SEARCH_PROPERTY_AGGREGATE: gql`query SEARCH_PROPERTY_AGGREGATE($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [property_type_enum!] = [],$typeFilter:Boolean!=false){
+  SEARCH_PROPERTY_AGGREGATE: gql`query SEARCH_PROPERTY_AGGREGATE($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [uuid!] = [],$typeFilter:Boolean!=false){
   search_property_aggregate(where:{type: {_in: $types},property_detail: {rooms: {_contains: $rooms}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}) @include(if: $typeFilter) {
     aggregate{
         totalCount : count
@@ -228,7 +237,7 @@ ${propertyFragment}
   }
   }
   `,
-  GET_ALL_PROPERTIES: gql`query GET_ALL_PROPERTIES($offset:Int,$limit:Int,$order_by:property_order_by={created_at:asc},$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [property_type_enum!] = [],$typeFilter:Boolean!=false ) {
+  GET_ALL_PROPERTIES: gql`query GET_ALL_PROPERTIES($offset:Int,$limit:Int,$order_by:property_order_by={created_at:asc},$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [uuid!] = [],$typeFilter:Boolean!=false ) {
   property(where:{type: {_in: $types},property_detail: {rooms: {_contains: $rooms}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}},offset: $offset, limit: $limit, order_by:[$order_by]) @include(if: $typeFilter){
     ...propertyFragment
   }
@@ -238,7 +247,7 @@ ${propertyFragment}
 }
   ${propertyFragment}
 `,
-  GET_ALL_PROPERTY_AGGREGATE: gql`query GET_ALL_PROPERTIES_AGGREGATE($rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [property_type_enum!] = [],$typeFilter:Boolean!=false ){
+  GET_ALL_PROPERTY_AGGREGATE: gql`query GET_ALL_PROPERTIES_AGGREGATE($rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [uuid!] = [],$typeFilter:Boolean!=false ){
     property_aggregate(where:{type: {_in: $types},property_detail: {rooms: {_contains: $rooms}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}) @include(if: $typeFilter){
       aggregate{
         totalCount : count
