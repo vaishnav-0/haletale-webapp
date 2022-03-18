@@ -8,18 +8,41 @@ export type PropType = {
     step?: number,
     onChange?: (v: number[] | number) => void,
     defaultValue?: number | number[],
-    key?:React.Attributes["key"]
-    ,
+    key?: React.Attributes["key"],
 }
+
 export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, defaultValue, onChange, key }: PropType): JSX.Element {
+    const sliderRef = React.useRef(null)
+    const [touched, setTouched] = React.useState<boolean>(false);
+    React.useEffect(() => {
+        if ((sliderRef.current as any)?.slider === null) return
+
+        function _handleResize() {
+            // If offsetParent is null, the element is not visible
+            if ((sliderRef.current as any).slider.offsetParent !== null) {
+                console.log("resize", (sliderRef.current as any).resize);
+                (sliderRef.current as any).resize()
+            }
+        }
+
+        // Observe the slider dom element which will trigger when it's shown via a parent container visibility
+        const ro = new ResizeObserver(_handleResize)
+        ro.observe((sliderRef.current as any).slider)
+
+        // Cleanup
+        return () => {
+            ro.disconnect()
+        }
+    }, [])
+    console.log(touched);
     return <ReactSlider
         key={key}
         className="range-slider"
         max={max}
         min={min}
         onChange={onChange}
-        thumbClassName="Range-thumb-style"
-        trackClassName="Range-track-style"
+        thumbClassName={`Range-thumb-style ${!touched ? "untouched" : ""}`}
+        trackClassName={`Range-track-style${!touched ? "-untouched" : ""}`}
         defaultValue={defaultValue}
         ariaLabel={['Lower limit', 'Upper limit']}
         ariaValuetext={(state: any) => `Thumb value ${state.valueNow}`}
@@ -29,6 +52,7 @@ export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, d
         pearling
         minDistance={10}
         step={step}
-
+        ref={sliderRef}
+        onSliderClick={() => setTouched(true)}
     />
 }
