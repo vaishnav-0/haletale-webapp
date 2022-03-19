@@ -56,6 +56,7 @@ export default function (): JSX.Element {
                 street_number: searchParams.get("sn"),
                 administrative_area_level_2: searchParams.get("a2"),
                 administrative_area_level_1: searchParams.get("a1"),
+                sublocality: searchParams.get("subloc")
             }
         }
         let sort = null;
@@ -133,10 +134,10 @@ export default function (): JSX.Element {
                                         else if (j.property_detail.rent_amount === "desc")
                                             return "Rent desc."
                                         else
-                                            return "Recent"
+                                            return;
 
                                     } catch (e) {
-                                        return "Recent";
+                                        return;
                                     }
                                 }())}
                                 values={["Oldest", "Recent", "Rent asc.", "Rent desc."]} onChange={(e) => {
