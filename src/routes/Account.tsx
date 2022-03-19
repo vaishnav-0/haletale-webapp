@@ -7,7 +7,7 @@ import {
 import { Outlet } from "react-router-dom";
 import SidebarNavigation from "../components/SidebarNavigation";
 import Account, { accountItems, otherRoutes } from "../pages/Account";
-export default function () {
+export default function AccountRoutes() {
 
     return (
         <Routes>
