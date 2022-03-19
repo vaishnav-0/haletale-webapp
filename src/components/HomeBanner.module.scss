@@ -1,4 +1,5 @@
 @import "../breakpoints.scss";
+@import "src/styles/mixins.scss";
 
 .homebanner-container {
     position: relative;
@@ -23,6 +24,7 @@
 
     @include media(">=lgMin") {
         height: 650px;
+
         @media screen and (max-height:950px) {
             height: 530px;
         }
@@ -30,13 +32,14 @@
 
     @include media(">=xlMin") {
         height: 700px;
+
         @media screen and (max-height:950px) {
             height: 550px;
         }
     }
-    @media screen {
-        
-    }
+
+    @media screen {}
+
     .overlay {
         position: absolute;
         height: 100%;
@@ -61,11 +64,36 @@
         .banner-maintext {
             font-size: 20px;
             font-weight: 800;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
             @include media(">=smMin") {
                 font-size: 25px;
 
             }
         }
+    }
+}
+
+.clicking-anim {
+    margin-bottom: 0.4em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin: 0 0.4em;
+    position: relative;
+    margin-bottom:1em ;
+    &>i {
+        transform: translate(2px, 50%);
+    }
+
+    &::after {
+        @include rings(2s, 0.3s, #000000d6);
+        z-index: 10;
     }
 }
