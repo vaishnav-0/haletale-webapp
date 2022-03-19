@@ -3,6 +3,8 @@ import style from './ImageGallery.module.scss';
 import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import PositionIndicator from '../components/PositionIndicator';
+import Image from './Image';
+import placeholderImg from '../assets/images/property_placeholder.jpg';
 interface propType {
     indicatorClassName?: string;
     className?: string;
@@ -39,7 +41,7 @@ export default function ({ indicatorClassName = "",
                 {
                     imgSrc.map((src, i) => {
                         return <div key={i} className={style["image-container"]}>
-                            <img src={src} />
+                            <Image src={src} default={placeholderImg} style={{ height: "100%", width: "100%", position: "absolute", top: 0 }} />
                         </div>
                     })
                 }
