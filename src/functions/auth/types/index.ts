@@ -23,7 +23,7 @@ export type TSignInResponseObject = {
 }
 
 
-export enum Roles { tenant = 'tenant', landlord = 'landlord', user = 'user' };
+export enum Roles { tenant = 'tenant', landlord = 'landlord', user = 'user',  admin = 'admin' };
 
 
 export interface AuthContextType {
