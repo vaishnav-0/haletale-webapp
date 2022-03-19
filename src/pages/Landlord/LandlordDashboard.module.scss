@@ -74,9 +74,19 @@
     }
 }
 
-.property-card-edit-btn {
+.property-card-edit-btn,
+.property-card-unlist-btn {
     padding: 0.7em 1.8em;
     border-radius: 1.6em;
+}
+
+.property-card-unlist-btn {
+    background-color: $redLight;
+    border-color: $redLight;
+
+    &:hover {
+        color: $redLight;
+    }
 }
 
 .properties-card-status {
@@ -84,8 +94,8 @@
     border-radius: 1.6em;
     display: flex;
     align-items: center;
-    padding: 0 0.8em;
-    gap: 0.5em
+    padding: 0.8em 0.8em;
+    gap: 0.5em;
 }
 
 .key {
@@ -117,6 +127,14 @@
         padding: 0.8em 1.1em;
         border-radius: 1.5em;
     }
+}
+
+.card-btn-container {
+    display: flex;
+    gap: 1em;
+    flex-direction: row-reverse;
+    width: 100%;
+
 }
 
 .btn-indicator {

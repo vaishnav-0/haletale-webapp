@@ -77,9 +77,7 @@ export default function Example() {
                                         <div className={style["properties-card-status"]}>
                                             <span className={style["key"]}>Status: </span>{property.is_approved ? "Approved" : "Pending approval"}
                                         </div>
-                                        <ButtonSolidWithIndicator onClick={() => navigate("/property/edit/?id=" + property.id)} className={style["property-card-edit-btn"]} tooltip={property.property_detail ? "" : "Property data incomplete"} indicator={property.property_detail ? <></> : <div className={style["btn-indicator"]}>!</div>}>
-                                            Edit
-                                        </ButtonSolidWithIndicator>
+
 
                                     </div>
                                     {
@@ -111,6 +109,14 @@ export default function Example() {
                                             :
                                             <></>
                                     }
+                                    <div className={style["card-btn-container"]}>
+                                        <ButtonSolidWithIndicator onClick={() => navigate("/property/edit/?id=" + property.id)} className={style["property-card-edit-btn"]} tooltip={property.property_detail ? "" : "Property data incomplete"} indicator={property.property_detail ? <></> : <div className={style["btn-indicator"]}>!</div>}>
+                                            Edit
+                                        </ButtonSolidWithIndicator>
+                                        <ButtonSolid type="button" className={style["property-card-unlist-btn"]}>
+                                            Unlist
+                                        </ButtonSolid>
+                                    </div>
 
                                 </div>
                             )
