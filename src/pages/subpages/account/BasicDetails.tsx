@@ -128,7 +128,7 @@ export function BasicDetails({ edit }: { edit: boolean }) {
     }, [edit, userPhoneNatData]);
     React.useEffect(() => {
         if (countryData) {
-            let countries: any = { "": "" }, code: any = { "": "" };
+            let countries: { [k: string]: string } = { "": "" }, code: any = { "": "" };
             countryData.countries.forEach((country: any) => {
                 countries[country.id] = country.name;
                 code[country.dialCode] = country.isoCode + " " + country.dialCode;
@@ -137,10 +137,10 @@ export function BasicDetails({ edit }: { edit: boolean }) {
                 dynamicSchemaGenerator({
                     schema: _schema,
                     dataLoader: { countries, code },
-                    dataMap: (data) => {
+                    dataMap: (data: { countries: typeof countries, code: any }) => {
                         return {
                             country: (item: any) => {
-                                item.props.values = data.countries
+                                item.props.values = Object.entries(data.countries).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
 
                             },
                             phone: {
