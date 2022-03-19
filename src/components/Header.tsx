@@ -72,7 +72,11 @@ export default function Header(): JSX.Element {
                                         }}
                                         onClick={e => e.stopPropagation()}
                                     >
-                                        <Link to="/account/basics">Profile</Link>
+                                        {(user.role.includes(Roles['tenant']) || user.role.includes(Roles['landlord'])) && <>
+                                            <Link to="/account/basics">Profile</Link>
+                                        </>
+
+                                        }
                                         <Link to="#">Change Password</Link>
                                         {//<Link to="#">Account</Link>
                                             //<Link to="#">Notifications</Link>
@@ -85,6 +89,11 @@ export default function Header(): JSX.Element {
                                         }
                                         {user.role.includes(Roles['landlord']) && <>
                                             <Link to="/dashboard">Dashboard</Link>
+                                        </>
+
+                                        }
+                                        {user.role.includes(Roles['admin']) && <>
+                                            <Link to="/admin/dashboard">Dashboard</Link>
                                         </>
 
                                         }
