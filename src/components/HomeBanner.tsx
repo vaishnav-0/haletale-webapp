@@ -9,7 +9,7 @@ export default function (): JSX.Element {
                     Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium
                 </div>
                 <div className="banner-maintext">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+                    Renting house for newcomers is just a few clicks away
                 </div>
 
             </div>
