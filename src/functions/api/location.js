@@ -1,7 +1,18 @@
 import axios from 'axios';
 import Token from '../auth/token';
-import { objectReduce } from '../utils';
 
+
+export function extractAddressComponents(d) {
+    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "sublocality", "route", "street_number", "postal_code"];
+    let addressComponentValues;
+    addressComponentValues = d.address_components.reduce((obj, curr) => {
+        const type = curr.types.find((e) => addressComponents.includes(e))
+        if (type)
+            obj[type] = (obj[type] ? (obj[type] + " ") : "") + curr.long_name;
+        return obj;
+    }, {});
+    return addressComponentValues;
+}
 const instance = axios.create({
     baseURL: `${process.env.REACT_APP_API_SERVER_URL}/location`,
     method: 'get',

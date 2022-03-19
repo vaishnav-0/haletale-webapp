@@ -3,11 +3,11 @@ import { usePlaceSuggestions } from "../../../functions/hooks/usePlaceSuggestion
 import Searchbar from "../../Searchbar";
 import { TextInput } from "./TextInput";
 import CoordinateInput from "./CoordinateInput";
-import { addressToGeo } from '../../../functions/api/location'
+import { addressToGeo, extractAddressComponents } from '../../../functions/api/location'
 type TValue = {
     address: string,
     coords: [number, number],
-    addressComponents: { [k: string]: string }
+    addressComponents: { [k: string]: string },
 }
 export type PropsType = { onChange?: (v: any) => void, disabled?: boolean, defaultValue?: TValue }
 export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
@@ -20,9 +20,9 @@ export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
         }
         onChange && onChange(value);
     }, [value])
-    React.useEffect(()=>{
+    React.useEffect(() => {
         console.log("rerender");
-    },[])
+    }, [])
     return <>
         <Searchbar disabled={disabled} suggestionItems={suggestions.map(e => e[0])}
             placeholder="Search a place"
@@ -31,13 +31,8 @@ export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
                 let value: any = {};
                 value.address = v;
                 addressToGeo(suggestions[i!][1]).then(d => {
-                    const addressComponents = ["administrative_area_level_1", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
-                    value.addressComponents = d.address_components.reduce((obj: any, curr: any) => {
-                        const type = curr.types.find((e: any) => addressComponents.includes(e))
-                        if (type)
-                            obj[type] = curr.long_name;
-                        return obj;
-                    }, {})
+                    const addressComponents = ["administrative_area_level_1", "sublocality", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
+                    value.addressComponents = extractAddressComponents(d);
                     value.addressComponents.full_address = v;
                     value.coords = [d.geometry.location.lat, d.geometry.location.lng];
                     setValue(value);
