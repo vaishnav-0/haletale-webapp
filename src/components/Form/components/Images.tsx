@@ -4,7 +4,7 @@ import ImageUploading, { ImageListType, ResolutionType, ErrorsType } from "../..
 import { isResolutionValid } from '../../../libs/react-images-uploading/src/validation';
 import { getImage } from '../../../libs/react-images-uploading/src/utils';
 import { Drag } from '../../../functions/DragEvent';
-import { MessageBox } from '../../MessageBox';
+import { InfoMessageBox, MessageBox } from '../../MessageBox';
 import Cropper from "react-cropper";
 import cropperjs from "cropperjs";
 import "cropperjs/dist/cropper.css";
@@ -23,14 +23,31 @@ export interface PropsType {
     onBlur?: () => void,
     key?: React.Attributes["key"],
     disabled?: boolean,
-    defaultValue?: ImageListType
-
+    defaultValue?: ImageListType,
+    fetchList?: { url: string, name: string }[] //Images to be preloaded. Should be provided during first render.
 }
 const tagItems = {
     single: [{ name: "cover", limit: 1, value: "cover" }, { name: "abc", limit: 3, value: "a" }],
     group: [{ name: "roomtype", label: "Room type", items: ["bedroom", "bathroom"], limit: 5 }]
 }
 const CUSTOM_DATA_URL = "dataUrl";
+const toDataURL = (url: string, fileName: string) => {
+    console.log(url, fileName);
+    return fetch(url, { mode: "cors" })
+        .then(response => { console.log(response); return response.blob() })
+        .then(blob => new Promise((resolve, reject) => {
+            var file = new File([blob], fileName);
+            const reader = new FileReader();
+            console.log(blob);
+            reader.onloadend = () => resolve({ dataUrl: reader.result, file: file });
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+        })).catch(e => {
+            console.log(e);
+            toast.error("Error while loading images");
+            throw (e);
+        })
+}
 
 export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
     return new Promise((res, rej) => {
@@ -79,7 +96,7 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
 }
 export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 'gif', 'png', 'jpeg'],
     maxFileSize, resolutionType, resolutionHeight, resolutionWidth, defaultValue,
-    rejectOnResolutionError, onChange = () => { }, key, disabled = false }: PropsType): JSX.Element {
+    rejectOnResolutionError, onChange = () => { }, key, disabled = false, fetchList = [] }: PropsType): JSX.Element {
     const [images, setImages] = React.useState<ImageListType>([]);
     const [dragging, setDragging] = React.useState<boolean>(false);
     const [resErrors, setResErrors] = React.useState<Set<number>>(new Set());
@@ -93,6 +110,15 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     //         className: style["tag"]
     //     }
     // })
+    React.useEffect(() => {
+        if (fetchList)
+            Promise.allSettled(fetchList.map(e => toDataURL(e.url, e.name))
+            ).then((data) => {
+                const imgList = data.filter(e => e.status === 'fulfilled').map((e: any) => { return { [CUSTOM_DATA_URL]: e.value.dataUrl, file: e.value.file } });
+                console.log(imgList)
+                setImages(imgList);
+            })
+    }, [])
     const selectedTags = React.useRef<{ [k: number]: string[] }>({})
     React.useEffect(() => {
         const divRef_ = divRef.current;
@@ -300,13 +326,12 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                             </div>
                         </div>
                         <div className={style["imageupload-message-container"]}>
-                            <MessageBox labelComponent={<i className="fas fa-info-circle" />}>
-                                <div className={style["message-box"]} >
-                                    The images highlighted in red will be cropped automatically upon upload. To crop manually
+                            <InfoMessageBox
+                                message={<>The images highlighted in red will be cropped automatically upon upload. To crop manually
                                     click <i className="far fa-edit" /> button.
-
-                                </div>
-                            </MessageBox>
+                                </>
+                                }
+                            />
                         </div>
                         <div className={style["imageupload-btn-container"]}>
                             <button
