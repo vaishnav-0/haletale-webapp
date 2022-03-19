@@ -23,3 +23,13 @@ export function MessageBox({ children, labelComponent, style: boxStyle = "", onC
         }
     </div>
 }
+
+export function InfoMessageBox(props: { message: string | JSX.Element }) {
+    return (
+        <MessageBox labelComponent={<i className="fas fa-info-circle" />}>
+            <div className={style["message-box"]} >
+                {props.message}
+            </div>
+        </MessageBox>
+    );
+}
