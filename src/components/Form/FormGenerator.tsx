@@ -36,6 +36,7 @@ import { useForm, FormProvider, UseFormGetValues, FieldValues, FieldErrors, Fiel
 import { yupResolver } from '@hookform/resolvers/yup';
 import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
+import { InfoMessageBox } from "../MessageBox";
 
 
 
@@ -82,7 +83,8 @@ type TItemCommon = {
     },
     wrapperClassName?: string,
     wrapperStyle?: React.CSSProperties,
-    hidden?: boolean
+    hidden?: boolean,
+    info?: string
 }
 type TSingleItem = {
     defaultValue?: FormValueType,
@@ -149,8 +151,16 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
         }
         {
             error && <div className={style["field-error"]}>{
-                Object.values(error.types).flatMap(e => e).map((err,i,arr) => <div>{arr.length>1?"\u2022 ":""}{err as string}</div>)
+                Object.values(error.types).flatMap(e => e).map((err, i, arr) => <div>{arr.length > 1 ? "\u2022 " : ""}{err as string}</div>)
             }</div>
+
+
+
+        }{
+
+            item.info &&
+            <InfoMessageBox message={item.info}
+            />
         }
     </div>;
 }
