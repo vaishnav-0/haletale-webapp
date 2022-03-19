@@ -30,7 +30,7 @@ export default {
         }
       }
     }`,
-  UPDATE_PROPERTY : gql`mutation UPDATE_PROPERTY($id: uuid, $vars: property_set_input = {}, $details: property_details_set_input) {
+  UPDATE_PROPERTY: gql`mutation UPDATE_PROPERTY($id: uuid, $vars: property_set_input = {}, $details: property_details_set_input) {
     update_property(where: {id: {_eq: $id}}, _set: $vars) {
       affected_rows
     }
@@ -38,6 +38,17 @@ export default {
       affected_rows
     }
   }`,
+  DELETE_PROPERTY: gql`mutation DELETE_PROPERTY($pId: uuid, $aId: uuid) {
+  delete_property(where: {id: {_eq: $_eq}}) {
+    affected_rows
+  }
+  delete_address(where: {id: {_eq: $_eq1}}) {
+    affected_rows
+  }
+}
+
+  
+  `
 
   // update example
   // {

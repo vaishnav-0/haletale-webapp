@@ -4,63 +4,42 @@ import FormGenerator, { SchemaType } from "../../components/Form/FormGenerator";
 import { dataMapReturn, dynamicSchemaGenerator } from "../../components/Form/FormGeneratorHelpers";
 import Layout from "../Layout";
 import formStyle from '../../components/Form/Form.module.scss';
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import propertyQuery, { IPropertyDetails } from "../../queries/property.query";
 import { defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
 import { toast } from "react-toastify";
+import * as yup from 'yup';
+import { useLoder } from "../../components/Loader";
+
+const stringFieldRequired = yup.string().required("This field is required.")
 const schema: SchemaType = {
-    heading: "Add Property",
+    heading: "Edit Property",
     items: [
         {
-            title: "Property name",
-            name: "property_name",
-            type: "text",
+            title: "Change address",
+            name: "address",
+            type: "addressInput",
             props: {
-                type: "text"
-            }
-        },
-        {
-            title: "Property address",
-            name: "property_address",
-            type: "text",
-            props: {
-                type: "text"
-            }
-        },
-        {
-            title: "Property location",
-            name: "property_coords",
-            type: "coordinateInput",
-            props: {
-                center: [55.731538, -103.650174],
-                zoom: 4
-            }
-        },
-        {
-            title: "Images",
-            name: "images",
-            type: "image",
-            props: {
-                resolutionType: 'ratio',
-                resolutionWidth: 16,
-                resolutionHeight: 9
-            }
+
+            },
         },
         {
             title: "Property type",
             name: "type",
             type: "select",
             props: {
-                values: { "-": "", "1": "Detatched", "2": "Lawn moving" }
-            }
+                values: {}
+            },
+            validationSchema: stringFieldRequired
         },
         {
             title: "Property subtype",
             name: "subtype",
             type: "select",
             props: {
-                values: { "-": "", "snow": "Main level", "lawn": "Basement" }
-            }
+                values: {}
+            },
+            validationSchema: stringFieldRequired
         },
         {
             title: "Additional notes:",
@@ -71,7 +50,18 @@ const schema: SchemaType = {
             }
         },
         {
-            title: "bedroom",
+            title: "Images",
+            name: "images",
+            type: "image",
+            props: {
+                maxFileSize: 5000000,
+                resolutionType: 'ratio',
+                resolutionWidth: 16,
+                resolutionHeight: 9
+            }
+        },
+        {
+            title: "Bedroom",
             name: "bedroom",
             type: "number",
             props: {
@@ -111,10 +101,7 @@ const schema: SchemaType = {
             name: "features",
             type: "pillList",
             props: {
-                items: {
-                    fridge: "Fridge", stove: "Stove", dishwasher: "Dishwasher", microwave: "Microwave",
-                    nosmoking: "No smoking", stove2: "Stove"
-                }
+                items: {}
             }
         },
         {
@@ -123,16 +110,7 @@ const schema: SchemaType = {
             type: "checkboxGroup",
             wrapperClassName: formStyle["horizontal-list"],
             props: {
-                values: ["smoking", "pets"],
-            }
-        },
-
-        {
-            title: "Rent",
-            name: "rent",
-            type: "text",
-            props: {
-                type: "number"
+                values: [],
             }
         },
         {
@@ -140,60 +118,20 @@ const schema: SchemaType = {
             name: "lease_term",
             type: "select",
             props: {
-                values: { "-": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
-            }
-        },
-        { //checkbox group
-            title: "Paid by landlord",
-            name: "landlord_paid",
-            type: "checkboxGroup",
-            props: {
-                values: ["Hydro", "Water", "Heat"]
-            }
+                values: { "": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
+            },
+            validationSchema: stringFieldRequired
         },
         {
-            title: "Hydro percentage",
-            name: "hydo",
+            title: "Rent",
+            name: "rent",
             type: "text",
             props: {
                 type: "number"
-            }
-        },
-        {
-            title: "Outdoor maintainance",
-            name: "outdoor_maintainance",
-            type: "select",
-            props: {
-                values: { "-": "", "yes": "Yes", "no": "No" }
-            }
-        },
-        {
-            title: "Address verification document",
-            name: "address_proof",
-            type: "file",
-            props: {
-                multiple: true
-            }
+            },
+            validationSchema: stringFieldRequired
         },
 
-        {
-            name: "member",
-            isArray: {
-                controlHeading: "No. of tenants:",
-                title: "Member"
-            },
-            items: [
-                {
-                    title: "name",
-                    name: "memberName",
-                    type: "text",
-                    props: {
-                        type: "text"
-                    },
-                    defaultValue: ""
-                }
-            ]
-        },
 
 
     ],
@@ -203,7 +141,8 @@ const schema: SchemaType = {
 export default function EditProperty() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [_schema, _setSchema] = React.useState<SchemaType | null>(null);
-
+    const [Loader, setLoader] = useLoder({});
+    let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
     let [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
     const navigate = useNavigate();
     React.useEffect(() => {
@@ -218,6 +157,11 @@ export default function EditProperty() {
         }
     }, []);
     React.useEffect(() => {
+        if (loading)
+            setLoader(true);
+
+    }, [loading]);
+    React.useEffect(() => {
         if (propertyData) {
             console.log(propertyData);
             const property = propertyData.property[0];
@@ -225,11 +169,13 @@ export default function EditProperty() {
                 property_name: property.name,
                 property_address: property.property_address?.address?.full_address,
                 // property_coords: property.coordinates?.coordinates,
-                //type: property.type,
-                type: "2",
-                subtype: property.sub_type,
+                type: property.property_type.id,
+                subtype: property.property_subtype.id,
+                description: property.description,
+                bedroom: property.property_detail?.rooms?.bedroom,
+                bathroom: property.property_detail?.rooms?.bathroom,
+                parking: property.property_detail?.rooms?.parking,
                 features: ["fridge"],
-                bathroom: 5,
                 restriction: ["pets"],
                 member: [
                     {
@@ -243,15 +189,44 @@ export default function EditProperty() {
             defaultValueInjector(schema, defaultValue).then(s => {
                 console.log("set schema", s);
                 dynamicSchemaGenerator({
-                    schema: s, dataMap: () => {
+                    schema: s,
+                    dataLoader: {
+                        type: property_types.property_type.map((e: any) => { return { [e.id]: e.name } }),
+                        subtype: property_types.property_subtype.map((e: any) => { return { [e.id]: e.name } }),
+                    },
+                    dataMap: (data) => {
                         return {
                             images: (item: any) => {
                                 console.log(property.property_images?.map(e => { return { url: e?.s3Url, name: e?.key } }))
                                 item.props.fetchList = property.property_images ? property.property_images.map(e => { return { url: e?.s3Url?.url, name: e?.key } }) : []
-                            }
+                            },
+                            address: (item: any) => {
+                                item.info = "Current address: " + property.property_address?.address?.full_address;
+                            },
+                            type: (item: any) => {
+                                item.props.values = {
+                                    "": "", ...data.type.reduce((obj: any, curr: any) => {
+                                        obj = { ...obj, ...curr }
+                                        return obj;
+                                    }, {})
+                                };
+                            },
+
+
+                            subtype: (item: any) => {
+                                item.props.values = {
+                                    "": "", ...data.subtype.reduce((obj: any, curr: any) => {
+                                        obj = { ...obj, ...curr }
+                                        return obj;
+                                    }, {})
+                                };
+                            },
                         }
                     }
-                }).then(sch => _setSchema(sch))
+                }).then(sch => {
+                    setLoader(false);
+                    _setSchema(sch)
+                })
             })
 
         }
