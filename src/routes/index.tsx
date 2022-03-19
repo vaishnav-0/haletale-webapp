@@ -27,6 +27,7 @@ import UserContext from "../functions/auth/userContext";
 import TenantRequestView from "../pages/Tenant/TenantRequestView";
 import ViewFavourites from "../pages/Tenant/ViewFavourites";
 import CenterContent from "../components/CenterContent";
+import AdminDashboardRoutes from "./AdminDashboard";
 export default function () {
     const auth = useAuth();
     return (
@@ -80,7 +81,11 @@ export default function () {
                             <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
                                 <Route path="requests/view" element={< TenantRequestView />} />
                                 <Route path="favourites" element={< ViewFavourites />} />
-                            </Route>``
+                            </Route>
+
+                            <Route path="/admin" element={<RequireAuth role={[Roles['admin']]} />}>
+                                <Route path="dashboard/*" element={<AdminDashboardRoutes />} />
+                            </Route>
                         </Routes>
                 }
             </BrowserRouter >
