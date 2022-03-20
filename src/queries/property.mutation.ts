@@ -16,8 +16,8 @@ export default {
     }
   }`,
 
-  ADD_PROPERTY_DETAILS: gql`mutation ADD_PROPERY_DETAILS($description: String, $features: jsonb, $max_occupants: Int, $rent_amount: float8, $restrictions: jsonb, $rooms: jsonb, $id: uuid) {
-    insert_property_details_one(object: {description: $description, features: $features, max_occupants: $max_occupants, rent_amount: $rent_amount, restrictions: $restrictions, rooms: $rooms, id: $id}) {
+  ADD_PROPERTY_DETAILS: gql`mutation ADD_PROPERY_DETAILS($description: String, $features: jsonb, $max_occupants: Int, $lease_term : Int, $rent_amount: float8, $restrictions: jsonb, $rooms: jsonb, $id: uuid) {
+    insert_property_details_one(object: {description: $description, features: $features, max_occupants: $max_occupants, ,lease_term: $lease_term ,rent_amount: $rent_amount, restrictions: $restrictions, rooms: $rooms, id: $id}) {
       id
     }
   }
@@ -47,32 +47,11 @@ export default {
   }
 }
   `,
-  UPDATE_IS_LISTED:gql`mutation UPDATE_IS_LISTED($id: uuid, $is_listed:Boolean) {
+  UPDATE_IS_LISTED: gql`mutation UPDATE_IS_LISTED($id: uuid, $is_listed:Boolean) {
   update_property(where: {id: {_eq: $id}}, _set: {is_listed: $is_listed}) {
     affected_rows
   }
-}
-  `
+}`,
 
-  // update example
-  // {
-  //   "id": "78b0a75b-be01-42d2-b6d4-c04b10fd2b2b",
-  //   "vars": {
-  //     "coordinates": {
-  //       "type":"Point",
-  //       "coordinates": [
-  //           76.431884765625,
-  //           10.228437266155943
-  //         ]
-  //     },
-  //     "name": "TestPROPP",
-  //     "sub_type": "Mainlevel",
-  //     "type": "Condos"
-  //   },
-  //   "details": {
-  //     "rooms": {
-  //       "bedroom" : 10
-  //     }
-  //   }
-  // }
+
 }

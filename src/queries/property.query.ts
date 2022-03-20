@@ -151,6 +151,11 @@ export default {
     name
     comment
   }
+  lease_term_list {
+    id
+    months
+    description
+  }
     property_restrictions_list {
     name
     comment
