@@ -53,7 +53,9 @@ export default {
   }
 }`,
   UPDATE_IS_APPROVED: gql`mutation UPDATE_IS_APPROVED($id: uuid, $is_approved: Boolean) {
-  update_property(where: {id: {_eq: $is}}, _set: {is_approved: $is_approved})
+  update_property(where: {id: {_eq: $id}}, _set: {is_approved: $is_approved}){
+        affected_rows
+  }
 }
 
 `
