@@ -26,10 +26,10 @@ export default function RequestCard({ requestData }: { requestData: IRequestData
 
             <div><span className={style["title"]}>Intended move in date: </span>{requestData.intended_move_in_date}</div>
             <div><span className={style["title"]}>Lease duration: </span> {requestData.lease_duration}</div>
+            <div className={style["title"]}>Other tenants: </div>
             <div className={style["othertenants"]}>
-                <div className={style["title"]}>Other tenants: </div>
                 {
-                    requestData.other_tenents?.map(e => <div>{e.name}</div>)
+                    requestData.other_tenents?.map(e => <div><div>Name:{e.name}</div><div>Email:{e.email}</div></div>)
                 }
             </div>
         </div>
