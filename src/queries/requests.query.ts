@@ -8,6 +8,7 @@ export interface IRequestData {
     other_tenents?:
     {
       name?: string
+      email?: string
     }[]
     ,
     property_id: string,
@@ -64,11 +65,27 @@ export default {
   `,
   GET_ALL_REQUESTS: gql`query PROPERTY_REQUEST {
         property_request {
+        id
+        intended_move_in_date
+        lease_duration
+        other_tenents
+        property_id
+        user {
+          email
+          phone
+          name
+        }
+        }
+      }
+      `, ADMIN_GET_ALL_REQUESTS: gql`query ADMIN_GET_ALL_REQUESTS {
+        property_request {
+        id
         intended_move_in_date
         lease_duration
         other_tenents
         property_id
         reachout_time
+        isApproved
         user {
           email
           phone
