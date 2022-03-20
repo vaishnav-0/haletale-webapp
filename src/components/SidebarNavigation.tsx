@@ -4,27 +4,25 @@ import style from './SidebarNavigation.module.scss';
 import Layout from "../pages/Layout";
 export default function SidebarNavigation({ items, active, children }: { items: { label: string, url: string }[], children: JSX.Element, active?: number }) {
     return (
-        <Layout>
-            <div className={style["sidenav-container"]}>
-                <div className={style["nav-container"]}>
-                    <ul className={style["nav-list"]}>
-                        {
-                            items.map((e, i) => <li>
-                                <Link className={active === i ? style["active"] : ""}
-                                    to={e.url}>{e.label}
-                                </Link>
-                            </li>
-                            )
-                        }
-                    </ul>
-                </div>
-                <div className={style["content"]}>
+        <div className={style["sidenav-container"]}>
+            <div className={style["nav-container"]}>
+                <ul className={style["nav-list"]}>
                     {
-                        children
+                        items.map((e, i) => <li>
+                            <Link className={active === i ? style["active"] : ""}
+                                to={e.url}>{e.label}
+                            </Link>
+                        </li>
+                        )
                     }
-                </div>
+                </ul>
             </div>
-        </Layout>
+            <div className={style["content"]}>
+                {
+                    children
+                }
+            </div>
+        </div>
 
 
     )
