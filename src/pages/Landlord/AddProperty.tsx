@@ -126,7 +126,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 name: d.property_name,
                 description: d.notes,
                 type: d.type,
-                sub_type: d.subtype
+                sub_type: d.subtype,
             }
         })
     }
@@ -330,7 +330,7 @@ function AddPropertyForm3(props: FormPropsType) {
                 props: {
                     values: { "": "", "snow": "6 Months to 1 year", "lawn": "1 year" }
                 },
-                validationSchema: stringFieldRequired
+                validationSchema: yup.number().positive("Lease term is required")
             },
             {
                 title: "Rent",
@@ -391,9 +391,8 @@ function AddPropertyForm3(props: FormPropsType) {
         props.onLoading();
         if (!propertyId.current) //handle it
             return
-        addPropertyDetails({ //lease term to be included
+        addPropertyDetails({
             variables: {
-                description: null,
                 features: d.features,
                 max_occupants: d.tenant_count,
                 rent_amount: d.rent,
