@@ -48,7 +48,6 @@ type props = {
     onClose: () => void;
 }
 function resendCode(email: string, onSuccess?: () => void) {
-    console.log(email);
     resendConfirmationCode(email,
         (err: any, data: any) => {
             if (!err) {
@@ -88,11 +87,12 @@ function resendCode(email: string, onSuccess?: () => void) {
             console.log(JSON.stringify(err), data)
         })
 }
-function onSubmit(d: any, SuccessAction: Function) {
+function onSubmit(d: any, successAction: Function, completeAction?: Function) {
     auth.emailPasswordSignIn({ email: d.email, password: d.password },
         (err: any, data: any) => {
+            completeAction && completeAction();
             if (data)
-                SuccessAction();
+                successAction();
             if (err?.code === "UserNotConfirmedException") {
                 toast.warn(({ closeToast }) => <div className={style["confirm-container"]}>
                     <div>Your account is not confirmed</div>
@@ -113,6 +113,7 @@ function onSubmit(d: any, SuccessAction: Function) {
 }
 function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
     const navigate = useNavigate();
+    const [loading, setLoading] = React.useState<boolean>(false)
     return (
         <div className={style["modal-container"]}>
             <div className={style["modal-header"]}>
@@ -125,7 +126,11 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
             </div>
             <div className={style["modal-item-list"]} style={{ paddingTop: "1em" }}>
                 <div className={style["modal-item"]}>
-                    <FormGenerator onSubmit={(d) => onSubmit(d, () => onClose())} schema={schema} />
+                    <FormGenerator disabled={loading} onSubmit={(d) => {
+                        setLoading(true);
+                        onSubmit(d, () => onClose(), () => setLoading(false))
+                    }
+                    } schema={schema} />
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["other-methods-message"]}>
