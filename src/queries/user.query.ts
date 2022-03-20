@@ -64,4 +64,9 @@ export default {
     }
   }
   `,
+  CHECK_USER_STATUS: gql`query USER_STATUS($_eq: uuid) {
+    user(where: {id: {_eq: $_eq}}) {
+      isActive
+    }
+  }`,
 }
