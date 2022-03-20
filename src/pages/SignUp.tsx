@@ -46,7 +46,9 @@ const schema = {
             name: "dob",
             type: "time",
             props: {
-                type: "date"
+                type: "date",
+                max: "9999-12-31"
+
             },
             validationSchema: yup.date().typeError("Invalid date").required("Date of birth is required").max(DOBMax, "You should be atleast 16 to sign up on our platform")
         },

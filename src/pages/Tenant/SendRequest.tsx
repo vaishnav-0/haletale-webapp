@@ -78,7 +78,9 @@ const schema = {
         type: "time",
         name: "movein_date",
         props: {
-            type: "date"
+            type: "date",
+            max: "9999-12-31"
+
         },
         validationSchema: yup.date().typeError("Invalid date").max(new Date(2024, 1), "Invalid date").min(new Date(), "Invalid date")
     },
