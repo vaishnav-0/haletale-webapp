@@ -21,6 +21,7 @@ interface IPropertyQueryOptional {
     features: string[]
     restrictions: string[]
     rent_amount: number
+    lease_term: number
     rooms: {
       bedroom: number,
       bathroom: number,
