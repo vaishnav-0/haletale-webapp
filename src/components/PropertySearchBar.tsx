@@ -37,12 +37,10 @@ export default function (): JSX.Element {
         })
     }
     return (
-        <div style={{ marginTop: 60, marginBottom: 60 }}>
-            <Searchbar suggestionItems={suggestions.map(e => e[0])}
-                placeholder="Search Property, Neighbourhood or Address"
-                onChange={suggest}
-                onSubmit={(v, i) => searchProperty(suggestions[i!][1], v)}
-                submitOnSuggestionClick />
-        </div>
+        <Searchbar suggestionItems={suggestions.map(e => e[0])}
+            placeholder="Search Property, Neighbourhood or Address"
+            onChange={suggest}
+            onSubmit={(v, i) => searchProperty(suggestions[i!][1], v)}
+            submitOnSuggestionClick />
     );
 }
