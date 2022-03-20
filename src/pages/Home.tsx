@@ -23,10 +23,10 @@ function HomePage(): JSX.Element {
     return (
         <Layout footer={true}>
             <HomeBanner />
-            <div style={{ marginTop: 60, marginBottom: 60 }}>
+            <div style={{ marginTop: 20, marginBottom: 60 }}>
                 <PropertySearchBar />
             </div>
-            <div style={{ marginTop: 60, marginBottom: 60 }}>
+            <div style={{ marginTop: 20, marginBottom: 60 }}>
                 <MinimalPropertyList title={user?.role.includes(Roles.landlord) ? "Your Properties:" : "Recent Properties"}
                     properties={recentPropertyData?.property ?? []}
                 />
