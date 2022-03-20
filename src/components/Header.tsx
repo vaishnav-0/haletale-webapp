@@ -82,18 +82,21 @@ export default function Header(): JSX.Element {
                                             //<Link to="#">Notifications</Link>
                                         }
                                         {user.role.includes(Roles['tenant']) && <>
-                                            <Link to="/requests/view">Your Bookings</Link>
                                             <Link to="/favourites">Favorites</Link>
                                         </>
 
                                         }
                                         {user.role.includes(Roles['landlord']) && <>
-                                            <Link to="/dashboard">Dashboard</Link>
+                                            <Link to="/landlord/dashboard">Dashboard</Link>
                                         </>
 
                                         }
                                         {user.role.includes(Roles['admin']) && <>
                                             <Link to="/admin/dashboard">Dashboard</Link>
+                                        </>
+
+                                        } {user.role.includes(Roles['tenant']) && <>
+                                            <Link to="/tenant/dashboard">Dashboard</Link>
                                         </>
 
                                         }
