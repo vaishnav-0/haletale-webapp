@@ -163,21 +163,23 @@ export default function Example() {
                             Monthly rent share
                         </div>
                         <i ref={breakdownQuestionRef} className='fas fa-question' />
-                        <div style={{ display: priceBreakdownOpen ? "" : "none" }} className={style["ratebreakdown"]}>
-                            <div className={style["ratebreakdown-item"]}>
-                                <div>Utilities included</div>
-                                <ul>
-                                    <li>Electricity,Water, Maintenence</li>
-                                </ul>
-                            </div>
-                            <div className={style["ratebreakdown-item"]}>
-                                <div>C${property?.property_detail?.rent_amount ?? ""}: Booking amount</div>
-                                <ul>
-                                    <li>Rent deposit(first &amp; last)</li>
-                                    <li>Key deposit</li>
-                                </ul>
-                            </div>
-                        </div>
+                        {
+                            //  <div style={{ display: priceBreakdownOpen ? "" : "none" }} className={style["ratebreakdown"]}>
+                            //      <div className={style["ratebreakdown-item"]}>
+                            //          <div>Utilities included</div>
+                            //          <ul>
+                            //              <li>Electricity,Water, Maintenence</li>
+                            //          </ul>
+                            //      </div>
+                            //      <div className={style["ratebreakdown-item"]}>
+                            //          <div>C${property?.property_detail?.rent_amount ?? ""}: Booking amount</div>
+                            //          <ul>
+                            //              <li>Rent deposit(first &amp; last)</li>
+                            //              <li>Key deposit</li>
+                            //          </ul>
+                            //      </div>
+                            //  </div>
+                        }
                     </div>
                     <div className={style["rateinfo-rate"]} >C$ {property?.property_detail?.rent_amount ?? ""}</div>
                 </div>
@@ -210,9 +212,11 @@ export default function Example() {
                         <i onClick={updateFav}
                             className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart ${favUpdating ? style["heart-loading"] : ""}`}></i>
                     </button>
-                    <button className={style["bottom-panel-icon"]}>
-                        <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
-                    </button>
+                    {
+                        //                   <button className={style["bottom-panel-icon"]}>
+                        //                     <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
+                        //                   </button>
+                    }
                     <button onClick={() => {
                         navigator.clipboard.writeText(window.location.href).then(d => toast.success("Link copied."))
                     }} className={style["bottom-panel-shareicon"]}>
