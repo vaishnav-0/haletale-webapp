@@ -426,7 +426,7 @@ function AddProperty(): JSX.Element {
             <div className={formStyle["form-header"]}>
                 Add Property
             </div>
-            <ProgressiveForm parallel forms={forms} onFinish={() => {
+            <ProgressiveForm forms={forms} onFinish={() => {
                 toast.success("Property added");
                 navigate("/landlord/dashboard");
             }}
