@@ -3,19 +3,31 @@ import style from './LandlordDashboard.module.scss';
 import Layout from '../Layout';
 import { ButtonSolid, ButtonSolidWithIndicator } from '../../components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import propertyQuery, { IPropertyDetails } from '../../queries/property.query';
 import { useLoder } from '../../components/Loader';
 import ClampLines from 'react-clamp-lines';
 import requestsQuery, { IRequestData, IRequestCount } from '../../queries/requests.query';
 import RequestCard from '../../components/RequestCard';
+import propertyMutation from '../../queries/property.mutation';
+import PopupDialog, { usePopupDialog } from '../../components/PopupDialog';
 
 export default function Example() {
     const navigate = useNavigate();
-    const { data: propertyData, loading, fetchMore } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER, { fetchPolicy: "no-cache" });
+    const [Popup, setPopup] = usePopupDialog();
+    const { data: propertyData, loading, refetch } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER, { fetchPolicy: "no-cache" });
     const { data: allRequestCountData, loading: allRequestCountLoading } = useQuery<IRequestCount>(requestsQuery.GET_ALL_REQUEST_COUNT, { fetchPolicy: "no-cache" });
     const allRequestCount = allRequestCountData ? allRequestCountData.property_request_aggregate.aggregate.count : null;
     const [Loader, setLoader] = useLoder({});
+    const [setListedMutation, { data: setListedMutationData, loading: setListedMutationLoading }] = useMutation(propertyMutation.UPDATE_IS_LISTED, { onCompleted: refetch })
+    const changeListing = (id: string, d: boolean) => {
+        setListedMutation({
+            variables: {
+                id: id,
+                is_listed: d
+            }
+        });
+    }
     React.useEffect(() => {
         if (loading)
             setLoader(true);
@@ -25,6 +37,7 @@ export default function Example() {
     return (
         <Layout>
             {Loader}
+            {Popup}
             <div className={style["wrapper"]}>
                 <div className={style["btn-container"]}>
                     <ButtonSolid onClick={() => navigate("/property/add")}>
@@ -113,8 +126,11 @@ export default function Example() {
                                         <ButtonSolidWithIndicator onClick={() => navigate("/property/edit/?id=" + property.id)} className={style["property-card-edit-btn"]} tooltip={property.property_detail ? "" : "Property data incomplete"} indicator={property.property_detail ? <></> : <div className={style["btn-indicator"]}>!</div>}>
                                             Edit
                                         </ButtonSolidWithIndicator>
-                                        <ButtonSolid type="button" className={style["property-card-unlist-btn"]}>
-                                            Unlist
+                                        <ButtonSolid type="button"
+                                            disabled={setListedMutationLoading}
+                                            onClick={() => setPopup(true, `Are you sure you want to ${property.is_listed ? "un" : ""}list the property?`, () => changeListing(property.id, !property.is_listed))}
+                                            className={`${style["property-card-unlist-btn"]} ${!property.is_listed ? style["inactive"] : ""}`}>
+                                            {property.is_listed ? "Unlist" : "List"}
                                         </ButtonSolid>
                                     </div>
 

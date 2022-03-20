@@ -81,12 +81,17 @@
 }
 
 .property-card-unlist-btn {
-    background-color: $redLight;
-    border-color: $redLight;
 
-    &:hover {
-        color: $redLight;
+    &:not(.inactive) {
+        background-color: $redLight;
+        border-color: $redLight;
+
+        &:hover {
+            color: $redLight;
+            background-color: white;
+        }
     }
+
 }
 
 .properties-card-status {
