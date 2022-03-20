@@ -4,6 +4,7 @@ import Searchbar from "../../Searchbar";
 import { TextInput } from "./TextInput";
 import CoordinateInput from "./CoordinateInput";
 import { addressToGeo, extractAddressComponents } from '../../../functions/api/location'
+import cloneDeep from "clone-deep";
 type TValue = {
     address: string,
     coords: [number, number],
@@ -13,11 +14,7 @@ export type PropsType = { onChange?: (v: any) => void, disabled?: boolean, defau
 export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
     const { suggestions, suggest } = usePlaceSuggestions();
     const [value, setValue] = React.useState(defaultValue);
-    const textRef = React.useRef<HTMLInputElement>(null);
     React.useEffect(() => {
-        if (textRef.current) {
-            textRef.current.value = value?.address ?? "";
-        }
         onChange && onChange(value);
     }, [value])
     return <>
@@ -38,10 +35,8 @@ export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
                 });
             }}
             submitOnSuggestionClick />
-        <TextInput placeholder="Address" ref={textRef} disabled={disabled}
-            type="text" name="address" defaultValue={defaultValue?.address} />
         <CoordinateInput
-            disabled={disabled}
+            disabled={true}
             center={[55.731538, -103.650174]}
             zoom={4}
             defaultValue={defaultValue?.coords}
