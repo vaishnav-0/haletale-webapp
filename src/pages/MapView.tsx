@@ -58,7 +58,7 @@ function MapView({ properties, onClose = () => { } }: { properties: IPropertyDet
             <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
                 <Openable
                     className={style["filter-container"]} open={[filterOpen, setFilterOpen]}>
-                    <FilterModel onClose={() => {
+                    <FilterModel onSubmit={() => { }} onClose={() => {
                         setFilterOpen(false);
                     }} />
 
