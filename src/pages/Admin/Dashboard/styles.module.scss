@@ -18,7 +18,8 @@
 
     thead {
 
-        background-color: adjust-color($color: $primary, $lightness: 10%, );
+        background-color: adjust-color($color: $primary, $lightness: 5%, );
+        color: white;
     }
 
     tbody tr {
