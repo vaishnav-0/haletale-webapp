@@ -96,8 +96,8 @@ export default function (): JSX.Element {
     return (
         <Layout>
             {
-                mapOpen && propertyData &&
-                <MapView properties={searchParams.get("all") ? (allPropertyData?.property ?? []) : propertyData.search_property} onClose={() => setMapOpen(false)} />
+                mapOpen && (allPropertyData || propertyData) &&
+                <MapView properties={searchParams.get("all") ? (allPropertyData?.property ?? []) : propertyData?.search_property ?? []} onClose={() => setMapOpen(false)} />
             }
             <PropertySearchBar />
             <div className={style["header"]}>
@@ -205,6 +205,7 @@ export default function (): JSX.Element {
                             aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
                             wrapperClassName={style["search-list"]}
                             checkSkip={(propertyData, aggregateData) => {
+                                console.log(aggregateData?.search_property_aggregate?.aggregate?.totalCount, propertyData?.search_property?.length)
                                 return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
                             }}
                         >
