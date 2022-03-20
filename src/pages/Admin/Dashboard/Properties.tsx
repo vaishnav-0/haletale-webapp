@@ -14,8 +14,14 @@ export default function Properties() {
   const { data: allPropertyData, loading: propertyLoading, refetch } = useQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
     fetchPolicy: "cache-and-network"
   });
+  React.useEffect(() => {
+    if (propertyLoading)
+      setLoader(true)
+    else
+      setLoader(false)
+  }, [propertyLoading])
   const [Loader, setLoader] = useLoader({});
-  const [setApprovedMutation, { data: setApprovedMutationData, loading: setListedMutationLoading }] = useMutation(propertyMutation.UPDATE_IS_APPROVED, { onCompleted: refetch })
+  const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedutationLoading }] = useMutation(propertyMutation.UPDATE_IS_APPROVED, { onCompleted: refetch })
   const [data, setData] = React.useState<readonly IPropertyDetails[]>([]);
   const [current_page, setPage] = React.useState<Number>(0);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
@@ -37,7 +43,7 @@ export default function Properties() {
       },
       {
         Header: 'Approval',
-        accessor: (data) => <button onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Disapprove" : "Approve"}</button>,
+        accessor: (data) => <button disabled={setApprovedutationLoading} onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Remove approval" : "Approve"}</button>,
       },
       {
         Header: 'Full Address',
@@ -88,6 +94,7 @@ export default function Properties() {
   // chng page
 
   return <>
+    {Loader}
     <div>
       <Table columns={columns} data={result} />
     </div>
