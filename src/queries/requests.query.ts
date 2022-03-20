@@ -4,6 +4,7 @@ export interface IRequestData {
   property_request: {
     intended_move_in_date: string,
     lease_duration: number,
+    reachout_time?: string
     other_tenents?:
     {
       name?: string
@@ -11,9 +12,9 @@ export interface IRequestData {
     ,
     property_id: string,
     user: {
-      "email": string,
-      "phone": string,
-      "name": string
+      email: string,
+      phone: string,
+      name: string
     }
   }[]
 }
@@ -98,5 +99,5 @@ export default {
         property_id
         }
       }`,
-  
+
 }
