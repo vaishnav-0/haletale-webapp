@@ -19,6 +19,25 @@ export interface IGetUserFav {
     id: string
   }[]
 }
+
+export interface IUserData {
+  user: {
+    email: string
+    id: string
+    isActive: boolean
+    name: string
+    phone: string
+    user_detail: {
+      date_of_birth: string
+      gender: string
+      country: {
+        name: string
+      }
+    }
+    created_at: string
+  }[]
+
+}
 export default {
   GET_USER_DETAILS: gql`query GET_USER_DETAILS($id:uuid) {
     user(where: {id: {_eq: $id}}) {
@@ -69,4 +88,22 @@ export default {
       isActive
     }
   }`,
+  ADMIN_GET_ALL_USERS: gql`query  ADMIN_GET_ALL_USERS{
+  user {
+    email
+    id
+    isActive
+    name
+    phone
+    user_detail {
+      date_of_birth
+      gender
+      country {
+        name
+      }
+    }
+    created_at
+  }
+}
+`
 }
