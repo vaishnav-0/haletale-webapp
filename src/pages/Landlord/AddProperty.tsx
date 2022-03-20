@@ -58,7 +58,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 props: {
                     values: {}
                 },
-                validationSchema: stringFieldRequired
+                validationSchema: yup.number().required("Type is required").positive("Type is required").typeError("Type is required")
             },
             {
                 title: "Property subtype",
@@ -67,7 +67,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 props: {
                     values: {}
                 },
-                validationSchema: stringFieldRequired
+                validationSchema: yup.number().required("Sub type is required").positive("Sub type is required").typeError("Sub type is required")
             },
             {
                 title: "Additional notes:",
@@ -140,26 +140,29 @@ function AddPropertyForm1(props: FormPropsType) {
                 dataLoader: new Promise(res => res(
                     {
                         type: property_types.property_type.map((e: any) => { return { [e.id]: e.name } }),
-                        subtype: property_types.property_subtype.map((e: any) => { return { [e.id]: e.name } }),
+                        subtype: property_types.property_subtype.map((e: any) => { return { [e.id + ""]: e.name } }),
                     })),
                 dataMap: (data) => {
                     return {
                         type: (item: any) => {
                             item.props.values = {
-                                "": "", ...data.type.reduce((obj:any, curr:any) => {
-                                    obj = {...obj,...curr}
+                                "0": "", ...data.type.reduce((obj: any, curr: any) => {
+                                    obj = { ...obj, ...curr }
+                                    return obj;
+                                }, {})
+                            };
+                            console.log(item.props.values)
+                        },
+
+
+                        subtype: (item: any) => {
+                            item.props.values = {
+                                "0": "", ...data.subtype.reduce((obj: any, curr: any) => {
+                                    obj = { ...obj, ...curr }
                                     return obj;
                                 }, {})
                             };
                         },
-
-
-                        subtype: (item: any) => { item.props.values = {
-                                "": "", ...data.subtype.reduce((obj:any, curr:any) => {
-                                    obj = {...obj,...curr}
-                                    return obj;
-                                }, {})
-                            };},
                     }
                 }
             }).then(sch => {
