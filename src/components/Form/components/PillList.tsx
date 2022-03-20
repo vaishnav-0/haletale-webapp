@@ -1,5 +1,4 @@
 import React from 'react';
-import { number, string } from 'yup';
 import style from './PillList.module.scss';
 import { useMemoized } from '../../../functions/hooks/useMemoized'
 
@@ -23,7 +22,12 @@ function getKeyPosition(obj: object, key: string) {
 
 function keyArrayToPositionArray(keyArray: Array<number | string>, obj: object) {
     return keyArray.reduce((arr: number[], curr) => {
-        let pos = typeof curr === 'string' ? getKeyPosition(obj, curr) : curr;
+        let pos = typeof curr === 'string' ?
+            Array.isArray(obj) ?
+                obj.indexOf(curr)
+                :
+                getKeyPosition(obj, curr) :
+            curr;
         return pos !== -1 ? [...arr, pos] : arr;
     }, []);
 }
@@ -36,6 +40,7 @@ export function PillList({ items, onChange, disabledKeys = [], disabled, classNa
         }
         return defaultValue as number[];
     }, [defaultValue])
+    console.log(defaultValue, defaultValues_)
     const disabledActivatableKeys_ = React.useMemo(() => {
         if (disabledActivatableKeys.length > 0) {
             return keyArrayToPositionArray(disabledActivatableKeys, items);
