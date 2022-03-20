@@ -15,14 +15,14 @@ const setGlobalLoader = (enable: boolean, config?: PropsType) => {
 }
 
 export default function GlobalLoder(props: PropsType) {
-    const [Loader, setLoader] = useLoder(props);
+    const [Loader, setLoader] = useLoader(props);
     React.useLayoutEffect(() => {
         setLoaderRef.current = setLoader;
     }, []);
 
     return Loader;
 }
-export function useLoder({ backgroundColor, color = "#08ada7", secondaryColor = "#FFFFFF", spinner = true }: PropsType)
+export function useLoader({ backgroundColor, color = "#08ada7", secondaryColor = "#FFFFFF", spinner = true }: PropsType)
     : [JSX.Element, (enable: boolean, config?: PropsType | undefined) => void] {
     const [enabled, setEnabled] = React.useState(false);
     const defConfig: PropsType = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLazyQuery, DocumentNode, TypedDocumentNode, QueryLazyOptions, OperationVariables } from '@apollo/client';
 import InView from 'react-intersection-observer';
-import { useLoder } from './Loader';
+import { useLoader } from './Loader';
 //Infinite scroll using offset. Query must contain variable named offset.
 export default function <TDataQuery, TAggrQuery>({ query, initialParams, children, wrapperClassName, checkSkip, aggregateQuery }:
     {
@@ -17,7 +17,7 @@ export default function <TDataQuery, TAggrQuery>({ query, initialParams, childre
         notifyOnNetworkStatusChange: true
     });
     const [lazyAggrQuery, { data: aggData, loading: aggLoading }] = useLazyQuery<TAggrQuery>(aggregateQuery);
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     React.useEffect(() => {
         lazyAggrQuery(initialParams);
         lazyQuery(initialParams);

@@ -10,7 +10,7 @@ import Searchbar from '../../components/Searchbar';
 import { PropertyQuery } from '../../queries'
 import { useQuery, useMutation } from '@apollo/client';
 import propertyQuery, { IPropertyAttribute } from '../../queries/property.query';
-import { useLoder } from '../../components/Loader';
+import { useLoader } from '../../components/Loader';
 import { cropToAspectRatio } from '../../components/Form/components/Images';
 import { dataMapReturn, dynamicSchemaGenerator } from '../../components/Form/FormGeneratorHelpers';
 import { usePlaceSuggestions } from '../../functions/hooks/usePlaceSuggestions';
@@ -80,7 +80,7 @@ function AddPropertyForm1(props: FormPropsType) {
         ],
         submitButton: "Next",
     } as const;
-    const [Loader, setLoader] = useLoder({ backgroundColor: "#000000a3" });
+    const [Loader, setLoader] = useLoader({ backgroundColor: "#000000a3" });
     const [schema_, setSchema_] = React.useState<SchemaType | null>(schema as SchemaType);
 
     const [disabled, setDisabled] = React.useState<boolean>(false);
@@ -260,7 +260,7 @@ function AddPropertyForm2(props: FormPropsType) {
     );
 }
 function AddPropertyForm3(props: FormPropsType) {
-    const [Loader, setLoader] = useLoder({ backgroundColor: "000000a3" });
+    const [Loader, setLoader] = useLoader({ backgroundColor: "000000a3" });
     let { data: property_attributes, loading } = useQuery<IPropertyAttribute>(propertyQuery.PROPERTY_ATTRIBUTES);
     React.useEffect(() => {
         if (loading)

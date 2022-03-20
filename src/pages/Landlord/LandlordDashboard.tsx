@@ -5,7 +5,7 @@ import { ButtonSolid, ButtonSolidWithIndicator } from '../../components/Button';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import propertyQuery, { IPropertyDetails } from '../../queries/property.query';
-import { useLoder } from '../../components/Loader';
+import { useLoader } from '../../components/Loader';
 import ClampLines from 'react-clamp-lines';
 import requestsQuery, { IRequestData, IRequestCount } from '../../queries/requests.query';
 import RequestCard from '../../components/RequestCard';
@@ -18,7 +18,7 @@ export default function Example() {
     const { data: propertyData, loading, refetch } = useQuery<{ property_owner: { property: IPropertyDetails }[] }>(propertyQuery.GET_PROPERTY_BY_OWNER, { fetchPolicy: "no-cache" });
     const { data: allRequestCountData, loading: allRequestCountLoading } = useQuery<IRequestCount>(requestsQuery.GET_ALL_REQUEST_COUNT, { fetchPolicy: "no-cache" });
     const allRequestCount = allRequestCountData ? allRequestCountData.property_request_aggregate.aggregate.count : null;
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     const [setListedMutation, { data: setListedMutationData, loading: setListedMutationLoading }] = useMutation(propertyMutation.UPDATE_IS_LISTED, { onCompleted: refetch })
     const changeListing = (id: string, d: boolean) => {
         setListedMutation({

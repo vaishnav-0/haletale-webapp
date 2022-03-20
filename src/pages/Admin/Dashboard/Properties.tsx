@@ -1,17 +1,21 @@
 import React from 'react';
 import { useTable, usePagination } from 'react-table'
 import style from './styles.module.scss';
-import { gql, useQuery } from '@apollo/client'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import propertyQuery, { IGetAllPropertyData, IPropertyDetails } from '../../../queries/property.query';
 import { useNavigate } from 'react-router-dom';
 import ImageSlider from '../../../components/ImageSlider';
+import propertyMutation from '../../../queries/property.mutation';
+import { useLoader } from '../../../components/Loader';
 
 export default function Properties() {
   const navigate = useNavigate();
   //data
-  const { data: allPropertyData, loading: propertyLoading } = useQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
+  const { data: allPropertyData, loading: propertyLoading, refetch } = useQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
     fetchPolicy: "cache-and-network"
   });
+  const [Loader, setLoader] = useLoader({});
+  const [setApprovedMutation, { data: setApprovedMutationData, loading: setListedMutationLoading }] = useMutation(propertyMutation.UPDATE_IS_APPROVED, { onCompleted: refetch })
   const [data, setData] = React.useState<readonly IPropertyDetails[]>([]);
   const [current_page, setPage] = React.useState<Number>(0);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
@@ -33,7 +37,7 @@ export default function Properties() {
       },
       {
         Header: 'Approval',
-        accessor: (data) => <button className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Disapprove" : "Approve"}</button>,
+        accessor: (data) => <button onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Disapprove" : "Approve"}</button>,
       },
       {
         Header: 'Full Address',

@@ -3,7 +3,7 @@ import React from 'react';
 import Layout from '../Layout';
 import FormGenerator, { FormDataShape, SchemaType } from '../../components/Form/FormGenerator';
 import * as yup from 'yup';
-import { useLoder } from '../../components/Loader';
+import { useLoader } from '../../components/Loader';
 import { dynamicSchemaGenerator, dataMapReturn } from '../../components/Form/FormGeneratorHelpers';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import metaQuery from '../../queries/meta.query';
@@ -128,7 +128,7 @@ function SendRequest(): JSX.Element {
         });
     const [getSameRequest, { data: userRequestData, loading: userRequestLoading, error: userRequestError }] = useLazyQuery(requestsQuery.GET_REQUEST_BY_ID, { fetchPolicy: "no-cache" });
 
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     React.useEffect(() => {
         if (!searchParams.get("id"))
             navigate("/")

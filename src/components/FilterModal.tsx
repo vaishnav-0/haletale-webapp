@@ -7,7 +7,7 @@ import { NumberInput } from './Form/components/NumberInput';
 import { Range } from './Form/components/Range';
 import { useQuery } from '@apollo/client';
 import propertyQuery, { IPropertyAttribute } from '../queries/property.query';
-import { useLoder } from './Loader';
+import { useLoader } from './Loader';
 import { ButtonSolid } from './Button';
 import { objectFilter } from '../functions/utils';
 
@@ -25,7 +25,7 @@ type props = {
 function FilterModel({ onClose = () => { }, onSubmit }: props): JSX.Element {
     const { data: property_attributes, loading: propertyAttributesLoading } = useQuery<IPropertyAttribute>(propertyQuery.PROPERTY_ATTRIBUTES);
     const { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     const [types, setTypes] = React.useState<string[]>([]);
     const [features, setFeatures] = React.useState<string[]>([]);
     const [rent, setRent] = React.useState<[number | null, number | null]>([null, null]);

@@ -20,7 +20,7 @@ import ImageGallery from '../components/ImageGallery';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import propertyQuery, { IPropertyDetails } from '../queries/property.query';
 import { useLazyQuery } from '@apollo/client';
-import { useLoder } from '../components/Loader';
+import { useLoader } from '../components/Loader';
 import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
 import { useAuth } from '../functions/auth/useAuth';
@@ -51,7 +51,7 @@ const imageSliderClickHandler = (cb: () => void) => {
 export default function Example() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [fav, updateFav, favUpdating] = useFavourite(searchParams.get("id")!)
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     const auth = useAuth();
     const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
     const navigate = useNavigate();

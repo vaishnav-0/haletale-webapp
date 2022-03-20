@@ -4,7 +4,7 @@ import formStyle from '../../components/Form/Form.module.scss';
 import * as yup from 'yup';
 import DisplayData from "../../components/Form/DisplayData";
 import { SchemaType } from "../../components/Form/FormGenerator";
-import { useLoder } from "../../components/Loader";
+import { useLoader } from "../../components/Loader";
 import metaQuery from "../../queries/meta.query";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
 import { dataMapReturn, dynamicSchemaGenerator, defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
@@ -62,7 +62,7 @@ const schema: SchemaType = {
 }
 export function BasicDetails({ edit }: { edit: boolean }) {
     const [_schema, _setSchema] = useStateWithCB<SchemaType | null>(null);
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     const [isComplete, setIscomplete] = React.useState<boolean>(false);
     const [isDisabled, setIsDisabled] = React.useState<boolean>(false);
     const user = useUserContext();

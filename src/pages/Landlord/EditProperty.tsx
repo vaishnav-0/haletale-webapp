@@ -9,7 +9,7 @@ import propertyQuery, { IPropertyDetails } from "../../queries/property.query";
 import { defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
 import { toast } from "react-toastify";
 import * as yup from 'yup';
-import { useLoder } from "../../components/Loader";
+import { useLoader } from "../../components/Loader";
 
 const stringFieldRequired = yup.string().required("This field is required.")
 const schema: SchemaType = {
@@ -141,7 +141,7 @@ const schema: SchemaType = {
 export default function EditProperty() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [_schema, _setSchema] = React.useState<SchemaType | null>(null);
-    const [Loader, setLoader] = useLoder({});
+    const [Loader, setLoader] = useLoader({});
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
     let [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
     const navigate = useNavigate();
