@@ -354,11 +354,20 @@ function AddPropertyForm3(props: FormPropsType) {
                     {
                         features: property_attributes?.property_features_list.map((e: any) => e.name),
                         restriction: property_attributes?.property_restrictions_list.map((e: any) => e.name),
+                        lease_term: property_attributes?.lease_term_list,
                     })),
                 dataMap: (data) => {
                     return {
                         features: (item: any) => { item.props.items = data.features },
                         restriction: (item: any) => { item.props.values = data.restriction },
+                        lease_term: (item: any) => {
+                            item.props.values = {
+                                "0": "", ...data.lease_term.reduce((obj: any, curr: any) => {
+                                    obj = { ...obj, ...{ [curr.id]: curr.description } }
+                                    return obj;
+                                }, {})
+                            }
+                        }
                     }
                 }
             }).then(sch => {
@@ -389,6 +398,7 @@ function AddPropertyForm3(props: FormPropsType) {
                 max_occupants: d.tenant_count,
                 rent_amount: d.rent,
                 restrictions: d.restriction,
+                lease_term: d.lease_term,
                 rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
                 id: propertyId.current
             }
@@ -418,7 +428,7 @@ function AddProperty(): JSX.Element {
             </div>
             <ProgressiveForm parallel forms={forms} onFinish={() => {
                 toast.success("Property added");
-                navigate("/dashboard");
+                navigate("/landlord/dashboard");
             }}
             />
         </Layout >
