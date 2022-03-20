@@ -40,7 +40,6 @@ export function PillList({ items, onChange, disabledKeys = [], disabled, classNa
         }
         return defaultValue as number[];
     }, [defaultValue])
-    console.log(defaultValue, defaultValues_)
     const disabledActivatableKeys_ = React.useMemo(() => {
         if (disabledActivatableKeys.length > 0) {
             return keyArrayToPositionArray(disabledActivatableKeys, items);
