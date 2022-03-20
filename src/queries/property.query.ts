@@ -55,6 +55,11 @@ export interface IPropertyAttribute {
   property_features_list: { name: string, comment: string }[],
   property_restrictions_list: { name: string, comment: string }[],
   property_room_list: { name: string, comment: string }[]
+  lease_term_list: {
+    id: number
+    months: number
+    description: string
+  }[]
 }
 
 export interface IGetAllPropertyData {
