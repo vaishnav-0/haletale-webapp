@@ -1,20 +1,20 @@
 import React from "react";
-import FormGenerator from "../../../components/Form/FormGenerator";
-import formStyle from '../../../components/Form/Form.module.scss';
+import FormGenerator from "../../components/Form/FormGenerator";
+import formStyle from '../../components/Form/Form.module.scss';
 import * as yup from 'yup';
-import DisplayData from "../../../components/Form/DisplayData";
-import { SchemaType } from "../../../components/Form/FormGenerator";
-import { useLoder } from "../../../components/Loader";
-import metaQuery from "../../../queries/meta.query";
+import DisplayData from "../../components/Form/DisplayData";
+import { SchemaType } from "../../components/Form/FormGenerator";
+import { useLoder } from "../../components/Loader";
+import metaQuery from "../../queries/meta.query";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
-import { dataMapReturn, dynamicSchemaGenerator, defaultValueInjector } from "../../../components/Form/FormGeneratorHelpers";
-import userQuery from "../../../queries/user.query";
-import { useAuth } from "../../../functions/auth/useAuth";
+import { dataMapReturn, dynamicSchemaGenerator, defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
+import userQuery from "../../queries/user.query";
+import { useAuth } from "../../functions/auth/useAuth";
 import { Link, useNavigate } from "react-router-dom";
-import { userMutation } from "../../../queries";
-import { objectFilter } from "../../../functions/utils";
-import useStateWithCB from "../../../functions/hooks/useStateWithCB";
-import { useUserContext } from "../../../functions/auth/userContext";
+import { userMutation } from "../../queries";
+import { objectFilter } from "../../functions/utils";
+import useStateWithCB from "../../functions/hooks/useStateWithCB";
+import { useUserContext } from "../../functions/auth/userContext";
 const schema: SchemaType = {
     heading: "",
     submitButton: "Update",

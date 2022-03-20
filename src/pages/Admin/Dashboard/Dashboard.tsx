@@ -1,13 +1,13 @@
 
 import React from "react";
-import SidebarNavigation from "../../components/SidebarNavigation";
+import SidebarNavigation from "../../../components/SidebarNavigation";
 import {
     Outlet, useLocation
 } from "react-router-dom";
-import Users from "./subpages/dashboard/Users";
-import Properties from "./subpages/dashboard/Properties";
-import Requests from "./subpages/dashboard/Requests";
-import Layout from "../Layout";
+import Users from "./Users";
+import Properties from "./Properties";
+import Requests from "./Requests";
+import Layout from "../../Layout";
 import style from './Dashboard.module.scss';
 
 export const dashboardItems = [

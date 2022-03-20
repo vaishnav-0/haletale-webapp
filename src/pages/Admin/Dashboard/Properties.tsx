@@ -2,9 +2,9 @@ import React from 'react';
 import { useTable, usePagination } from 'react-table'
 import style from './styles.module.scss';
 import { gql, useQuery } from '@apollo/client'
-import propertyQuery, { IGetAllPropertyData, IPropertyDetails } from '../../../../queries/property.query';
+import propertyQuery, { IGetAllPropertyData, IPropertyDetails } from '../../../queries/property.query';
 import { useNavigate } from 'react-router-dom';
-import ImageSlider from '../../../../components/ImageSlider';
+import ImageSlider from '../../../components/ImageSlider';
 
 export default function Properties() {
   const navigate = useNavigate();

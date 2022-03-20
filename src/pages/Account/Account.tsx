@@ -1,10 +1,10 @@
 import React from "react";
-import SidebarNavigation from "../components/SidebarNavigation";
+import SidebarNavigation from "../../components/SidebarNavigation";
 import {
     Outlet, useLocation
 } from "react-router-dom";
-import { BasicDetails } from "./subpages/account/BasicDetails";
-import Layout from "./Layout";
+import { BasicDetails } from "./BasicDetails";
+import Layout from "../Layout";
 export const accountItems = [
     { label: "Basic details", url: "basics", component: <BasicDetails key={"display"} edit={false} /> },
     { label: "Documents", url: "docs", component: <div></div> }

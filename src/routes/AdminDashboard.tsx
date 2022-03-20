@@ -3,7 +3,7 @@ import {
     Route,
 } from "react-router-dom";
 import CenterContent from "../components/CenterContent";
-import Dashboard, { dashboardItems } from "../pages/Admin/Dashboard";
+import Dashboard, { dashboardItems } from "../pages/Admin/Dashboard/Dashboard";
 
 export default function AdminDashboardRoutes() {
 
