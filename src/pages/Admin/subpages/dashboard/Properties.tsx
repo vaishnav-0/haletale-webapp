@@ -1,101 +1,107 @@
 import React from 'react';
 import { useTable, usePagination } from 'react-table'
-
-import { gql } from '@apollo/client'
-
-const GET_PROPERTIES = gql`query GET_PROPERTIES {
-    property {
-      coordinates
-      description
-      id
-      is_approved
-      name
-      property_detail {
-        rent_amount
-      }
-    }
-  }`;
-
-export type  TPropertyResponse = {
-    coordinates: {
-        latitude: Number,
-        longitude: Number
-    },
-    description: string,
-    id: string,
-    is_approved: boolean,
-    name: string,
-    property_detail: {
-        rent_amount: Number
-    }
-}
+import style from './styles.module.scss';
+import { gql, useQuery } from '@apollo/client'
+import propertyQuery, { IGetAllPropertyData, IPropertyDetails } from '../../../../queries/property.query';
+import { useNavigate } from 'react-router-dom';
+import ImageSlider from '../../../../components/ImageSlider';
 
 export default function Properties() {
+  const navigate = useNavigate();
+  //data
+  const { data: allPropertyData, loading: propertyLoading } = useQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
+    fetchPolicy: "cache-and-network"
+  });
+  const [data, setData] = React.useState<readonly IPropertyDetails[]>([]);
+  const [current_page, setPage] = React.useState<Number>(0);
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 
-    //data
-    const [data, setData] = React.useState<readonly TPropertyResponse[]>();
-    const [current_page, setPage] = React.useState<Number>(0);
-    const [searchTerm, setSearchTerm] = React.useState<string>("");
+  const result = React.useMemo(() => allPropertyData?.property ?? [], [allPropertyData])
+
+  console.log(result)
+
+  // table structure
+  const columns = React.useMemo<{ Header: string, accessor: string | undefined | ((d: IPropertyDetails) => string | number | undefined | JSX.Element) }[]>(
+    () => [
+      {
+        Header: 'Id',
+        accessor: (data) => <button title={data.id} style={{ width: "100px" }} className={style["link-btn"]} onClick={() => navigate("http://localhost:3000/property/view?id=" + data.id)}>{data.id}</button>,
+      },
+      {
+        Header: 'Name',
+        accessor: 'name',
+      },
+      {
+        Header: 'Approval',
+        accessor: (data) => <button className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Disapprove" : "Approve"}</button>,
+      },
+      {
+        Header: 'Full Address',
+        accessor: (data) => data.property_address?.address?.full_address,
+      },
+      {
+        Header: 'Type & Subtype',
+        accessor: (data) => data.property_type.name + " " + data.property_subtype.name
+      },
+      {
+        Header: 'Rent Amount',
+        accessor: (data) => data.property_detail?.rent_amount,
+      },
+      {
+        Header: "Images",
+        accessor: (data) => <ImageSlider className={style["image-slider"]} aspectRatio={16 / 9} imgSrc={data.property_images?.map(e => e!.s3Url!.url as string) ?? []} />
+      },
+      {
+        Header: 'Description',
+        accessor: 'description',
+      },
+      {
+        Header: 'features',
+        accessor: (data) => data.property_detail?.features?.join(' '),
+      },
+      {
+        Header: 'Resrictions',
+        accessor: (data) => data.property_detail?.restrictions?.join(' '),
+      },
+      {
+        Header: "Rooms",
+        accessor: (data) => Object.entries(data.property_detail?.rooms ?? {}).map(([k, v]) => k + ":" + v).join(' ')
+      },
+      {
+        Header: "Max occupant",
+        accessor: (data) => data.property_detail?.max_occupants
+      },
+      {
+        Header: 'Listed',
+        accessor: (data) => data.is_listed.toString(),
+      },
+
+    ],
+    []
+  )
 
 
-    const result = React.useMemo(() => data, [])
+  // chng page
 
-
-    // table structure
-    const columns = React.useMemo(
-        () => [
-
-            {
-                Header: 'Name',
-                accessor: 'name', // accessor is the "key" in the data
-            },
-            {
-                Header: 'Full Address',
-                accessor: 'full_address',
-            },
-            {
-                Header: 'Type & Subtype',
-                accessor: 'category',
-            },
-            {
-                Header: 'Rent Amount',
-                accessor: 'rent',
-            },
-            {
-                Header: 'Owner',
-                accessor: 'owner_name',
-            },
-            {
-                Header: 'Action',
-                accessor: 'action',
-            },
-
-        ],
-        []
-    )
-
-
-    // chng page
-
-    return <>
-        <div>
-        <Table columns={columns} data={result} />
-        </div>
-    </>
+  return <>
+    <div>
+      <Table columns={columns} data={result} />
+    </div>
+  </>
 }
 
 
 // table fn reusabl..
 
 
-function Table({ columns  , data }: { columns : any , data : any }) {
+function Table({ columns, data }: { columns: any, data: any }) {
   const {
 
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, 
+    page,
     canPreviousPage,
     canNextPage,
     pageOptions,
@@ -105,18 +111,18 @@ function Table({ columns  , data }: { columns : any , data : any }) {
     previousPage,
     setPageSize,
     state: { pageIndex, pageSize },
-  } =useTable(
+  } = useTable(
     {
       columns,
       data,
-      initialState: { pageIndex: 2 },
+      initialState: { pageIndex: 0 },
     },
     usePagination
   )
 
-  return(
-   <>
-     <table {...getTableProps()}>
+  return (
+    <>
+      <table {...getTableProps()} className={style["table"]}>
         <thead>
           {headerGroups.map(headerGroup => (
             <tr {...headerGroup.getHeaderGroupProps()}>
@@ -149,7 +155,7 @@ function Table({ columns  , data }: { columns : any , data : any }) {
 
 
 
-      <div className="pagination">
+      <div className={style["pagination"]}>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -193,8 +199,8 @@ function Table({ columns  , data }: { columns : any , data : any }) {
           ))}
         </select>
       </div>
-   </>)
-  
+    </>)
+
 }
 
 
