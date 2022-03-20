@@ -150,9 +150,13 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
                     <InputComponent as any {...{ disabled, ...item.props, name: item.name }} />
         }
         {
-            error && <div className={style["field-error"]}>{
+            <div className={style["field-error"]}>{
+                error &&
                 Object.values(error.types).flatMap(e => e).map((err, i, arr) => <div>{arr.length > 1 ? "\u2022 " : ""}{err as string}</div>)
-            }</div>
+
+            }
+            </div>
+
 
 
 
@@ -187,7 +191,7 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
             item={{
                 ..._item, name: `${item.name}[${i}].${_item.name}`,
             }}
-            error={errors?.[i]?.[_item.name]?.message}
+            error={errors?.[i]?.[_item.name]}
             disabled={disabled}
         />
     }</div>
