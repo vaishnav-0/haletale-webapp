@@ -7,6 +7,8 @@ import {
 import Users from "./subpages/dashboard/Users";
 import Properties from "./subpages/dashboard/Properties";
 import Requests from "./subpages/dashboard/Requests";
+import Layout from "../Layout";
+import style from './Dashboard.module.scss';
 
 export const dashboardItems = [
     { label: "Users", url: "users", component: <Users /> },
@@ -25,8 +27,10 @@ export default function Dashboard() {
         })
     }, [location]);
     return (
-        <SidebarNavigation items={dashboardItems} active={activePath}>
-            <Outlet />
-        </SidebarNavigation>
+        <Layout bodyClassName={style["body"]}>
+            <SidebarNavigation items={dashboardItems} active={activePath}>
+                <Outlet />
+            </SidebarNavigation>
+        </Layout>
     )
 }

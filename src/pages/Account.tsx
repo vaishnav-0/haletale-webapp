@@ -4,6 +4,7 @@ import {
     Outlet, useLocation
 } from "react-router-dom";
 import { BasicDetails } from "./subpages/account/BasicDetails";
+import Layout from "./Layout";
 export const accountItems = [
     { label: "Basic details", url: "basics", component: <BasicDetails key={"display"} edit={false} /> },
     { label: "Documents", url: "docs", component: <div></div> }
@@ -23,8 +24,10 @@ export default function Account() {
         })
     }, [location]);
     return (
-        <SidebarNavigation items={accountItems} active={activePath}>
-            <Outlet />
-        </SidebarNavigation>
+        <Layout>
+            <SidebarNavigation items={accountItems} active={activePath}>
+                <Outlet />
+            </SidebarNavigation>
+        </Layout>
     )
 }
