@@ -24,10 +24,10 @@ import { NumberVerify } from "../pages/NumberVerify";
 import EditProperty from "../pages/Landlord/EditProperty";
 import { toast } from "react-toastify";
 import UserContext from "../functions/auth/userContext";
-import TenantRequestView from "../pages/Tenant/TenantRequestView";
 import ViewFavourites from "../pages/Tenant/ViewFavourites";
 import CenterContent from "../components/CenterContent";
 import AdminDashboardRoutes from "./AdminDashboard";
+import TenantDashboardRoutes from "./TenantDashboardRoutes";
 export default function () {
     const auth = useAuth();
     return (
@@ -65,7 +65,7 @@ export default function () {
                             </Route>
                             <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                                 <Route path="property/add" element={< AddProperty />} />
-                                <Route path="dashboard" element={< LandlordDashboard />} />
+                                <Route path="landlord/dashboard" element={< LandlordDashboard />} />
                                 <Route path="dashboard/request/view" element={< ViewRequests />} />
                                 <Route path="property/edit" element={< EditProperty />} />
                             </Route>
@@ -79,7 +79,9 @@ export default function () {
                                 <Route path="sendRequest" element={< SendRequest />} />
                             </Route>
                             <Route path="/" element={<RequireAuth role={[Roles['tenant']]} />}>
-                                <Route path="requests/view" element={< TenantRequestView />} />
+                                <Route path="tenant" element={<RequireAuth role={[Roles['tenant']]} />}>
+                                    <Route path="dashboard/*" element={<TenantDashboardRoutes />} />
+                                </Route>
                                 <Route path="favourites" element={< ViewFavourites />} />
                             </Route>
 
