@@ -8,7 +8,7 @@ export default {
     }
   }`,
 
-  ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: uuid, $type: uuid) {
+  ADD_PROPERTY: gql`mutation ADD_PROPERTY($coordinates: geography, $description: String, $name: String, $sub_type: Int, $type: Int) {
     insert_property_owner(objects: {property: {data: {coordinates: $coordinates, description: $description, name: $name, sub_type: $sub_type, type: $type}}}) {
       returning {
         property_id
@@ -39,15 +39,19 @@ export default {
     }
   }`,
   DELETE_PROPERTY: gql`mutation DELETE_PROPERTY($pId: uuid, $aId: uuid) {
-  delete_property(where: {id: {_eq: $_eq}}) {
+  delete_property(where: {id: {_eq: $pId}}) {
     affected_rows
   }
-  delete_address(where: {id: {_eq: $_eq1}}) {
+  delete_address(where: {id: {_eq: $pId}}) {
     affected_rows
   }
 }
-
-  
+  `,
+  UPDATE_IS_LISTED:gql`mutation UPDATE_IS_LISTED($id: uuid, $is_listed:Boolean) {
+  update_property(where: {id: {_eq: $id}}, _set: {is_listed: $is_listed}) {
+    affected_rows
+  }
+}
   `
 
   // update example
