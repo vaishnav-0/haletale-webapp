@@ -95,6 +95,16 @@ const schema = {
                 defaultValue: "",
                 validationSchema: yup.string().required("Name is required")
             },
+            {
+                name: "email",
+                title: "Email",
+                type: "text",
+                props: {
+                    type: "text"
+                },
+                defaultValue: "",
+                validationSchema: yup.string().email("Should be a valid email.").required("Email is required")
+            }
 
         ],
         isArray: {
