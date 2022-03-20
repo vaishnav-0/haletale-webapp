@@ -42,6 +42,7 @@ export default function CoordinateInput({ onChange = () => { }, style, className
     return <div className={CSSstyle["map-container"]}>
         <MapComponent whenCreated={setMap}
             worldCopyJump
+            scrollWheelZoom={false}
             style={{
                 ...(style && className) ? {} : {
                     height: "400px"
