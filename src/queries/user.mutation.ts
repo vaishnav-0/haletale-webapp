@@ -33,7 +33,16 @@ export default {
       }
     }
   }
-`
+`,
+  SET_USER_STATUS: gql`mutation DISABLE_USER($id: uuid, $isActive: Boolean) {
+  update_user(where: {id: {_eq: $id}}, _set: {isActive: $isActive}){
+    affected_rows
+  }
+}`,
+
+
+
+
 }
 
 

@@ -97,6 +97,6 @@ export default {
         other_tenents
         property_id
         }
-      }`
-
+      }`,
+  
 }

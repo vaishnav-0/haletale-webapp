@@ -25,7 +25,7 @@ export default function Properties() {
     () => [
       {
         Header: 'Id',
-        accessor: (data) => <button title={data.id} style={{ width: "100px" }} className={style["link-btn"]} onClick={() => navigate("http://localhost:3000/property/view?id=" + data.id)}>{data.id}</button>,
+        accessor: (data) => <button title={data.id} style={{ width: "100px" }} className={style["link-btn"]} onClick={() => navigate("/property/view?id=" + data.id)}>{data.id}</button>,
       },
       {
         Header: 'Name',
@@ -152,7 +152,6 @@ function Table({ columns, data }: { columns: any, data: any }) {
         Pagination can be built however you'd like. 
         This is just a very basic UI implementation:
       */}
-
 
 
       <div className={style["pagination"]}>

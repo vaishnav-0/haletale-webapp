@@ -9,4 +9,12 @@ export default {
       }
       `,
 
+  APPROVE_REQUEST : gql`mutation REQUEST_APPROVAL_STATUS($isApproved: Boolean, $id: uuid) {
+    update_property_request(where: {id: {_eq: $id}}, _set: {isApproved: $isApproved}){
+      affected_rows
+    }
+  }
+  `,
+  
+
 }
