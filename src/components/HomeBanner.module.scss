@@ -14,27 +14,27 @@
     color: white;
 
     @include media(">=smMin") {
-        height: 450px;
+        height: 410px;
 
     }
 
     @include media(">=mdMin") {
-        height: 550px;
+        height: 510px;
     }
 
     @include media(">=lgMin") {
-        height: 650px;
+        height: 610px;
 
         @media screen and (max-height:950px) {
-            height: 530px;
+            height: 500px;
         }
     }
 
     @include media(">=xlMin") {
-        height: 700px;
+        height: 670px;
 
         @media screen and (max-height:950px) {
-            height: 550px;
+            height: 500px;
         }
     }
 
