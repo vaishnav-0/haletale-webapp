@@ -72,20 +72,6 @@ export default function Header(): JSX.Element {
                                         }}
                                         onClick={e => e.stopPropagation()}
                                     >
-                                        {(user.role.includes(Roles['tenant']) || user.role.includes(Roles['landlord'])) && <>
-                                            <Link to="/account/basics">Profile</Link>
-                                        </>
-
-                                        }
-                                        <Link to="#">Change Password</Link>
-                                        {//<Link to="#">Account</Link>
-                                            //<Link to="#">Notifications</Link>
-                                        }
-                                        {user.role.includes(Roles['tenant']) && <>
-                                            <Link to="/favourites">Favorites</Link>
-                                        </>
-
-                                        }
                                         {user.role.includes(Roles['landlord']) && <>
                                             <Link to="/landlord/dashboard">Dashboard</Link>
                                         </>
@@ -100,6 +86,21 @@ export default function Header(): JSX.Element {
                                         </>
 
                                         }
+                                        {(user.role.includes(Roles['tenant']) || user.role.includes(Roles['landlord'])) && <>
+                                            <Link to="/account/basics">Profile</Link>
+                                        </>
+
+                                        }
+                                        <Link to="#">Change Password</Link>
+                                        {//<Link to="#">Account</Link>
+                                            //<Link to="#">Notifications</Link>
+                                        }
+                                        {user.role.includes(Roles['tenant']) && <>
+                                            <Link to="/favourites">Favorites</Link>
+                                        </>
+
+                                        }
+
                                         {// <Link to="#">Settings</Link>
                                         }
                                         <Link to="#">Help</Link>
