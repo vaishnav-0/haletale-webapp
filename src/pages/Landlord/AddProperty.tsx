@@ -49,7 +49,8 @@ function AddPropertyForm1(props: FormPropsType) {
                 type: "addressInput",
                 props: {
 
-                }
+                },
+                validationSchema:yup.object().typeError("Address is required").required("Address is required")
             },
             {
                 title: "Property type",
@@ -121,7 +122,7 @@ function AddPropertyForm1(props: FormPropsType) {
             variables: {
                 coordinates: {
                     "type": "Point",
-                    "coordinates": d.address.coords
+                    "coordinates": d.address?.coords
                 },
                 name: d.property_name,
                 description: d.notes,
