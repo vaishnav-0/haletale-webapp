@@ -128,16 +128,18 @@ export function BasicDetails({ edit }: { edit: boolean }) {
     }, [edit, userPhoneNatData]);
     React.useEffect(() => {
         if (countryData) {
-            let countries: { [k: string]: string } = { "": "" }, code: any = { "": "" };
-            countryData.countries.forEach((country: any) => {
+            let countries: { [k: string]: string } = { "": "" }, code: { [k: string]: string } = { "": "" };
+            countryData.countries.forEach((country: any, i: number) => {
+                console.log(country.name, country.isoCode, country.dialCode)
                 countries[country.id] = country.name;
-                code[country.dialCode] = country.isoCode + " " + country.dialCode;
+                code[i + "C"] = country.isoCode + " " + country.dialCode;
             });
+            console.log(code)
             if (_schema)
                 dynamicSchemaGenerator({
                     schema: _schema,
                     dataLoader: { countries, code },
-                    dataMap: (data: { countries: typeof countries, code: any }) => {
+                    dataMap: (data: { countries: typeof countries, code: typeof code }) => {
                         return {
                             country: (item: any) => {
                                 item.props.values = Object.entries(data.countries).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
@@ -145,7 +147,7 @@ export function BasicDetails({ edit }: { edit: boolean }) {
                             },
                             phone: {
                                 country_code: (item: any) => {
-                                    item.props.values = data.code
+                                    item.props.values = Object.entries(data.code).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
                                 },
                             }
 
@@ -169,7 +171,7 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
         updateUserBasic({
             variables: {
-                phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
+                phone: phone ?? countryData.countries[d.phone[0].country_code.substring(0, d.phone[0].country_code.length - 1)].dialCode + " " + d.phone[0].phone_number,
                 nationality: nationality ?? d.country,
                 id: user?.user_id
             }
