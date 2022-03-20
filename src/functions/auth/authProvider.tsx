@@ -36,8 +36,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
       },
       (err) => {
-        console.log(err);
+        console.log(err.code);
         err?.code === "NotAuthorizedException" && toast.error('Incorrect username or password.');
+        err?.code === "UserLambdaValidationException" && toast.error('User is disabled.');
         err?.code === "NewtworkError" && toast.error('Network error. Please try again.');
       })
   }, [called, userData]);
