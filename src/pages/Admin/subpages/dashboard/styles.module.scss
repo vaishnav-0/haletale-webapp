@@ -1,0 +1,72 @@
+@import 'src/colors.scss';
+@import 'src/styles/mixins.scss';
+
+.table {
+    @include def-shadow;
+    border-collapse: collapse;
+
+    th {
+        padding: 0.5rem;
+    }
+
+    td,
+    th {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0.6em 0.4em;
+    }
+
+    thead {
+
+        background-color: adjust-color($color: $primary, $lightness: 10%, );
+    }
+
+    tbody tr {
+
+        td {
+            text-align: center;
+        }
+
+        td:nth-child(odd) {
+            background-color: adjust-color($color: $primary, $lightness: 60%, );
+            border-bottom: 3px solid white;
+        }
+
+        td:nth-child(even) {
+            border-bottom: 3px solid adjust-color($color: $primary, $lightness: 60%, );
+        }
+    }
+}
+
+.image-slider {
+    width: 200px
+}
+
+.property-approve-btn {
+    @include unstyle-btn;
+    background-color: $green1;
+    padding: 0.3em;
+    font-size: 0.9em;
+    color: white;
+    font-weight: 900;
+    border-radius: 0.5em;
+    margin: 0.4em;
+
+    &.disapprove {
+        background-color: $redLight;
+    }
+}
+
+.link-btn {
+    @include button-link;
+}
+
+.pagination {
+    margin: 1em;
+
+    button {
+        background-color: white;
+        @include def-shadow;
+        border: none;
+    }
+}
