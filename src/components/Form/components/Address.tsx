@@ -20,9 +20,6 @@ export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
         }
         onChange && onChange(value);
     }, [value])
-    React.useEffect(() => {
-        console.log("rerender");
-    }, [])
     return <>
         <Searchbar disabled={disabled} suggestionItems={suggestions.map(e => e[0])}
             placeholder="Search a place"

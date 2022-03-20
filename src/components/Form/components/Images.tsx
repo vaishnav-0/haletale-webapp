@@ -32,13 +32,11 @@ const tagItems = {
 }
 const CUSTOM_DATA_URL = "dataUrl";
 const toDataURL = (url: string, fileName: string) => {
-    console.log(url, fileName);
     return fetch(url, { mode: "cors" })
-        .then(response => { console.log(response); return response.blob() })
+        .then(response => response.blob() )
         .then(blob => new Promise((resolve, reject) => {
             var file = new File([blob], fileName);
             const reader = new FileReader();
-            console.log(blob);
             reader.onloadend = () => resolve({ dataUrl: reader.result, file: file });
             reader.onerror = reject
             reader.readAsDataURL(blob)
@@ -115,7 +113,6 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
             Promise.allSettled(fetchList.map(e => toDataURL(e.url, e.name))
             ).then((data) => {
                 const imgList = data.filter(e => e.status === 'fulfilled').map((e: any) => { return { [CUSTOM_DATA_URL]: e.value.dataUrl, file: e.value.file } });
-                console.log(imgList)
                 setImages(imgList);
             })
     }, [])

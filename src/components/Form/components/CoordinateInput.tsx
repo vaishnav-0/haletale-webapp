@@ -39,7 +39,6 @@ export default function CoordinateInput({ onChange = () => { }, style, className
             map.setView(coords, 18);//reduce tile loads. Otherwise use flyTo for the eyecandy.
         }
     }, [coords, map]);
-    console.log(defaultValue)
     return <div className={CSSstyle["map-container"]}>
         <MapComponent whenCreated={setMap}
             worldCopyJump

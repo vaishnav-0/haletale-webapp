@@ -128,7 +128,6 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
     React.useEffect(() => {
     }, [])
     const InputComponent = getInputComponent(item);
-    console.log(error)
     return <div className={style["form-item"]}>
         {item.title && item.title !== "" &&
             <div className={style["form-item-heading"]}>
@@ -171,14 +170,8 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
 function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
     const { fields, append, remove } = useFieldArray({ name: item.name });
     React.useEffect(() => {
-        console.log(item.defaultValue)
         if (item.defaultValue) {
-            console.log(item.defaultValue)
             append(item.defaultValue);
-            //item.defaultValue.forEach(e => {
-            //    append(e);
-            //    console.log(e);
-            //})
         }
         if (item.isArray.single && !item.defaultValue) {
             append(defValues);
