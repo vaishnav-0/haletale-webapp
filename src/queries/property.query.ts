@@ -112,6 +112,7 @@ export const propertyFragment = gql`
       restrictions
       rent_amount
       rooms
+      lease_term
     }
       property_images {
         key
