@@ -143,7 +143,7 @@ export default function EditProperty() {
     const [_schema, _setSchema] = React.useState<SchemaType | null>(null);
     const [Loader, setLoader] = useLoder({});
     let { data: property_types, loading } = useQuery(propertyQuery.GET_ALL_PROPERTY_TYPE_SUBTYPE);
-    let [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID);
+    let [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
     const navigate = useNavigate();
     React.useEffect(() => {
         if (!searchParams.get("id"))
@@ -166,7 +166,6 @@ export default function EditProperty() {
             console.log(propertyData);
             const property = propertyData.property[0];
             const defaultValue = {
-                property_name: property.name,
                 property_address: property.property_address?.address?.full_address,
                 // property_coords: property.coordinates?.coordinates,
                 type: property.property_type.id,
@@ -175,16 +174,9 @@ export default function EditProperty() {
                 bedroom: property.property_detail?.rooms?.bedroom,
                 bathroom: property.property_detail?.rooms?.bathroom,
                 parking: property.property_detail?.rooms?.parking,
-                features: ["fridge"],
-                restriction: ["pets"],
-                member: [
-                    {
-                        memberName: "abc"
-                    },
-                    {
-                        memberName: "bgs"
-                    }
-                ]
+                features: property.property_detail?.features ?? [],
+                restriction: property.property_detail?.restrictions ?? [],
+                rent: property.property_detail?.rent_amount
             }
             defaultValueInjector(schema, defaultValue).then(s => {
                 console.log("set schema", s);
