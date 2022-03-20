@@ -66,7 +66,7 @@ export default function () {
                             <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                                 <Route path="property/add" element={< AddProperty />} />
                                 <Route path="landlord/dashboard" element={< LandlordDashboard />} />
-                                <Route path="dashboard/request/view" element={< ViewRequests />} />
+                                <Route path="landlord/dashboard/request/view" element={< ViewRequests />} />
                                 <Route path="property/edit" element={< EditProperty />} />
                             </Route>
                             <Route path="/" element={<RequireAuth
