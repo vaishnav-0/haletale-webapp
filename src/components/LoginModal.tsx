@@ -31,11 +31,12 @@ const schema: SchemaType = {
             props: {
                 type: "password"
             },
-            validationSchema: yup.string().matches(/[a-z]+/, "Password contains atleast one lowercase alphabet.")
-                .matches(/[A-Z]+/, "Password contains atleast one uppercase alphabet.")
-                .matches(/\d+/, "Password contains atleast one number.")
-                .matches(/[@$!%*#?&*()]+/, "Password contains atleast one special character @$!%*#?&*().")
-                .matches(/^[A-Za-z\d@$!%*#?&*()]{8,15}$/, "Password have minimum 8 characters and maximum 15 characters.")
+            validationSchema: yup.string().required("Password is required")
+            //   validationSchema: yup.string().matches(/[a-z]+/, "Password contains atleast one lowercase alphabet.")
+            //       .matches(/[A-Z]+/, "Password contains atleast one uppercase alphabet.")
+            //       .matches(/\d+/, "Password contains atleast one number.")
+            //       .matches(/[@$!%*#?&*()]+/, "Password contains atleast one special character @$!%*#?&*().")
+            //       .matches(/^[A-Za-z\d@$!%*#?&*()]{8,15}$/, "Password have minimum 8 characters and maximum 15 characters.")
         },
     ],
     submitButton: () => <div className={style["signin-btn"]}>
