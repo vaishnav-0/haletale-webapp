@@ -90,6 +90,7 @@ export const propertyFragment = gql`
     coordinates
       property_address {
         address {
+        id
         full_address
           ${""//locality
   //country
