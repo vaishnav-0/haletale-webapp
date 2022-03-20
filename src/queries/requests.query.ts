@@ -68,6 +68,7 @@ export default {
         lease_duration
         other_tenents
         property_id
+        reachout_time
         user {
           email
           phone
