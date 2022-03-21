@@ -4,7 +4,6 @@ import {
     Routes,
     Route,
     Navigate,
-    useNavigate,
 } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import { NotRequireAuth } from "./NotRequireAuth";
@@ -12,7 +11,6 @@ import HomePage from "../pages/Home";
 import PropertyListing from "../pages/PropertySearchListing";
 import AddProperty from '../pages/Landlord/AddProperty';
 import Signup from "../pages/SignUp";
-import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/Tenant/SendRequest";
 import { Roles } from "../functions/auth/types";
