@@ -25,7 +25,7 @@ import defaultImage from '../assets/images/property_placeholder.jpg'
 import ClampLines from 'react-clamp-lines';
 import { useAuth } from '../functions/auth/useAuth';
 import { Roles } from '../functions/auth/types';
-import useFavourite from '../functions/hooks/useFavourite';
+import useFavourite, { FavButton } from '../functions/hooks/useFavourite';
 import { toast } from 'react-toastify';
 
 const imageSliderClickHandler = (cb: () => void) => {
@@ -50,7 +50,8 @@ const imageSliderClickHandler = (cb: () => void) => {
 }
 export default function Example() {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [fav, updateFav, favUpdating] = useFavourite(searchParams.get("id")!)
+    const [skipFav, setSkipFav] = React.useState<boolean>(true);
+    const favControl = useFavourite(searchParams.get("id")!, skipFav)
     const [Loader, setLoader] = useLoader({});
     const auth = useAuth();
     const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
@@ -100,6 +101,10 @@ export default function Example() {
             navigate("/");
 
     }, [propertyData, error]);
+    React.useEffect(() => {
+        if (auth?.user?.role.includes(Roles['tenant']))
+            setSkipFav(false);
+    }, [auth]);
     const property = propertyData?.property[0];
     return (
         <Layout>
@@ -195,6 +200,7 @@ export default function Example() {
                         </AccordionItemHeading>
                         <AccordionItemPanel>
                             <ul className={style["feature-accordion-list"]}>
+                                <li>Address: {property?.property_address?.address?.full_address}</li>
                                 <li>Building Amenities: {property?.property_detail?.features ? property?.property_detail?.features?.join(",") : "-"}</li>
                                 <li>Bedroom x {property?.property_detail?.rooms?.bedroom}</li>
                                 <li>Bathroom x {property?.property_detail?.rooms?.bathroom}</li>
@@ -207,16 +213,14 @@ export default function Example() {
                 </Accordion>
 
                 <div className={style["bottom-panel"]}>
-                    <ButtonSolid disabled={!!auth?.user?.role.includes(Roles['landlord'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
-                    <button className={style["bottom-panel-icon"]}>
-                        <i onClick={updateFav}
-                            className={`${fav ? style["heartfilled"] + " fas" : " far"} fa-heart ${favUpdating ? style["heart-loading"] : ""}`}></i>
-                    </button>
+                    <ButtonSolid disabled={!!auth?.user?.role.some((role) => role === Roles['landlord'] || role === Roles['admin'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
+
                     {
                         //                   <button className={style["bottom-panel-icon"]}>
                         //                     <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
                         //                   </button>
                     }
+                    <FavButton control={favControl} hide={skipFav} />
                     <button onClick={() => {
                         navigator.clipboard.writeText(window.location.href).then(d => toast.success("Link copied."))
                     }} className={style["bottom-panel-shareicon"]}>
