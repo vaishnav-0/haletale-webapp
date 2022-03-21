@@ -35,7 +35,7 @@ const toDataURL = (url: string, fileName: string) => {
     return fetch(url, { mode: "cors" })
         .then(response => response.blob() )
         .then(blob => new Promise((resolve, reject) => {
-            var file = new File([blob], fileName);
+            var file = new File([blob], fileName,{type:blob.type});
             const reader = new FileReader();
             reader.onloadend = () => resolve({ dataUrl: reader.result, file: file });
             reader.onerror = reject
