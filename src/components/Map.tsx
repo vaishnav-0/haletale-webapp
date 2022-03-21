@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, MapContainerProps } from 'react
 import { Map as LeafletMap } from 'leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import pinIcon from '../assets/icons/mapPin.svg';
+import pinIcon from '../assets/icons/map_pin.svg';
 import style from './Map.module.scss';
 import mapBoxLogo from '../assets/icons/mapbox-logo-black.png';
 
