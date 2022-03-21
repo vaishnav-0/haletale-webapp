@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { setGlobalLoader } from '../components/Loader';
 import { stringFieldRequired } from '../components/Form/yupSchemas';
 const DOBMax = new Date();
-DOBMax.setFullYear(DOBMax.getFullYear() - 16);
+DOBMax.setFullYear(DOBMax.getFullYear() - 15);
 const schema = {
     heading: "Sign Up",
     items: [
@@ -50,7 +50,7 @@ const schema = {
                 max: "9999-12-31"
 
             },
-            validationSchema: yup.date().typeError("Invalid date").required("Date of birth is required").max(DOBMax, "You should be atleast 16 to sign up on our platform")
+            validationSchema: yup.date().typeError("Invalid date").required("Date of birth is required").max(DOBMax, "You should be atleast 15 to sign up on our platform")
         },
         {
             name: "gender",
