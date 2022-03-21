@@ -136,7 +136,7 @@ export default function Example() {
                         </button>
                     </div>
                     <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
-                        imgSrc={propertyData?.property[0]?.property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]}
+                        imgSrc={(!propertyData?.property[0].property_images || propertyData?.property[0].property_images?.length === 0) ? [defaultImage] : propertyData?.property[0]?.property_images?.map(e => e?.s3Url?.url ?? "")}
                         aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
                     <div className={style["property-feature"]}>
                         <div className={style["property-feature-row1"]}>
