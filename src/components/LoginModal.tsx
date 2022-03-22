@@ -131,9 +131,9 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
                         onSubmit(d, onClose, () => setLoading(false))
                     }
                     } schema={schema} />
-                    {
-                        // <button>Change password</button>
-                    }
+                    <div className={style['reset-btn']}>
+                        <button onClick={() => navigate("/resetPassword")}>Reset password</button>
+                    </div>
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["other-methods-message"]}>

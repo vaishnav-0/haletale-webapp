@@ -140,3 +140,13 @@
     color: $primary;
     width: max-content;
 }
+
+.reset-btn {
+    display: flex;
+    flex-direction: row-reverse;
+
+    &>button {
+        @include button-link;
+        font-weight: 900;
+    }
+}
