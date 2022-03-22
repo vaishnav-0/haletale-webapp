@@ -16,7 +16,6 @@ import useFavourite from '../functions/hooks/useFavourite';
 
 export default function (props: { propertyData: IPropertyDetails }): JSX.Element {
     const [fav, updateFav, favUpdating] = useFavourite(props.propertyData.id!)
-    const [currentImage, setCurrentImage] = React.useState(0);
     const images = props.propertyData.property_images?.map(e => e?.s3Url?.url ?? "").slice(0, 5);
     return (
         <div className={style["property-card"]}>
@@ -52,7 +51,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                                 <div>{props.propertyData.property_detail?.rooms?.bedroom} Baths</div>
                             </div>
                             {
-                                !props.propertyData.property_detail?.restrictions?.includes("pets") &&
+                                props.propertyData.property_detail?.restrictions?.includes("Pets") &&
                                 <div>
                                     <div className={style["feature-icon"]}>
                                         <img src={petIcon} />
@@ -62,13 +61,15 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                                 </div>
                             }
 
-                            <div>
-                                <div className={style["feature-icon"]}>
+                            {
+                                //      <div>
+                                //      <div className={style["feature-icon"]}>
 
-                                    <img src={sqftIcon} />                                </div>
+                                //          <img src={sqftIcon} />                                </div>
 
-                                <div>1250Sqft</div>
-                            </div>
+                                //      <div>1250Sqft</div>
+                                //  </div>
+                            }
 
                         </div>
                         <div className={style["property-price"]}>
