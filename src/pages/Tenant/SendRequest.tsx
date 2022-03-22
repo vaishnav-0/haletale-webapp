@@ -28,12 +28,12 @@ const schema = {
         items: [
             {
                 name: "country_code",
-                type: "select",
+                type: "dropdownSelect",
                 props: {
-                    values: {
-                    }
+                    placeholder: "Country code",
                 },
-                defaultValue: ""
+                defaultValue: "",
+                validationSchema: yup.object().typeError("This field is required")
             },
             {
                 name: "phone_number",
@@ -42,7 +42,7 @@ const schema = {
                     type: "text",
                     placeholder: "Phone no."
                 },
-                validationSchema: yup.string().matches(/\d+/, "Phone number must only contain numbers").min(10, "Less than 10 digits"),
+                validationSchema: yup.string().matches(/\d+/, "Phone number must only contain numbers").min(10, "Less than 10 digits").typeError("Phone no. is required"),
                 defaultValue: ""
             }
         ],
@@ -171,7 +171,6 @@ function SendRequest(): JSX.Element {
         if (userPhoneNatData) {
             const phone = userPhoneNatData.user[0].phone;
             const nationality = userPhoneNatData.user[0]?.user_detail?.nationality
-            console.log(userPhoneNatData.user[0].ise);
             dynamicSchemaGenerator({
                 schema: schema as SchemaType,
                 dataLoader: {},
@@ -200,10 +199,13 @@ function SendRequest(): JSX.Element {
     React.useEffect(() => {
         if (schema)
             if (countryData) {
-                let countries: { [k: string]: string } = { "": "" }, code: any = { "": "" };
+                let countries: { [k: string]: string } = { "": "" }, code: any = [];
                 countryData.countries.forEach((country: any) => {
                     countries[country.id] = country.name;
-                    code[country.dialCode] = country.isoCode + " " + country.dialCode;
+                    code.push({
+                        label: country.isoCode + " " + country.dialCode,
+                        value: country.dialCode,
+                    })
                 })
                 if (_schema)
                     dynamicSchemaGenerator({
@@ -216,7 +218,11 @@ function SendRequest(): JSX.Element {
                                 },
                                 phone: {
                                     country_code: (item: any) => {
-                                        item.props.values = data.code
+                                        item.props = {
+                                            ...item.props,
+                                            options: data.code,
+                                            searchBy: "search"
+                                        }
                                     },
                                 }
 
@@ -249,7 +255,7 @@ function SendRequest(): JSX.Element {
         if (!phone || !nationality) {
             updateUserBasic({
                 variables: {
-                    phone: phone ?? d.phone[0].country_code + " " + d.phone[0].phone_number,
+                    phone: phone ?? d.phone[0].country_code.value + " " + d.phone[0].phone_number,
                     nationality: nationality ?? d.country,
                     id: user?.user_id
                 }
