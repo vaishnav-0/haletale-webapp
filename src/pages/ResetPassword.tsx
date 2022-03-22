@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Link, Navigate, useNavigate, } from "react-router-dom";
+import { useTimer } from "react-timer-hook";
 import { toast } from "react-toastify";
 import * as yup from 'yup';
 import { ButtonSolid } from "../components/Button";
@@ -58,7 +59,7 @@ const resetSchema = {
             validationSchema: yup.string()
                 .oneOf([yup.ref('new_password')], 'Passwords must match')
         }],
-    submitButton: "Sign Up",
+    submitButton: "Change password",
 } as const;
 type ResetFormData = FormDataShape<typeof resetSchema>;
 type ResetInitiateFormData = FormDataShape<typeof resetInitiateSchema>;
@@ -69,17 +70,28 @@ export function ResetPassword(): JSX.Element {
     const [confirmationSent, setConformationSent] = React.useState<boolean>(false);
     const auth = useAuth();
     const emailRef = useRef<string>("");
-    const [retrySendCode, setRetrySendCode] = React.useState<number>(-1);
+    const [retrySendCodeCount, setRetrySendCodeCount] = React.useState<number>(0);
     const [codeSentNow, setCodeSentNow] = React.useState<boolean>(false);
-    React.useEffect(() => {
-        if (codeSentNow)
-            setTimeout(() => setCodeSentNow(false), 90);
-    }, [codeSentNow])
+    const [retry, setRetry] = React.useState<boolean>(false);
+    const {
+        seconds,
+        minutes,
+        hours,
+        days,
+        isRunning,
+        start,
+        pause,
+        resume,
+        restart,
+    } = useTimer({ expiryTimestamp: new Date(), onExpire: () => setCodeSentNow(false), autoStart: false });
     const sendCode = (d: ResetInitiateFormData) => {
         intitiateForgotPassword(d.email, (err: any, data: any) => {
-            if (err)
-                toast.error("An error occured");
-            else {
+            if (err) {
+                if (err.code == "LimitExceededException") {
+                    toast.error("Too many tries. Please try after some time.");
+                } else
+                    toast.error("An error occured");
+            } else {
                 emailRef.current = d.email;
                 toast.success("A conformation code is sent to your email.")
                 setConformationSent(true);
@@ -88,10 +100,13 @@ export function ResetPassword(): JSX.Element {
         })
     }
     const resetPass = (d: ResetFormData) => {
-        confirmPassword(emailRef.current, d.conformation_code, d.new_password, (err: any, data: any) => {
+        confirmPassword(emailRef.current ?? auth?.user?.user_details?.email, d.conformation_code, d.new_password, (err: any, data: any) => {
             if (err) {
-                if (err.message = "CodeMismatchException")
+                if (err.code == "CodeMismatchException") {
+                    setRetry(true)
                     toast.error("Invalid code");
+                }
+
             }
             else {
                 toast.success("Successfully changed password.")
@@ -100,24 +115,43 @@ export function ResetPassword(): JSX.Element {
             }
         })
     }
+    console.log(retrySendCodeCount);
     return (
         <Layout>
             <h2>Reset password</h2>
             <div style={{ padding: "2em" }}>
                 {
-                    confirmationSent ?
-                        <FormGenerator schema={resetSchema as SchemaType} onError={(e) => console.log(e)}
+                    confirmationSent || auth?.user?.user_details?.email ?
+                        <FormGenerator key={1} schema={resetSchema as SchemaType} onError={(e) => console.log(e)}
                             onSubmit={resetPass} disabled={disabled} />
                         :
-                        <FormGenerator schema={resetInitiateSchema as SchemaType} onError={(e) => console.log(e)}
+                        <FormGenerator key={2} schema={resetInitiateSchema as SchemaType} onError={(e) => console.log(e)}
                             onSubmit={sendCode} disabled={disabled} />
                 }
                 {
-                    retrySendCode !== -1 ?
-                        retrySendCode === 3 ?
-                            <Navigate to="/" />
+                    retry ?
+                        retrySendCodeCount === 4 ? <>
+                            {
+                                (() => {
+                                    toast.error("Too many tries");
+                                    return <Navigate to="/" />
+                                })()
+                            }
+                        </>
                             :
-                            <ButtonSolid disabled={codeSentNow} onClick={() => sendCode({ email: emailRef.current })}></ButtonSolid>
+                            <div style={{ display: "flex", flexDirection: "row-reverse", marginRight: "8em" }}>
+                                <ButtonSolid
+                                    style={{ padding: "0.5em", backgroundColor: "MenuText", color: "white" }}
+                                    disabled={codeSentNow} onClick={() => {
+                                        setCodeSentNow(true);
+                                        setRetrySendCodeCount(retrySendCodeCount + 1);
+                                        let t = new Date();
+                                        t.setSeconds(t.getSeconds() + 5);
+                                        restart(t)
+                                        if (retrySendCodeCount !== 3)
+                                            sendCode({ email: emailRef.current });
+                                    }}>{"Resend code" + (isRunning ? "(" + minutes + ":" + seconds + ")" : "")}</ButtonSolid>
+                            </div>
                         :
                         null
                 }
