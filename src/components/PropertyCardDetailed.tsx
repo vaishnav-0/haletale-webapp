@@ -27,13 +27,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                         <div className={style["property-location"]}>
                             <div>{props.propertyData.property_type.name}</div>
                             <div title={props.propertyData.property_address?.address?.full_address}>
-                                <ClampLines
-                                    text={props.propertyData.property_address?.address?.full_address ?? ""}
-                                    id={Math.random() * 100000 + (props.propertyData.id ?? "")}
-                                    lines={1}
-                                    stopPropagation={true}
-                                    buttons={false}
-                                />
+                                {props.propertyData.property_address?.address?.full_address ?? ""}
                             </div>
                         </div>
                         {fav !== null &&
