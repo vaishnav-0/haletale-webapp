@@ -116,4 +116,65 @@ function revokeToken(token: string, callback: Function) {
     })
 
 }
-export { cognitoSignin, cognitoSignUp, refreshSession, revokeToken, resendConfirmationCode };
+
+
+
+function intitiateForgotPassword(username: string, callback: Function) {
+
+    let cognitoUser = new CognitoUser({
+        Username: username,
+        Pool: new CognitoUserPool(poolData),
+    });
+
+    cognitoUser.forgotPassword({
+        onSuccess: function (result) {
+            console.log(result);
+            callback(null, result);
+        },
+        onFailure: function (err) {
+            console.log(err);
+            callback(err);
+        }
+    });
+
+}
+
+
+function confirmPassword(username: string, verificationCode: string, newPassword: string, callback: Function) {
+
+    let cognitoUser = new CognitoUser({
+        Username: username,
+        Pool: new CognitoUserPool(poolData),
+    });
+
+    cognitoUser.confirmPassword(verificationCode, newPassword, {
+        onFailure(err) {
+            console.log(err);
+            callback(err);
+        },
+        onSuccess(res) {
+            callback(null, res);
+            console.log(res);
+        }
+    })
+
+}
+
+function changePassword(username: string, oldPassword: string, newPassword: string, callback: Function) {
+
+    let cognitoUser = new CognitoUser({
+        Username: username,
+        Pool: new CognitoUserPool(poolData)
+    });
+
+    cognitoUser.changePassword(oldPassword, newPassword, function (err, result) {
+        if (err) {
+            console.log(err);
+            callback(null, err)
+            return;
+        }
+        console.log(result);
+        callback(null, result);
+    });
+}
+export { cognitoSignin, cognitoSignUp, refreshSession, revokeToken, resendConfirmationCode, intitiateForgotPassword, changePassword, confirmPassword };
