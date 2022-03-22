@@ -65,7 +65,6 @@ type ResetFormData = FormDataShape<typeof resetSchema>;
 type ResetInitiateFormData = FormDataShape<typeof resetInitiateSchema>;
 
 export function ResetPassword(): JSX.Element {
-    const [disabled, setDisabled] = React.useState<boolean>(false);
     const navigate = useNavigate();
     const [confirmationSent, setConformationSent] = React.useState<boolean>(false);
     const auth = useAuth();
@@ -76,12 +75,7 @@ export function ResetPassword(): JSX.Element {
     const {
         seconds,
         minutes,
-        hours,
-        days,
         isRunning,
-        start,
-        pause,
-        resume,
         restart,
     } = useTimer({ expiryTimestamp: new Date(), onExpire: () => setCodeSentNow(false), autoStart: false });
     const sendCode = (d: ResetInitiateFormData) => {
@@ -115,7 +109,12 @@ export function ResetPassword(): JSX.Element {
             }
         })
     }
-    console.log(retrySendCodeCount);
+    React.useEffect(() => {
+        if (retrySendCodeCount === 4) {
+            toast.error("Too many tries");
+            navigate("/");
+        }
+    }, [retrySendCodeCount])
     return (
         <Layout>
             <h2>Reset password</h2>
@@ -123,35 +122,26 @@ export function ResetPassword(): JSX.Element {
                 {
                     confirmationSent || auth?.user?.user_details?.email ?
                         <FormGenerator key={1} schema={resetSchema as SchemaType} onError={(e) => console.log(e)}
-                            onSubmit={resetPass} disabled={disabled} />
+                            onSubmit={resetPass} />
                         :
                         <FormGenerator key={2} schema={resetInitiateSchema as SchemaType} onError={(e) => console.log(e)}
-                            onSubmit={sendCode} disabled={disabled} />
+                            onSubmit={sendCode} />
                 }
                 {
                     retry ?
-                        retrySendCodeCount === 4 ? <>
-                            {
-                                (() => {
-                                    toast.error("Too many tries");
-                                    return <Navigate to="/" />
-                                })()
-                            }
-                        </>
-                            :
-                            <div style={{ display: "flex", flexDirection: "row-reverse", marginRight: "8em" }}>
-                                <ButtonSolid
-                                    style={{ padding: "0.5em", backgroundColor: "MenuText", color: "white" }}
-                                    disabled={codeSentNow} onClick={() => {
-                                        setCodeSentNow(true);
-                                        setRetrySendCodeCount(retrySendCodeCount + 1);
-                                        let t = new Date();
-                                        t.setSeconds(t.getSeconds() + 5);
-                                        restart(t)
-                                        if (retrySendCodeCount !== 3)
-                                            sendCode({ email: emailRef.current });
-                                    }}>{"Resend code" + (isRunning ? "(" + minutes + ":" + seconds + ")" : "")}</ButtonSolid>
-                            </div>
+                        <div style={{ display: "flex", flexDirection: "row-reverse", marginRight: "8em" }}>
+                            <ButtonSolid
+                                style={{ padding: "0.5em", backgroundColor: "MenuText", color: "white" }}
+                                disabled={codeSentNow} onClick={() => {
+                                    setCodeSentNow(true);
+                                    setRetrySendCodeCount(retrySendCodeCount + 1);
+                                    let t = new Date();
+                                    t.setSeconds(t.getSeconds() + 90);
+                                    restart(t)
+                                    if (retrySendCodeCount !== 3)
+                                        sendCode({ email: emailRef.current });
+                                }}>{"Resend code" + (isRunning ? "(" + minutes + ":" + seconds + ")" : "")}</ButtonSolid>
+                        </div>
                         :
                         null
                 }
