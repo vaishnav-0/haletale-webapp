@@ -83,7 +83,6 @@
 .top-container {
     display: flex;
     margin-right: 0.5em;
-
     & :nth-child(1) {
         margin-bottom: 0.3em;
     }
@@ -139,15 +138,17 @@
 
 .property-location {
     flex: 1;
-
-    & :nth-child(1) {
+    min-width: 0%;
+    &>:nth-child(1) {
         font-weight: 800;
     }
 
-    & :nth-child(2) {
+    &>:nth-child(2) {
         color: #828282;
         font-size: 0.95em;
-
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
     }
 }
 
