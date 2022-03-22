@@ -16,6 +16,8 @@ import { ImageUpload as ImageUpload_, PropsType as ImageUploadPropsType } from "
 import { NativeWrapper, CustomWrapper } from "./formWrap";
 import CoordinateInput_, { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 import { AddressInput as AddressInput_, PropsType as AddressInputPropsType } from "./components/Address";
+import { default as DropdownSelect_, SelectProps as DropdownSelectProps } from 'react-dropdown-select';
+
 function wrappedGen<T extends { name: string }>(c: NativeWrapperComponentType<T> | CustomWrapperComponentType<T>, custom?: boolean, defaultValue?: any) {
     return function (p: T) {
         if (custom)
@@ -41,6 +43,7 @@ export const Range = wrappedGen<RangePropsType & { name: string }>(Range_, true)
 export const ImageUpload = wrappedGen<ImageUploadPropsType & { name: string }>(ImageUpload_, true);
 export const CoordinateInput = wrappedGen<CoordinateInputPropsType & { name: string }>(CoordinateInput_, true);
 export const AddressInput = wrappedGen<AddressInputPropsType & { name: string }>(AddressInput_, true);
+export const DropdownSelect = wrappedGen<DropdownSelectProps<any> & { name: string }>(DropdownSelect_, true);
 
 
 
