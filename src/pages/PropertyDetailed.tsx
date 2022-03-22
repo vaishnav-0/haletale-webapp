@@ -27,6 +27,7 @@ import { useAuth } from '../functions/auth/useAuth';
 import { Roles } from '../functions/auth/types';
 import useFavourite, { FavButton } from '../functions/hooks/useFavourite';
 import { toast } from 'react-toastify';
+import MapView from './MapView';
 
 const imageSliderClickHandler = (cb: () => void) => {
     const delta = 6;
@@ -58,6 +59,7 @@ export default function Example() {
     const navigate = useNavigate();
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
+    const [mapOpen, setMapOpen] = React.useState<boolean>(false);
     const [imageGalleryOpen, setImageGalleryOpen] = React.useState(false);
     const breakdownQuestionRef = React.useRef<HTMLElement>(null!);
     const imageSliderClick = React.useMemo(() =>
@@ -111,6 +113,10 @@ export default function Example() {
             {
                 Loader
             }
+            {
+                mapOpen && propertyData &&
+                <MapView properties={propertyData.property} onClose={() => setMapOpen(false)} />
+            }
             <div className={style["wrapper"]}>
                 {(imageGalleryOpen !== false) &&
                     <div className={style["image-gallery-container"]}>
@@ -122,7 +128,7 @@ export default function Example() {
                 }
                 <div className={style["property-card"]}>
                     <div className={style["top-info"]}>
-                        <ButtonSolid className={style["property-map"]}>
+                        <ButtonSolid onClick={() => setMapOpen(true)} className={style["property-map"]}>
                             <i className='far fa-map' />
                         </ButtonSolid>
                         <button className={style["property-id"]}>
