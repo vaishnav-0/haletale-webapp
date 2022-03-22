@@ -128,9 +128,12 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
                 <div className={style["modal-item"]}>
                     <FormGenerator disabled={loading} onSubmit={(d) => {
                         setLoading(true);
-                        onSubmit(d, () => onClose(), () => setLoading(false))
+                        onSubmit(d, onClose, () => setLoading(false))
                     }
                     } schema={schema} />
+                    {
+                        // <button>Change password</button>
+                    }
                 </div>
                 <div className={style["modal-item"]}>
                     <div className={style["other-methods-message"]}>
@@ -141,11 +144,17 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
                         <div className={style["line"]} />
                     </div>
                     <div className={style["other-methods-btn"]}>
-                        <button type='button' onClick={() => auth.oauth('Google')}>
+                        <button type='button' onClick={() => auth.oauth('Google', (error: any, d: any) => {
+                            if (!error)
+                                onClose()
+                        })}>
                             <img src={googleLogo} />
 
                         </button>
-                        <button type='button' onClick={() => auth.oauth('Facebook')}>
+                        <button type='button' onClick={() => auth.oauth('Facebook', (error: any, d: any) => {
+                            if (!error)
+                                onClose()
+                        })}>
                             <img src={fbLogo} />
 
                         </button>
@@ -165,7 +174,7 @@ function LoginModal({ onClose = () => { }, signUpUrl }: props): JSX.Element {
                 </div>
 
             </div>
-        </div>
+        </div >
     );
 }
 
