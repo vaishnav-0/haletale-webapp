@@ -50,8 +50,7 @@
     display: grid;
     grid-auto-flow: row;
     row-gap: 110px;
-    margin-bottom: 200px;
-
+    margin-bottom: 4em;
     @include media(">=lgMin") {
         grid-template-columns: 1fr 1fr;
         column-gap: 25px;
