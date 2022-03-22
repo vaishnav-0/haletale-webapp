@@ -1,7 +1,6 @@
 import Select, { Props } from 'react-select';
 import style from './ReactDropdownSelect.module.scss';
 export default function ReactDropdownSelect(props: Props) {
-    console.log(props)
     return (
         <Select
             {...props}
