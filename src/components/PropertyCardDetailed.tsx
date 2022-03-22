@@ -51,7 +51,7 @@ export default function (props: { propertyData: IPropertyDetails }): JSX.Element
                                 <div>{props.propertyData.property_detail?.rooms?.bedroom} Baths</div>
                             </div>
                             {
-                                props.propertyData.property_detail?.restrictions?.includes("Pets") &&
+                                !props.propertyData.property_detail?.restrictions?.includes("Pets") &&
                                 <div>
                                     <div className={style["feature-icon"]}>
                                         <img src={petIcon} />
