@@ -205,7 +205,6 @@ export default function (): JSX.Element {
                             aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
                             wrapperClassName={style["search-list"]}
                             checkSkip={(propertyData, aggregateData) => {
-                                console.log(aggregateData?.search_property_aggregate?.aggregate?.totalCount, propertyData?.search_property?.length)
                                 return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
                             }}
                         >
