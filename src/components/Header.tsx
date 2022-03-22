@@ -25,6 +25,7 @@ export default function Header(): JSX.Element {
     React.useEffect(() => {
         location.state?.openLoginModal && setloginModalOpen(true);
     }, [location])
+    console.log(loginModalOpen)
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -35,6 +36,15 @@ export default function Header(): JSX.Element {
                     >
                         <img src={haletaleLogo} />
                     </Link>
+                </div>
+                <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
+
+                    <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
+                        <LoginModal signUpUrl="/signUp" onClose={() => {
+                            setloginModalOpen(false);
+                        }} />
+
+                    </Openable>
                 </div>
                 <div className={style["topnav-right-container"]}>
 
@@ -104,7 +114,7 @@ export default function Header(): JSX.Element {
                                         {// <Link to="#">Settings</Link>
                                         }
                                         <Link to="#">Help</Link>
-                                        <Link to="/signout" onClick={() => auth.signOut()}>Logout</Link>
+                                        <Link to="" onClick={() => auth.signOut()}>Logout</Link>
                                     </Openable>
                                 </Openable>
                             </div>
@@ -112,15 +122,7 @@ export default function Header(): JSX.Element {
                         :
                         <>
                             <ButtonHollow onClick={() => setloginModalOpen(true)}> Sign in / Sign up </ButtonHollow>
-                            <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
 
-                                <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
-                                    <LoginModal signUpUrl="/signUp" onClose={() => {
-                                        setloginModalOpen(false);
-                                    }} />
-
-                                </Openable>
-                            </div>
 
                         </>
                     }

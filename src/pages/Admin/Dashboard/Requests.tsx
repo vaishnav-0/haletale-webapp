@@ -55,8 +55,7 @@ export default function Properties() {
             },
             {
                 Header: 'Other tenants',
-                accessor:
-                 (data) => data.other_tenents.map((t: any) => {
+                accessor: (data) => data.other_tenents?.map((t: any) => {
                     return <div style={{ border: "1px solid black" }}>{Object.entries(t).map(([k, v]) => k + ":" + v).join(' ')}</div>
                 })
             },

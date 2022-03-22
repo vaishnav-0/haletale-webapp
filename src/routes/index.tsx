@@ -4,7 +4,6 @@ import {
     Routes,
     Route,
     Navigate,
-    useNavigate,
 } from "react-router-dom";
 import { RequireAuth } from "./RequireAuth";
 import { NotRequireAuth } from "./NotRequireAuth";
@@ -12,7 +11,6 @@ import HomePage from "../pages/Home";
 import PropertyListing from "../pages/PropertySearchListing";
 import AddProperty from '../pages/Landlord/AddProperty';
 import Signup from "../pages/SignUp";
-import MapView from "../pages/MapView";
 import PropertyDetailed from '../pages/PropertyDetailed'
 import SendRequest from "../pages/Tenant/SendRequest";
 import { Roles } from "../functions/auth/types";
@@ -28,6 +26,7 @@ import ViewFavourites from "../pages/Tenant/ViewFavourites";
 import CenterContent from "../components/CenterContent";
 import AdminDashboardRoutes from "./AdminDashboard";
 import TenantDashboardRoutes from "./TenantDashboardRoutes";
+import { ChangePassword } from "../pages/ChangePassword";
 export default function () {
     const auth = useAuth();
     return (
@@ -62,6 +61,7 @@ export default function () {
                             <Route path="/" element={<RequireAuth role={[Roles['landlord'], Roles['tenant']]} />}>
                                 <Route path="verifyNumber" element={< NumberVerify />} />
                                 <Route path="account/*" element={<AccountRoutes />} />
+                                <Route path="changePassword" element={<ChangePassword />} />
                             </Route>
                             <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                                 <Route path="property/add" element={< AddProperty />} />

@@ -1,21 +1,20 @@
 import style from './Form.module.scss';
-type TData = { [k: string]: string | number | TData, }
-export default function DisplayData({ data, main = true }: { data: TData, main?: boolean }): JSX.Element {
-    console.log(data)
+type TData = { [k: string]: string | number | TData[], }
+export default function DisplayData({ data, main = true, row }: { data: TData, main?: boolean, row?: boolean }): JSX.Element {
     return <>{
         Object.entries(data).map(([k, v]) => {
-            console.log(k, v)
-            return (<>
+            return (<div className={(row ? `${style["row"]} ` : "") + style["form-display-container"]}>
                 <div className={style["form-display-heading"] + (main ? ` ${style["main"]}` : "")}>{k}</div>
-                <div className={style["form-display-item"]}>
-                    {
-                        typeof v === 'object' ?
-                            <DisplayData data={v as TData} main={false} />
-                            :
-                            v
-                    }
-                </div>
-            </>
+                {
+                    Array.isArray(v) ?
+                        v.map(e => <DisplayData data={e as TData} main={false} row />)
+                        :
+
+                        <div className={style["form-display-item"]}>
+                            {v}
+                        </div>
+                }
+            </div>
             )
 
         })

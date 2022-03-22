@@ -16,8 +16,10 @@ import {
     ImageUpload,
     CheckBoxGroup,
     CoordinateInput,
-    AddressInput
+    AddressInput,
+    DropdownSelect
 } from './index';
+import { SelectProps as DropdownSelectProps } from "react-dropdown-select";
 import { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 import { PropsType as RadioButtonPropsType } from "./components/ToggleButtons";
 import { PropsType as TextInputPropsType } from "./components/TextInput";
@@ -61,7 +63,8 @@ const componentMap = {
     image: ImageUpload,
     checkboxGroup: CheckBoxGroup,
     coordinateInput: CoordinateInput,
-    addressInput: AddressInput
+    addressInput: AddressInput,
+    dropdownSelect: DropdownSelect
 
 } as const;
 type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioButtonPropsType> |
@@ -71,7 +74,8 @@ type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioB
     ItemType<"pillGroup", PillListPropsType> | ItemType<"number", NumberInputPropsType> |
     ItemType<"range", RangePropsType> | ItemType<"checkboxGroup", CheckBoxGroupPropsType> |
     ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType> |
-    ItemType<"coordinateInput", CoordinateInputPropsType> | ItemType<"addressInput", AddressPropsType>
+    ItemType<"coordinateInput", CoordinateInputPropsType> | ItemType<"addressInput", AddressPropsType> |
+    ItemType<"dropdownSelect", Omit<DropdownSelectProps<any>,"onChange"|"options">>
 type FormValueType = string | number | { [k: string]: string } | string[] | boolean
 type TItemCommon = {
     title?: string,
