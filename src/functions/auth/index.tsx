@@ -103,8 +103,8 @@ class Auth {
         return cognitoSignin(data, callback ? (err: any, result: any) => { this.signInCallback(err, result); callback(err, result); } : this.signInCallback);
     }
 
-    oauth(provider: authTypes) {
-        OAuth2(provider, this.signInCallback).login();
+    oauth(provider: authTypes, callback: Function = () => { }) {
+        OAuth2(provider, (e: any, d: any) => { this.signInCallback(e, d); callback(e, d) }).login();
     }
 
     emailPasswordSignUp(data: TSignUpObject, callback: (err: Error | null, data?: any) => void) {
@@ -136,6 +136,7 @@ class Auth {
                 console.log(err)
             else {
                 this.setUserFromIdToken();
+                window.location.href = `https://haletale-web1.auth.ca-central-1.amazoncognito.com/logout?client_id=2msia8lds7enqe1cqutubt1l4s&logout_uri=${process.env.NODE_ENV === 'development' ? process.env.REACT_APP_LOGOUT_REDIRECT_URI_DEV! : process.env.REACT_APP_LOGOUT_REDIRECT_URI_PROD!}`;
             }
             setGlobalLoader(false);
         })
