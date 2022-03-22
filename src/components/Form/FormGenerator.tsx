@@ -19,7 +19,7 @@ import {
     AddressInput,
     DropdownSelect
 } from './index';
-import { SelectProps as DropdownSelectProps } from "react-dropdown-select";
+import { Props as DropdownSelectProps } from "react-select";
 import { PropsType as CoordinateInputPropsType } from "./components/CoordinateInput";
 import { PropsType as RadioButtonPropsType } from "./components/ToggleButtons";
 import { PropsType as TextInputPropsType } from "./components/TextInput";
