@@ -101,7 +101,8 @@ export default function Header(): JSX.Element {
                                         </>
 
                                         }
-                                        <Link to="#">Change Password</Link>
+                                        {//<Link to="#">Change Password</Link>
+                                        }
                                         {//<Link to="#">Account</Link>
                                             //<Link to="#">Notifications</Link>
                                         }
