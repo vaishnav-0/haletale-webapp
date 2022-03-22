@@ -1,0 +1,7 @@
+@import "src/styles/mixins.scss";
+
+.select {
+    @include def-shadow;
+    height: 2.7em;
+    border-radius: 1em;
+}
