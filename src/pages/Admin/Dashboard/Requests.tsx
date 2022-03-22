@@ -31,7 +31,7 @@ export default function Properties() {
         () => [
             {
                 Header: "Property id",
-                accessor: 'property_id'
+                accessor: (data) => <button title={data.property_id} style={{ width: "100px" }} className={style["link-btn"]} onClick={() => navigate("/property/view?id=" + data.id)}>{data.id}</button>,
             },
             {
                 Header: 'Name',
