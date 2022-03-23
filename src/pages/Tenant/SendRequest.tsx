@@ -172,7 +172,7 @@ function SendRequest(): JSX.Element {
             const phone = userPhoneNatData.user[0].phone;
             const nationality = userPhoneNatData.user[0]?.user_detail?.nationality
             dynamicSchemaGenerator({
-                schema: schema as SchemaType,
+                schema: _schema ?? schema as SchemaType,
                 dataLoader: {},
                 dataMap: (data) => {
                     return {
@@ -197,41 +197,39 @@ function SendRequest(): JSX.Element {
 
     }, [userPhoneNatData]);
     React.useEffect(() => {
-        if (schema)
-            if (countryData) {
-                let countries: { [k: string]: string } = { "": "" }, code: any = [];
-                countryData.countries.forEach((country: any) => {
-                    countries[country.id] = country.name;
-                    code.push({
-                        label: country.isoCode + " " + country.dialCode,
-                        value: country.dialCode,
-                    })
+        if (countryData) {
+            let countries: { [k: string]: string } = { "": "" }, code: any = [];
+            countryData.countries.forEach((country: any) => {
+                countries[country.id] = country.name;
+                code.push({
+                    label: country.isoCode + " " + country.dialCode,
+                    value: country.dialCode,
                 })
-                if (_schema)
-                    dynamicSchemaGenerator({
-                        schema: _schema,
-                        dataLoader: { countries, code },
-                        dataMap: (data: { countries: typeof countries, code: any }) => {
-                            return {
-                                country: (item: any) => {
-                                    item.props.values = Object.entries(data.countries).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
-                                },
-                                phone: {
-                                    country_code: (item: any) => {
-                                        item.props = {
-                                            ...item.props,
-                                            options: data.code,
-                                            searchBy: "search"
-                                        }
-                                    },
+            })
+            dynamicSchemaGenerator({
+                schema: _schema ?? schema as SchemaType,
+                dataLoader: { countries, code },
+                dataMap: (data: { countries: typeof countries, code: any }) => {
+                    return {
+                        country: (item: any) => {
+                            item.props.values = Object.entries(data.countries).sort(([_, v1], [__, v2]) => v1 > v2 ? 1 : v1 < v2 ? -1 : 0).reduce((o, [k, v]) => ({ ...o, [k]: v }), {})
+                        },
+                        phone: {
+                            country_code: (item: any) => {
+                                item.props = {
+                                    ...item.props,
+                                    options: data.code,
+                                    searchBy: "search"
                                 }
-
-                            }
+                            },
                         }
-                    }).then(s => {
-                        _setSchema(s)
-                    })
-            }
+
+                    }
+                }
+            }).then(s => {
+                _setSchema(s)
+            })
+        }
     }, [countryData])
     React.useEffect(() => {
         if (countryloading || userLoading || userRequestLoading || updateUserBasicLoading || requestMutationLoading)
