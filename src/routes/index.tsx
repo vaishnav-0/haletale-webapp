@@ -26,7 +26,7 @@ import ViewFavourites from "../pages/Tenant/ViewFavourites";
 import CenterContent from "../components/CenterContent";
 import AdminDashboardRoutes from "./AdminDashboard";
 import TenantDashboardRoutes from "./TenantDashboardRoutes";
-import { ChangePassword } from "../pages/ChangePassword";
+import { ResetPassword } from "../pages/ResetPassword";
 export default function () {
     const auth = useAuth();
     return (
@@ -44,6 +44,7 @@ export default function () {
                                 <Route path="properties" element={< PropertyListing />} />
                                 <Route path="property/view" element={< PropertyDetailed />} />
                                 <Route path="signout" element={<Navigate to="/" replace />} />
+                                <Route path="resetPassword" element={<ResetPassword />} />
                                 <Route
                                     path="*"
                                     element={
@@ -61,7 +62,6 @@ export default function () {
                             <Route path="/" element={<RequireAuth role={[Roles['landlord'], Roles['tenant']]} />}>
                                 <Route path="verifyNumber" element={< NumberVerify />} />
                                 <Route path="account/*" element={<AccountRoutes />} />
-                                <Route path="changePassword" element={<ChangePassword />} />
                             </Route>
                             <Route path="/" element={<RequireAuth role={[Roles['landlord']]} />}>
                                 <Route path="property/add" element={< AddProperty />} />
