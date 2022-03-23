@@ -35,12 +35,17 @@ export function zoomIn(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },
     disabled = false
 ) {
+    const maxDuration = parseFloat(duration);
     applyValues(node,
         [
             { property: "transform", duration: duration, timing: timing, delay: delay },
             { property: "opacity", duration: duration, timing: timing, delay: delay }
         ],
-        { transform: "scale(1)", opacity: 1 }, parseFloat(duration), disabled);
+        { transform: "scale(1)", opacity: 1 }, maxDuration, disabled);
+    setTimeout(function () {
+        node.style.transform = "";
+        node.style.opacity = "";
+    }, +!disabled * maxDuration * 1200);
 }
 export function zoomOut(node: HTMLElement,
     { duration = "0.5s", timing = "ease-in", delay = "0s" }: transition = { duration: "0.5s", timing: "ease-in", delay: "0s" },

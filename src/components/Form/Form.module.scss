@@ -36,6 +36,7 @@
     display: flex;
     gap: 2em;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .radio-group-vertical {
@@ -118,6 +119,10 @@
     width: 100%;
 }
 
+.form-display-container {
+    padding-left: 1em;
+}
+
 .form-display-heading {
 
     font-weight: 900;
@@ -129,5 +134,7 @@
 }
 
 .form-display-item {
-    margin: 0.5em 1em;
+    & .row {
+        display: flex;
+    }
 }
