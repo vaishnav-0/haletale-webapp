@@ -16,7 +16,7 @@ import PropertySearchBar from '../components/PropertySearchBar';
 function HomePage(): JSX.Element {
     const navigate = useNavigate();
     const user = useUserContext();
-    const { data: recentPropertyData, loading: recentPropertyloading, refetch: refetchRecentProperty } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES);
+    const { data: recentPropertyData, loading: recentPropertyloading, refetch: refetchRecentProperty } = useQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_RECENT_PROPERTIES,{fetchPolicy:"no-cache"});
     React.useEffect(() => {
         refetchRecentProperty();
     }, [user])
