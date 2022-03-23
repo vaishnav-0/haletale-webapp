@@ -55,7 +55,7 @@ export default function Example() {
     const favControl = useFavourite(searchParams.get("id")!, skipFav)
     const [Loader, setLoader] = useLoader({});
     const auth = useAuth();
-    const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "network-only" });
+    const [getProperty, { data: propertyData, loading: propertyloading, error }] = useLazyQuery<{ property: IPropertyDetails[] }>(propertyQuery.GET_PROPERTY_BY_ID, { fetchPolicy: "no-cache" });
     const navigate = useNavigate();
     const [notify, setNotify] = React.useState(false);
     const [priceBreakdownOpen, setPriceBreakdownOpen] = React.useState(false);
