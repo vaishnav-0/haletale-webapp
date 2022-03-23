@@ -14,9 +14,9 @@ export default function <TDataQuery, TAggrQuery>({ query, initialParams, childre
 
     }): JSX.Element {
     const [lazyQuery, { data, loading, fetchMore, called }] = useLazyQuery<TDataQuery>(query, {
-        notifyOnNetworkStatusChange: true
+        notifyOnNetworkStatusChange: true,
     });
-    const [lazyAggrQuery, { data: aggData, loading: aggLoading }] = useLazyQuery<TAggrQuery>(aggregateQuery);
+    const [lazyAggrQuery, { data: aggData, loading: aggLoading }] = useLazyQuery<TAggrQuery>(aggregateQuery, { fetchPolicy: "no-cache" });
     const [Loader, setLoader] = useLoader({});
     React.useEffect(() => {
         lazyAggrQuery(initialParams);
@@ -37,7 +37,8 @@ export default function <TDataQuery, TAggrQuery>({ query, initialParams, childre
             }
             {Loader}
             <InView
-                onChange={inView => {
+                onChange={(inView, entry) => {
+                    console.log(inView, entry)
                     if (inView) {
                         fetchMore({
                             variables: {
