@@ -28,7 +28,7 @@ export default function (): JSX.Element {
     });
     const [getAllProperties, { data: allPropertyData }] = useLazyQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
         notifyOnNetworkStatusChange: true,
-        fetchPolicy: "cache-and-network"
+        fetchPolicy: "no-cache"
     });
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
@@ -177,6 +177,7 @@ export default function (): JSX.Element {
                 queryParams && (
                     searchParams.get("all") ?
                         <InfiniteList<IGetAllPropertyData, IGetAllPropertyAggr>
+                            key={1}
                             query={propertyQuery.GET_ALL_PROPERTIES}
                             initialParams={queryParams}
                             aggregateQuery={propertyQuery.GET_ALL_PROPERTY_AGGREGATE}
@@ -198,6 +199,7 @@ export default function (): JSX.Element {
                         </InfiniteList>
                         :
                         <InfiniteList<searchPropertyQueryResult, searchPropertyAggregate>
+                            key={2}
                             query={propertyQuery.SEARCH_PROPERTY}
                             initialParams={
                                 queryParams
