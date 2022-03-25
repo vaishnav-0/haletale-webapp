@@ -16,9 +16,9 @@ export default function (): JSX.Element {
                 }
                 <div className={style["banner-maintext"]}>
                     Renting house for newcomers is just a few
-                    <div className={style["clicking-anim"]}>
+                    <span className={style["clicking-anim"]}>
                         <img src={clickIcon} />
-                    </div>
+                    </span>
                     away
                 </div>
 
