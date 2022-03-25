@@ -103,7 +103,7 @@ export type TArrayItem = {
     isArray: {   //dynamic field
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
-        single?: boolean //constrict to single item. No + and - buttons
+        static?: boolean //No + and - buttons
     },
 }
 
@@ -177,7 +177,7 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
         if (item.defaultValue) {
             append(item.defaultValue);
         }
-        if (item.isArray.single && !item.defaultValue) {
+        if (item.isArray.static && !item.defaultValue) {
             append(defValues);
         }
     }, [])
@@ -194,7 +194,7 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
     }</div>
     ), [item, errors, disabled]);
     return <React.Fragment>
-        {!item.isArray.single &&
+        {!item.isArray.static &&
             <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
                 <div className={style["form-item-heading"]}>
                     {item.isArray.controlHeading}
@@ -215,13 +215,13 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
                 fields.map((e, i) => {
                     return <div key={e.id} className={style["form-item"]}>
                         <div className={style["horizontal-list"]}>
-                            <div className={item.isArray.single ? style["form-item-heading"] : ""}>
+                            <div className={item.isArray.static ? style["form-item-heading"] : ""}>
                                 {typeof item.isArray.title === "string" ?
                                     item.isArray.title :
                                     item.isArray.title(i + 1)
                                 }
                             </div>
-                            {!item.isArray.single &&
+                            {!item.isArray.static &&
                                 < button type="button" className={style["remove-btn"]}
                                     onClick={() => {
                                         setCountRef.current(fields.length - 1);

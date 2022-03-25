@@ -23,7 +23,7 @@ const schema = {
         isArray: {
             controlHeading: "",
             title: "Phone no.",
-            single: true,
+            static: true,
         },
         items: [
             {
