@@ -17,6 +17,7 @@ import { cropToAspectRatio } from "../../components/Form/components/Images";
 import { handleImage } from "../../functions/api/imageUpload";
 import { imageMutation } from "../../queries";
 
+const utilityList = ["hydro", "water", "heat"]
 const stringFieldRequired = yup.string().required("This field is required.")
 const schema = {
     heading: "Edit Property",
@@ -129,6 +130,81 @@ const schema = {
             }
         },
         {
+            name: "utilities",
+            isArray: {
+                controlHeading: "",
+                title: "Utilities",
+                static: true,
+            },
+            items: [
+                {
+                    name: "hydro",
+                    type: "select",
+                    props: {
+                        values: {
+                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                        }
+                    },
+                    isOptional: {
+                        title: "Hydro",
+                        default: false
+                    },
+                    defaultValue: "",
+                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 1 }),
+
+                    validationSchema: yup
+                        .string()
+                        .when("hydro_provided", {
+                            is: true,
+                            then: yup.string().required("This field is required")
+                        })
+                },
+                {
+                    name: "water",
+                    type: "select",
+                    props: {
+                        values: {
+                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                        }
+                    },
+                    defaultValue: "",
+                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 2 }),
+                    isOptional: {
+                        title: "Water",
+                        default: false
+                    },
+                    validationSchema: yup
+                        .string()
+                        .when("water_provided", {
+                            is: true,
+                            then: yup.string().required("This field is required")
+                        })
+                },
+                {
+                    name: "heat",
+                    type: "select",
+                    props: {
+                        values: {
+                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                        }
+                    },
+                    defaultValue: "",
+                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 3 }),
+                    isOptional: {
+                        title: "Heat",
+                        default: false
+                    },
+                    validationSchema: yup
+                        .string()
+                        .when("heat_provided", {
+                            is: true,
+                            then: yup.string().required("This field is required")
+                        })
+                },
+            ],
+
+        },
+        {
             title: "Lease term",
             name: "lease_term",
             type: "select",
@@ -193,6 +269,7 @@ export default function EditProperty() {
     React.useEffect(() => {
         if (propertyData && property_attributes && property_types) {
             const property = propertyData.property[0];
+            console.log([property.property_utility_lists.reduce((obj, e) => (obj[utilityList[e.utility_list.id as any]] = e.role.id, obj), {} as any)])
             const defaultValue = {
                 property_name: property.name,
                 type: property.property_type.id,
@@ -204,7 +281,11 @@ export default function EditProperty() {
                 features: property.property_detail?.features ?? [],
                 restriction: property.property_detail?.restrictions ?? [],
                 rent: property.property_detail?.rent_amount,
-                lease_term: property.property_detail?.lease_term
+                lease_term: property.property_detail?.lease_term,
+                utilities: [{
+                    ...utilityList.reduce((obj, curr) => (obj[curr] = '', obj), {} as any),
+                    ...property.property_utility_lists.reduce((obj, e) => (obj[utilityList[e.utility_list.id as any]] = e.role.id, obj), {} as any)
+                }]
             }
             defaultValueInjector(schema as SchemaType, defaultValue).then(s => {
                 dynamicSchemaGenerator({
@@ -232,8 +313,10 @@ export default function EditProperty() {
                                     }, {})
                                 };
                             },
-
-
+                            utilities: {
+                                ...property.property_utility_lists.reduce((obj, curr) =>
+                                    (obj[utilityList[curr.utility_list.id as any]] = (item: any) => (item.isOptional.default = true), obj), {} as any)
+                            },
                             subtype: (item: any) => {
                                 item.props.values = {
                                     "": "", ...data.subtype.reduce((obj: any, curr: any) => {
@@ -255,6 +338,7 @@ export default function EditProperty() {
                         }
                     }
                 }).then(sch => {
+                    console.log(sch)
                     setLoader(false);
                     _setSchema(sch)
                 })
