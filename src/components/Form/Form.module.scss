@@ -35,7 +35,7 @@
 .horizontal-list {
     display: flex;
     gap: 2em;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
 }
 
