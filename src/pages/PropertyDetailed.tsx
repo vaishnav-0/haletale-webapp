@@ -197,7 +197,7 @@ export default function Example() {
                 <div className={style["description"]}>
                     {property?.description}
                 </div>
-                <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0"]}>
+                <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0", "1"]}>
                     <AccordionItem uuid="0">
                         <AccordionItemHeading>
                             <AccordionItemButton>
@@ -216,6 +216,22 @@ export default function Example() {
                             </ul>
                         </AccordionItemPanel>
                     </AccordionItem>
+                    {!!property?.property_utility_lists.length &&
+                        <AccordionItem uuid="1">
+                            <AccordionItemHeading>
+                                <AccordionItemButton>
+                                    Utilities
+                                </AccordionItemButton>
+                            </AccordionItemHeading>
+                            <AccordionItemPanel>
+                                <ul className={style["feature-accordion-list"]}>
+                                    {
+                                        property.property_utility_lists.map(e => <li>{e.utility_list.name}: Paid by {e.role.name}</li>)
+                                    }
+                                </ul>
+                            </AccordionItemPanel>
+                        </AccordionItem>
+                    }
                 </Accordion>
 
                 <div className={style["bottom-panel"]}>

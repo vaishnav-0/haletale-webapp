@@ -28,12 +28,7 @@ interface IPropertyQueryOptional {
       parking: number
     }
   }
-  property_images: {
-    key: string,
-    s3Url: {
-      url: string
-    }
-  }[]
+
 }
 export interface IPropertyDetails extends DeepPartial<IPropertyQueryOptional> {
   id: string
@@ -50,7 +45,23 @@ export interface IPropertyDetails extends DeepPartial<IPropertyQueryOptional> {
   is_listed: boolean,
   coordinates: {
     coordinates: [number, number]
-  }
+  },
+  property_images: {
+    key: string,
+    s3Url: {
+      url: string
+    }
+  }[],
+  property_utility_lists: {
+    role: {
+      name: string
+      id: string
+    }
+    utility_list: {
+      name: string
+      id: string
+    }
+  }[]
 }
 export interface IPropertyAttribute {
   property_features_list: { name: string, comment: string }[],
@@ -73,6 +84,42 @@ export interface IGetAllPropertyAggr {
     }
   }
 }
+export const propertyImageFragment = gql`
+fragment propertyImageFragment on property {
+      property_images {
+      s3Url{
+        url
+      }
+    }
+  }
+`
+export const propertyBasicFragment = gql`
+  fragment propertyBasicFragment on property {
+    id
+    name
+    is_listed
+    is_approved
+   property_type {
+    id
+    name
+  }
+  property_subtype {
+    id
+    name
+  }
+      property_address {
+        address {
+        id
+        full_address
+      }
+    }
+      property_detail {
+      id
+      restrictions
+      rent_amount
+      rooms
+    } 
+  }`
 export const propertyFragment = gql`
   fragment propertyFragment on property {
     id
@@ -118,6 +165,16 @@ export const propertyFragment = gql`
         key
       s3Url{
         url
+      }
+    }
+     property_utility_lists {
+      role {
+        id
+        name
+      }
+      utility_list {
+        id
+        name
       }
     }
   }`
@@ -197,38 +254,14 @@ ${propertyFragment}
   GET_PROPERTY_BY_OWNER: gql`query GET_PROPERTY_OWNER{
   property_owner {
     property {
-    ...propertyFragment
+    ...propertyBasicFragment
     is_approved
     is_listed
   }
   }
 }
-  ${propertyFragment}
+  ${propertyBasicFragment}
 `,
-  GET_OWNER_PROPERTIES: gql`query GET_OWNER_PROPERTIES {
-  property_owner {
-    property {
-      id
-      name
-      property_address {
-        address {
-          full_address
-        }
-      }
-      property_detail {
-        id
-        features
-        rent_amount
-        rooms
-      }
-      type
-      sub_type
-      is_approved
-    }
-  }
-}
-`,
-
   SEARCH_PROPERTY: gql`query SEARCH_PROPERTY($country:String,$locality: String, $postal_code: String, $route: String, $street_number:String, $administrative_area_level_2:String, $administrative_area_level_1:String,$order_by:property_order_by={},$offset:Int,$limit:Int,$rooms: jsonb = {},$features: jsonb = [], $rent_gt: float8 = 0, $rent_lt: float8 = Infinity,$types: [Int!] = [],$typeFilter:Boolean!=false) {
   search_property(where:{type: {_in: $types},property_detail: {rooms: {_contains: $rooms}, rent_amount: {_gte: $rent_gt, _lte: $rent_lt}, features: {_contains: $features}}}, args: {_country: $country, _locality: $locality, _postal_code: $postal_code, _route: $route, _street_number: $street_number, _administrative_area_level_2:$administrative_area_level_2 , _administrative_area_level_1: $administrative_area_level_1}, order_by:[$order_by],offset: $offset, limit: $limit) @include(if: $typeFilter) {
     ...propertyFragment

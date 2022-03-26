@@ -325,7 +325,7 @@ function AddPropertyForm3(props: FormPropsType) {
                 }
             },
             {
-                name: "utilites",
+                name: "utilities",
                 isArray: {
                     controlHeading: "",
                     title: "Utilities",
@@ -337,10 +337,11 @@ function AddPropertyForm3(props: FormPropsType) {
                         type: "select",
                         props: {
                             values: {
-                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                                "": "Paid by", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",
+                        valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 1 }),
                         isOptional: {
                             title: "Hydro",
                             default: false,
@@ -357,10 +358,11 @@ function AddPropertyForm3(props: FormPropsType) {
                         type: "select",
                         props: {
                             values: {
-                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                                "": "Paid by", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",
+                        valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 2 }),
                         isOptional: {
                             title: "Water",
                             default: false
@@ -377,10 +379,11 @@ function AddPropertyForm3(props: FormPropsType) {
                         type: "select",
                         props: {
                             values: {
-                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                                "": "Paid by", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",
+                        valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 3 }),
                         isOptional: {
                             title: "Heat",
                             default: false
@@ -460,21 +463,21 @@ function AddPropertyForm3(props: FormPropsType) {
         }
     }, [data])
     const onSubmit = (d: FormData) => {
-        console.log(d);
-        // props.onLoading();
-        // if (!propertyId.current) //handle it
-        //     return
-        // addPropertyDetails({
-        //     variables: {
-        //         features: d.features,
-        //         max_occupants: d.tenant_count,
-        //         rent_amount: d.rent,
-        //         restrictions: d.restriction,
-        //         lease_term: d.lease_term,
-        //         rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
-        //         id: propertyId.current
-        //     }
-        // })
+        props.onLoading();
+        if (!propertyId.current) //handle it
+            return
+        addPropertyDetails({
+            variables: {
+                features: d.features,
+                max_occupants: d.tenant_count,
+                rent_amount: d.rent,
+                restrictions: d.restriction,
+                lease_term: d.lease_term,
+                rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
+                id: propertyId.current,
+                utilities: Object.values(d.utilities[0]).filter(e => !!e).map((e: any) => ({ ...e, property_id: propertyId.current }))
+            }
+        })
     }
     return (
         <>
