@@ -50,7 +50,7 @@ function AddPropertyForm1(props: FormPropsType) {
                 props: {
 
                 },
-                validationSchema:yup.object().typeError("Address is required").required("Address is required")
+                validationSchema: yup.object().typeError("Address is required").required("Address is required")
             },
             {
                 title: "Property type",
@@ -325,6 +325,77 @@ function AddPropertyForm3(props: FormPropsType) {
                 }
             },
             {
+                name: "utilites",
+                isArray: {
+                    controlHeading: "",
+                    title: "Utilities",
+                    static: true,
+                },
+                items: [
+                    {
+                        name: "hydro",
+                        type: "select",
+                        props: {
+                            values: {
+                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                            }
+                        },
+                        defaultValue: "",
+                        isOptional: {
+                            title: "Hydro",
+                            default: false,
+                        },
+                        validationSchema: yup
+                            .string()
+                            .when("hydro_provided", {
+                                is: true,
+                                then: yup.string().required("This field is required")
+                            })
+                    },
+                    {
+                        name: "water",
+                        type: "select",
+                        props: {
+                            values: {
+                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                            }
+                        },
+                        defaultValue: "",
+                        isOptional: {
+                            title: "Water",
+                            default: false
+                        },
+                        validationSchema: yup
+                            .string()
+                            .when("water_provided", {
+                                is: true,
+                                then: yup.string().required("This field is required")
+                            })
+                    },
+                    {
+                        name: "heat",
+                        type: "select",
+                        props: {
+                            values: {
+                                "": "Paid by", "Landlord": "Landlord", "Tenant": "Tenant"
+                            }
+                        },
+                        defaultValue: "",
+                        isOptional: {
+                            title: "Heat",
+                            default: false
+                        },
+                        validationSchema: yup
+                            .string()
+                            .when("heat_provided", {
+                                is: true,
+                                then: yup.string().required("This field is required")
+                            })
+                    },
+                ],
+
+            },
+            {
                 title: "Lease term",
                 name: "lease_term",
                 type: "select",
@@ -389,20 +460,21 @@ function AddPropertyForm3(props: FormPropsType) {
         }
     }, [data])
     const onSubmit = (d: FormData) => {
-        props.onLoading();
-        if (!propertyId.current) //handle it
-            return
-        addPropertyDetails({
-            variables: {
-                features: d.features,
-                max_occupants: d.tenant_count,
-                rent_amount: d.rent,
-                restrictions: d.restriction,
-                lease_term: d.lease_term,
-                rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
-                id: propertyId.current
-            }
-        })
+        console.log(d);
+        // props.onLoading();
+        // if (!propertyId.current) //handle it
+        //     return
+        // addPropertyDetails({
+        //     variables: {
+        //         features: d.features,
+        //         max_occupants: d.tenant_count,
+        //         rent_amount: d.rent,
+        //         restrictions: d.restriction,
+        //         lease_term: d.lease_term,
+        //         rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
+        //         id: propertyId.current
+        //     }
+        // })
     }
     return (
         <>
@@ -430,6 +502,7 @@ function AddProperty(): JSX.Element {
                 toast.success("Property added");
                 navigate("/landlord/dashboard");
             }}
+                parallel
             />
         </Layout >
     );
