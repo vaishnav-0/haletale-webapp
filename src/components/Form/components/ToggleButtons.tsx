@@ -9,7 +9,7 @@ export interface PropsType extends InputPropsType {
 
 const ToggleButton = React.forwardRef<HTMLInputElement, PropsType>(({ name, value, label, type, key, children, ...rest }: PropsType, ref) => {
 
-    const id = Math.random().toString(36).substr(2, 5);
+    const id = Math.random().toString(36).substring(2, 8);
     return (
         <label htmlFor={id}>
             <div key={key} className={style["radio-item"]}>
