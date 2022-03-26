@@ -55,7 +55,6 @@ export default function Example() {
                 <div className={style["properties-list"]}>
                     {
                         propertyData && propertyData?.property_owner.map(_property => {
-                            console.log(_property.property)
                             const property = _property.property;
                             const properyRequestCount = allRequestCountData?.property_request.find(e => e.property_id === property.id)?.property.property_requests_aggregate.aggregate.count ?? 0;
                             return (
@@ -126,12 +125,15 @@ export default function Example() {
                                         <ButtonSolidWithIndicator onClick={() => navigate("/property/edit/?id=" + property.id)} className={style["property-card-edit-btn"]} tooltip={property.property_detail ? "" : "Property data incomplete"} indicator={property.property_detail ? <></> : <div className={style["btn-indicator"]}>!</div>}>
                                             Edit
                                         </ButtonSolidWithIndicator>
-                                        <ButtonSolid type="button"
-                                            disabled={setListedMutationLoading}
-                                            onClick={() => setPopup(true, `Are you sure you want to ${property.is_listed ? "un" : ""}list the property?`, () => changeListing(property.id, !property.is_listed))}
-                                            className={`${style["property-card-unlist-btn"]} ${!property.is_listed ? style["inactive"] : ""}`}>
-                                            {property.is_listed ? "Unlist" : "List"}
-                                        </ButtonSolid>
+                                        {
+                                            property.is_approved &&
+                                            < ButtonSolid type="button"
+                                                disabled={setListedMutationLoading}
+                                                onClick={() => setPopup(true, `Are you sure you want to ${property.is_listed ? "un" : ""}list the property?`, () => changeListing(property.id, !property.is_listed))}
+                                                className={`${style["property-card-unlist-btn"]} ${!property.is_listed ? style["inactive"] : ""}`}>
+                                                {property.is_listed ? "Unlist" : "List"}
+                                            </ButtonSolid>
+                                        }
                                     </div>
 
                                 </div>
