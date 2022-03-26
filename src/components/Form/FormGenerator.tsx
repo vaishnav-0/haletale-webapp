@@ -96,6 +96,7 @@ type TSingleItem = {
     wrapperRender?: (c: JSX.Element) => JSX.Element,
     isArray?: undefined,
     validationSchema?: yup.AnySchema,
+    valueTransform?: (v: any) => any
 } & ItemTypes
 export type TArrayItem = {
     items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
@@ -325,10 +326,23 @@ export type PropsType = {
     disabled?: boolean,
     display?: boolean
 }
+
+function applyTransform(fD: any, items: SchemaType["items"]): { [k: string]: any } {
+    return items.reduce((obj, e) => {
+        if (e.isArray)
+            obj[e.name] = fD?.[e.name].map((fDItem: any) => applyTransform(fDItem, e.items))
+        else
+            if (typeof e.valueTransform === 'function')
+                obj[e.name] = e.valueTransform(fD[e.name])
+            else
+                obj[e.name] = fD[e.name]
+        return obj;
+    }, {} as any);
+}
 export default function FormGenerator({ schema, onSubmit, onError, disabled, display }: PropsType) {
     const yupSchema = generateYupSchema(schema.items);
     const methods = useForm({ resolver: yupResolver(yupSchema, { abortEarly: false }), criteriaMode: "all" });
-    const handleSubmit = methods.handleSubmit(onSubmit, onError);
+    const handleSubmit = React.useCallback(methods.handleSubmit((v) => onSubmit(applyTransform(v, schema.items)), onError), [schema.items]);
     const errors = methods.formState.errors;
     return (
         <FormProvider {...methods}>
