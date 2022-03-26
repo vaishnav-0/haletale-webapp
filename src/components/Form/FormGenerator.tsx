@@ -39,6 +39,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { DeepReadonly } from '../../types/utilTypes'
 import * as yup from 'yup';
 import { InfoMessageBox } from "../MessageBox";
+import { objectReduce } from "../../functions/utils";
 
 
 
@@ -76,7 +77,7 @@ type ItemTypes = ItemType<"text", TextInputPropsType> | ItemType<"radio", RadioB
     ItemType<"image", ImageUploadPropsType> | ItemType<"file", FileInputButtonPropsType> |
     ItemType<"coordinateInput", CoordinateInputPropsType> | ItemType<"addressInput", AddressPropsType> |
     ItemType<"dropdownSelect", Omit<DropdownSelectProps<any>, "onChange" | "options">>
-type FormValueType = string | number | { [k: string]: string } | string[] | boolean
+type FormValueType = string | number | { [k: string]: any } | string[] | boolean
 type TItemCommon = {
     title?: string,
     name: string,
@@ -99,7 +100,7 @@ type TSingleItem = {
 export type TArrayItem = {
     items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
     defaultValue?: FormValueType[],
-    wrapperRender?: (c: JSX.Element[]) => JSX.Element
+    wrapperRender?: (c: JSX.Element) => JSX.Element
     isArray: {   //dynamic field
         controlHeading: string //heading where + and - buttons are
         title: ((i: number) => string) | string,
@@ -155,7 +156,7 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
         {
             <div className={style["field-error"]}>{
                 error &&
-                Object.values(error.types).flatMap(e => e).map((err, i, arr) => <div>{arr.length > 1 ? "\u2022 " : ""}{err as string}</div>)
+                Object.values(error.types).flatMap(e => e).map((err, i, arr) => <div key={i}>{arr.length > 1 ? "\u2022 " : ""}{err as string}</div>)
 
             }
             </div>
@@ -171,7 +172,7 @@ function SingleComponent({ item, error, disabled }: { item: Extract<TItem, TItem
         }
     </div>;
 }
-function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError }[], disabled?: boolean }) {
+function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItemCommon & TArrayItem>, errors?: { [k: string]: FieldError[] }, disabled?: boolean }) {
     const { fields, append, remove } = useFieldArray({ name: item.name });
     React.useEffect(() => {
         if (item.defaultValue) {
@@ -183,16 +184,8 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
     }, [])
     const setCountRef = React.useRef<(v: number) => void>(() => { });
     const defValues = item.items.reduce((obj, curr) => { return { ...obj, [curr.name]: curr.defaultValue } }, {});
-    const itemList = React.useCallback((i: number) => item.items.map((_item, k) => <div style={{ alignSelf: "flex-start" }} key={k}>{
-        <SingleComponent
-            item={{
-                ..._item, name: `${item.name}[${i}].${_item.name}`,
-            }}
-            error={errors?.[i]?.[_item.name]}
-            disabled={disabled}
-        />
-    }</div>
-    ), [item, errors, disabled]);
+    const itemList = React.useCallback((i: number) => item.items.map((_item, k) => ({ ..._item, name: `${item.name}[${i}].${_item.name}` })),
+        [item]);
     return <React.Fragment>
         {!item.isArray.static &&
             <div className={`${style["form-item"]} ${style["paper"]} ${style["center"]} ${style["fit"]} ${style["col1"]}`}>
@@ -233,12 +226,14 @@ function ArrayComponent({ item, errors, disabled }: { item: Extract<TItem, TItem
                         </div>
                         {
                             item.wrapperRender ?
-                                item.wrapperRender(itemList(i))
+                                item.wrapperRender(<Generate items={itemList(i)}
+                                    errors={errors ?? {}}
+                                    disabled={disabled} />)
                                 :
                                 <div className={item.wrapperClassName ?? !item.wrapperStyle ? style["horizontal-list"] : ""} style={item.wrapperStyle ?? {}}>
-                                    {
-                                        itemList(i)
-                                    }
+                                    <Generate key={e.id} items={itemList(i)}
+                                        errors={objectReduce(errors?.[i] ?? {}, (obj, [k, v]) => (obj[`${item.name}[${i}].${k}`] = v, obj), {})}
+                                        disabled={disabled} />
                                 </div>
                         }
                     </div>
@@ -286,8 +281,12 @@ function ToggleWrapper({ name, optionalProps, itemComponent }: { name: string, o
     )
 }
 
-function Generate({ schema, errors, disabled }: { schema: SchemaType, errors: { [K: string]: any }, disabled?: boolean }) {
-    return <>{schema.items.map((item, i) => {
+function getComponent() {
+
+}
+
+function Generate({ items, errors, disabled }: { items: SchemaType["items"], errors: { [K: string]: any }, disabled?: boolean }) {
+    return <>{items.map((item, i) => {
         return <React.Fragment key={i}>
             {item.hidden ? <></> :
                 <>
@@ -341,7 +340,7 @@ export default function FormGenerator({ schema, onSubmit, onError, disabled, dis
             <form className={schema.wrapperClassName ?? !schema.wrapperStyle ? style["form-container"] : ""} style={schema.wrapperStyle} onSubmit={e => { e.preventDefault(); handleSubmit() }}>
 
                 {
-                    <Generate schema={schema} errors={errors} disabled={disabled || display}
+                    <Generate items={schema.items} errors={errors} disabled={disabled || display}
                     />
                 }
                 {!display && (
