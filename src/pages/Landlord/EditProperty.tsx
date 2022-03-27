@@ -150,7 +150,7 @@ const schema = {
                         default: false
                     },
                     defaultValue: "",
-                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 1 }),
+                    valueTransform: (v: any, opt?: boolean) => ((v === '' || !opt) ? null : { paid_by: v, utility_id: 1 }),
 
                     validationSchema: yup
                         .string()
@@ -168,7 +168,7 @@ const schema = {
                         }
                     },
                     defaultValue: "",
-                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 2 }),
+                    valueTransform: (v: any, opt?: boolean) => ((v === '' || !opt) ? null : { paid_by: v, utility_id: 2 }),
                     isOptional: {
                         title: "Water",
                         default: false
@@ -189,7 +189,7 @@ const schema = {
                         }
                     },
                     defaultValue: "",
-                    valueTransform: (v: any) => (v === '' ? null : { paid_by: v, utility_id: 3 }),
+                    valueTransform: (v: any, opt?: boolean) => ((v === '' || !opt) ? null : { paid_by: v, utility_id: 3 }),
                     isOptional: {
                         title: "Heat",
                         default: false
@@ -269,7 +269,6 @@ export default function EditProperty() {
     React.useEffect(() => {
         if (propertyData && property_attributes && property_types) {
             const property = propertyData.property[0];
-            console.log([property.property_utility_lists.reduce((obj, e) => (obj[utilityList[e.utility_list.id as any]] = e.role.id, obj), {} as any)])
             const defaultValue = {
                 property_name: property.name,
                 type: property.property_type.id,
@@ -284,7 +283,7 @@ export default function EditProperty() {
                 lease_term: property.property_detail?.lease_term,
                 utilities: [{
                     ...utilityList.reduce((obj, curr) => (obj[curr] = '', obj), {} as any),
-                    ...property.property_utility_lists.reduce((obj, e) => (obj[utilityList[e.utility_list.id as any]] = e.role.id, obj), {} as any)
+                    ...property.property_utility_lists.reduce((obj, e) => (obj[utilityList[parseInt(e.utility_list.id) - 1]] = e.role.id, obj), {} as any)
                 }]
             }
             defaultValueInjector(schema as SchemaType, defaultValue).then(s => {
@@ -315,7 +314,7 @@ export default function EditProperty() {
                             },
                             utilities: {
                                 ...property.property_utility_lists.reduce((obj, curr) =>
-                                    (obj[utilityList[curr.utility_list.id as any]] = (item: any) => (item.isOptional.default = true), obj), {} as any)
+                                    (obj[utilityList[parseInt(curr.utility_list.id) - 1]] = (item: any) => (item.isOptional.default = true), obj), {} as any)
                             },
                             subtype: (item: any) => {
                                 item.props.values = {
@@ -338,7 +337,6 @@ export default function EditProperty() {
                         }
                     }
                 }).then(sch => {
-                    console.log(sch)
                     setLoader(false);
                     _setSchema(sch)
                 })
@@ -395,7 +393,6 @@ export default function EditProperty() {
                 keys: imagesToDelete
             }
         })
-        console.log(imagesToDelete, imagesToOmit);
 
 
         let propertyUpdateData = {
@@ -424,7 +421,7 @@ export default function EditProperty() {
                 details: details,
                 address: d.address?.addressComponents,
                 address_id: property?.property_address?.address?.id,
-
+                utilities: Object.values(d.utilities[0]).filter(e => !!e).map((e: any) => ({ ...e, property_id: property?.id }))
             }
         })
     }
