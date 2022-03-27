@@ -38,12 +38,14 @@ img {
 }
 
 @font-face {
-  font-family: "HelveticaNeue";
+  font-display: swap;
+  font-family: "gotham-rounded";
   font-weight: 800;
   src: url(assets/fonts/gotham-rounded/GothamRounded-Bold.otf);
 }
 
 @font-face {
+  font-display: swap;
   font-family: "gotham-rounded";
   font-weight: 200;
 
@@ -52,6 +54,7 @@ img {
 
 
 @font-face {
+  font-display: swap;
   font-family: "gotham-rounded";
   font-weight: 400;
   src: url(assets/fonts/gotham-rounded/GothamRounded-Book.otf);
