@@ -35,7 +35,7 @@ export default {
         }
       }
     }`,
-  UPDATE_PROPERTY: gql`mutation UPDATE_PROPERTY($id: uuid, $property: property_set_input = {}, $details: property_details_set_input={},$address_id:uuid,$address:address_set_input={}) {
+  UPDATE_PROPERTY: gql`mutation UPDATE_PROPERTY($id: uuid, $property: property_set_input = {}, $details: property_details_set_input={},$address_id:uuid,$address:address_set_input={}, $utilities: [property_utility_list_insert_input!] = []) {
     update_property(where: {id: {_eq: $id}}, _set: $property) {
       affected_rows
     }
@@ -44,7 +44,16 @@ export default {
     }
     update_address(where: {id: {_eq: $address_id}}, _set:$address) {
       affected_rows
-  }
+    }
+    delete_property_utility_list(where: {property_id: {_eq: $id}}) {
+      affected_rows
+    }
+    insert_property_utility_list(objects: $utilities) {
+      returning {
+        id
+      }
+    }
+    
   }`,
   DELETE_PROPERTY: gql`mutation DELETE_PROPERTY($pId: uuid, $aId: uuid) {
   delete_property(where: {id: {_eq: $pId}}) {
@@ -60,6 +69,13 @@ export default {
     affected_rows
   }
 }`,
+  DELETE_PROPERTY_UTILITY_LIST: gql`mutation DELETE_PROPERTY_UTILITY_LIST($ids: [uuid!] = "") {
+  delete_property_utility_list(where: {id: {_in: $ids}}) {
+    affected_rows
+  }
+}
+
+`,
   UPDATE_IS_APPROVED: gql`mutation UPDATE_IS_APPROVED($id: uuid, $is_approved: Boolean) {
   update_property(where: {id: {_eq: $id}}, _set: {is_approved: $is_approved}){
         affected_rows
