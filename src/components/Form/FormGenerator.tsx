@@ -96,7 +96,7 @@ type TSingleItem = {
     wrapperRender?: (c: JSX.Element) => JSX.Element,
     isArray?: undefined,
     validationSchema?: yup.AnySchema,
-    valueTransform?: (v: any) => any
+    valueTransform?: (v: any, optionalV?: boolean) => any
 } & ItemTypes
 export type TArrayItem = {
     items: readonly (Extract<TItem, TItemCommon & TSingleItem> & { defaultValue: FormValueType })[],//form field component,
@@ -121,6 +121,7 @@ export interface SchemaType {
 }
 export type FormDataShape<T extends DeepReadonly<SchemaType>> = { [k in T["items"][number]["name"]]: any }
 
+const optionalPostfix = "_provided";
 function getInputComponent(item: Extract<TItem, TItemCommon & TSingleItem>) {
     let inputComponent!: any;
     Object.entries(componentMap).forEach(([type, component]) => {
@@ -257,7 +258,7 @@ function ToggleWrapper({ name, optionalProps, itemComponent }: { name: string, o
             <div className={style["form-item"]} >
                 <div className={style["horizontal-list"]}>
                     <CheckBox
-                        name={name + "_provided"}
+                        name={name + optionalPostfix}
                         defaultChecked={optionalProps.default}
                         onChange={(e) => setOpen(e.target.checked)}
                     >
@@ -333,7 +334,7 @@ function applyTransform(fD: any, items: SchemaType["items"]): { [k: string]: any
             obj[e.name] = fD?.[e.name].map((fDItem: any) => applyTransform(fDItem, e.items))
         else
             if (typeof e.valueTransform === 'function')
-                obj[e.name] = e.valueTransform(fD[e.name])
+                obj[e.name] = e.valueTransform(fD[e.name], e.isOptional ? fD[e.name + optionalPostfix] : null)
             else
                 obj[e.name] = fD[e.name]
         return obj;
