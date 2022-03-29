@@ -1,17 +1,15 @@
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import FormGenerator, { SchemaType, FormDataShape } from "../../components/Form/FormGenerator";
-import { dataMapReturn, dynamicSchemaGenerator } from "../../components/Form/FormGeneratorHelpers";
+import { dynamicSchemaGenerator } from "../../components/Form/FormGeneratorHelpers";
 import Layout from "../Layout";
 import formStyle from '../../components/Form/Form.module.scss';
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import propertyQuery, { IPropertyAttribute, IPropertyDetails } from "../../queries/property.query";
 import { defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
-import { toast } from "react-toastify";
 import * as yup from 'yup';
 import { useLoader } from "../../components/Loader";
 import propertyMutation from "../../queries/property.mutation";
-import { objectFilter } from "../../functions/utils";
 import cloneDeep from "clone-deep";
 import { cropToAspectRatio } from "../../components/Form/components/Images";
 import { handleImage } from "../../functions/api/imageUpload";
