@@ -43,7 +43,7 @@ export default function Properties() {
       },
       {
         Header: 'Approval',
-        accessor: (data) => <button disabled={setApprovedutationLoading} onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Remove approval" : "Approve"}</button>,
+        accessor: (data) => <button onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Remove approval" : "Approve"}</button>,
       },
       {
         Header: 'Full Address',
