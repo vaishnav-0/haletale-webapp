@@ -136,7 +136,7 @@ class Auth {
                 console.log(err)
             else {
                 this.setUserFromIdToken();
-                window.location.href = `https://haletale-web1.auth.ca-central-1.amazoncognito.com/logout?client_id=2msia8lds7enqe1cqutubt1l4s&logout_uri=${process.env.NODE_ENV === 'development' ? process.env.REACT_APP_LOGOUT_REDIRECT_URI_DEV! : process.env.REACT_APP_LOGOUT_REDIRECT_URI_PROD!}`;
+                window.location.href = process.env.REACT_APP_API_AUTH_ENDPOINT + `/logout?client_id=2msia8lds7enqe1cqutubt1l4s&logout_uri=${process.env.NODE_ENV === 'development' ? process.env.REACT_APP_LOGOUT_REDIRECT_URI_DEV! : process.env.REACT_APP_LOGOUT_REDIRECT_URI_PROD!}`;
             }
             setGlobalLoader(false);
         })
