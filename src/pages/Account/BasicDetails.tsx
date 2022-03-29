@@ -2,17 +2,14 @@ import React from "react";
 import FormGenerator from "../../components/Form/FormGenerator";
 import formStyle from '../../components/Form/Form.module.scss';
 import * as yup from 'yup';
-import DisplayData from "../../components/Form/DisplayData";
 import { SchemaType } from "../../components/Form/FormGenerator";
 import { useLoader } from "../../components/Loader";
 import metaQuery from "../../queries/meta.query";
 import { useLazyQuery, useQuery, useMutation } from "@apollo/client";
-import { dataMapReturn, dynamicSchemaGenerator, defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
+import {  dynamicSchemaGenerator, defaultValueInjector } from "../../components/Form/FormGeneratorHelpers";
 import userQuery from "../../queries/user.query";
-import { useAuth } from "../../functions/auth/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { userMutation } from "../../queries";
-import { objectFilter } from "../../functions/utils";
 import useStateWithCB from "../../functions/hooks/useStateWithCB";
 import { useUserContext } from "../../functions/auth/userContext";
 const schema: SchemaType = {
@@ -77,7 +74,6 @@ export function BasicDetails({ edit }: { edit: boolean }) {
     React.useEffect(() => {
         if (userPhoneNatData) {
             const { phone, user_detail: { nationality } } = userPhoneNatData.user[0];
-            console.log(phone, nationality)
             if (phone && nationality)
                 setIscomplete(true);
             defaultValueInjector(schema, {
@@ -89,7 +85,6 @@ export function BasicDetails({ edit }: { edit: boolean }) {
                     }
                 ]
             }).then(s => {
-                console.log(s);
                 _setSchema(s, () => queryGetCountries())
             })
         }
@@ -117,7 +112,6 @@ export function BasicDetails({ edit }: { edit: boolean }) {
                             }
                         }
                     }).then(s => {
-                        console.log("set schema", s)
                         _setSchema(s)
                     })
 
@@ -129,14 +123,12 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         if (countryData) {
             let countries: { [k: string]: string } = { "": "" }, code: any[] = [];
             countryData.countries.forEach((country: any, i: number) => {
-                console.log(country.name, country.isoCode, country.dialCode)
                 countries[country.id] = country.name;
                 code.push({
                     label: country.isoCode + " " + country.dialCode,
                     value: country.dialCode,
                 })
             });
-            console.log(code)
             if (_schema)
                 dynamicSchemaGenerator({
                     schema: _schema,
@@ -195,7 +187,6 @@ export function BasicDetails({ edit }: { edit: boolean }) {
         if (updateUserBasicData)
             navigate("/");
     }, [updateUserBasicData])
-    console.log(_schema)
     return (
         <>
             {Loader}
