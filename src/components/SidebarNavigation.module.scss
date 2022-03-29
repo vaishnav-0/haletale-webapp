@@ -5,11 +5,17 @@
 .sidenav-container {
     display: flex;
     height: 100%;
-    flex-direction: column; ///
+    flex-direction: row; ///
 
-    @include media(">smMin") {
-        flex-direction: row;
+    &.overflow {
+        flex-direction: column;
+
+        .nav-list {
+            flex-direction: row;
+        }
     }
+
+
 }
 
 .nav-container {
@@ -29,10 +35,8 @@
     list-style-type: none;
     font-weight: 900;
     padding: 0;
+    flex-direction: column;
 
-    @include media(">smMin") {
-        flex-direction: column;
-    }
 
     &>li {
         flex-shrink: 0;
