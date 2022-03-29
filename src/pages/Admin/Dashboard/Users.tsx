@@ -21,7 +21,7 @@ export default function Properties() {
             setLoader(false)
     }, [allUserDataLoading])
     const [Loader, setLoader] = useLoader({});
-    const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedutationLoading }] = useMutation(userMutation.SET_USER_STATUS, { onCompleted: refetch })
+    const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedMutationLoading }] = useMutation(userMutation.SET_USER_STATUS, { onCompleted: refetch })
 
     const result = React.useMemo(() => allUserData?.user ?? [], [allUserData])
     // table structureexport interface IUserData {
@@ -61,7 +61,7 @@ export default function Properties() {
             },
             {
                 Header: 'Status',
-                accessor: (data) => <button disabled={setApprovedutationLoading} onClick={() => setApprovedMutation({ variables: { id: data.id, isActive: !data.isActive } })} className={`${style["property-approve-btn"]} ${data.isActive ? style["disapprove"] : ""}`}>{data.isActive ? "Disable" : "Enable"}</button>,
+                accessor: (data) => <button disabled={setApprovedMutationLoading} onClick={() => setApprovedMutation({ variables: { id: data.id, isActive: !data.isActive } })} className={`${style["property-approve-btn"]} ${data.isActive ? style["disapprove"] : ""}`}>{data.isActive ? "Disable" : "Enable"}</button>,
             },
 
         ],
