@@ -8,28 +8,15 @@ import { Openable } from '../components/Openable';
 import propertyQuery, { IGetAllPropertyAggr, IGetAllPropertyData, IPropertyAttribute, IPropertyDetails } from '../queries/property.query';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import InView from 'react-intersection-observer';
 import Skeleton from 'react-loading-skeleton';
 import PropertySearchBar from '../components/PropertySearchBar';
-import InfiniteList from '../components/InfiniteList';
 import { ButtonSolid } from '../components/Button';
 import MapView from './MapView';
+import useInfiniteList, { InfiniteList } from '../components/InfiniteList';
 
 type searchPropertyQueryResult = { search_property: IPropertyDetails[] }
 type searchPropertyAggregate = { search_property_aggregate: { aggregate: { totalCount: number } } }
 export default function (): JSX.Element {
-    const [searchProperties, { data: propertyData, loading, fetchMore }] = useLazyQuery<searchPropertyQueryResult>(propertyQuery.SEARCH_PROPERTY, {
-        notifyOnNetworkStatusChange: true,
-        fetchPolicy: "cache-and-network"
-    });
-    const { data: propertyAggregate } = useQuery<IGetAllPropertyAggr>(propertyQuery.GET_ALL_PROPERTY_AGGREGATE, {
-        notifyOnNetworkStatusChange: true,
-        fetchPolicy: "cache-and-network"
-    });
-    const [getAllProperties, { data: allPropertyData }] = useLazyQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
-        notifyOnNetworkStatusChange: true,
-        fetchPolicy: "no-cache"
-    });
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const [filterOpen, setFilterOpen] = React.useState(false);
@@ -38,6 +25,26 @@ export default function (): JSX.Element {
     const [queryParams, setQueryParams] = React.useState<object | null>(null);
     const [mapOpen, setMapOpen] = React.useState<boolean>(false);
     const [params, setParams] = React.useState<any>(null);
+    const [SearchList, propertyData, propertyAggData] = useInfiniteList<searchPropertyQueryResult, searchPropertyAggregate>({
+        query: propertyQuery.SEARCH_PROPERTY,
+        initialParams: queryParams ?? {},
+        aggregateQuery: propertyQuery.SEARCH_PROPERTY_AGGREGATE,
+        wrapperClassName: style["search-list"],
+        checkSkip: (propertyData, aggregateData) => {
+            return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
+        },
+        stop: !!searchParams.get("all")
+    });
+    const [AllPropertiesList, allPropertiesData, allPropertiesAggData] = useInfiniteList<IGetAllPropertyData, IGetAllPropertyAggr>({
+        query: propertyQuery.GET_ALL_PROPERTIES,
+        initialParams: queryParams ?? {},
+        aggregateQuery: propertyQuery.GET_ALL_PROPERTY_AGGREGATE,
+        wrapperClassName: style["search-list"],
+        checkSkip: (propertyData, aggregateData) => {
+            return aggregateData?.property_aggregate.aggregate.totalCount === propertyData?.property.length
+        },
+        stop: !searchParams.get("all")
+    });
     React.useEffect(() => {
         //navigate({ pathname: "/properties", search: "?" + searchParams.toString() });
     }, [searchParams]);
@@ -82,28 +89,18 @@ export default function (): JSX.Element {
                 }
             });
     }, [params])
-    React.useEffect(() => {
-        if (mapOpen)
-            if (searchParams.get("all")) {
-                getAllProperties();
-            } else {
-                if (params)
-                    searchProperties({
-                        variables: params
-                    });
-            }
-    }, [params, mapOpen])
+
     return (
         <Layout>
             {
-                mapOpen && (allPropertyData || propertyData) &&
-                <MapView properties={searchParams.get("all") ? (allPropertyData?.property ?? []) : propertyData?.search_property ?? []} onClose={() => setMapOpen(false)} />
+                mapOpen && (allPropertiesData || propertyData) &&
+                <MapView properties={searchParams.get("all") ? (allPropertiesData?.property ?? []) : propertyData?.search_property ?? []} onClose={() => setMapOpen(false)} />
             }
             <PropertySearchBar />
             <div className={style["header"]}>
                 <div className={style["txt-container"]}>
                     <div>{searchParams.get("place")}</div>
-                    <div> {propertyAggregate?.property_aggregate.aggregate.totalCount ?? 0} properties</div>
+                    <div> {searchParams.get("all") ? allPropertiesAggData?.property_aggregate.aggregate.totalCount : propertyAggData?.search_property_aggregate.aggregate.totalCount} properties</div>
                 </div>
                 <div className={style["btn-container"]}>
                     <ButtonSolid onClick={() => setMapOpen(true)}>
@@ -174,54 +171,34 @@ export default function (): JSX.Element {
 
             </div>
             {
-                queryParams && (
-                    searchParams.get("all") ?
-                        <InfiniteList<IGetAllPropertyData, IGetAllPropertyAggr>
-                            key={1}
-                            query={propertyQuery.GET_ALL_PROPERTIES}
-                            initialParams={queryParams}
-                            aggregateQuery={propertyQuery.GET_ALL_PROPERTY_AGGREGATE}
-                            wrapperClassName={style["search-list"]}
-                            checkSkip={(propertyData, aggregateData) => {
-                                return aggregateData?.property_aggregate?.aggregate?.totalCount === propertyData?.property?.length
-                            }}
-                        >
-                            {
-                                (propertyData, loading) => <>
-                                    {
-                                        propertyData?.property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
-                                    }
-                                    {
-                                        loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
-                                    }
-                                </>
-                            }
-                        </InfiniteList>
-                        :
-                        <InfiniteList<searchPropertyQueryResult, searchPropertyAggregate>
-                            key={2}
-                            query={propertyQuery.SEARCH_PROPERTY}
-                            initialParams={
-                                queryParams
-                            }
-                            aggregateQuery={propertyQuery.SEARCH_PROPERTY_AGGREGATE}
-                            wrapperClassName={style["search-list"]}
-                            checkSkip={(propertyData, aggregateData) => {
-                                return aggregateData?.search_property_aggregate?.aggregate?.totalCount === propertyData?.search_property?.length
-                            }}
-                        >
-                            {
-                                (propertyData, loading) => <>
-                                    {
-                                        propertyData?.search_property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
-                                    }
-                                    {
-                                        loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
-                                    }
-                                </>
-                            }
-                        </InfiniteList>
-                )
+
+                searchParams.get("all") ?
+                    <AllPropertiesList>
+                        {
+                            (propertyData, loading) => <>
+                                {
+                                    propertyData?.property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                                }
+                                {
+                                    loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
+                                }
+                            </>
+                        }
+                    </AllPropertiesList>
+                    :
+                    <SearchList>
+                        {
+                            (propertyData, loading) => <>
+                                {
+                                    propertyData?.search_property?.map(property => <PropertyCardDetailed key={property.id} propertyData={property} />)
+                                }
+                                {
+                                    loading && [1, 2].map(k => <Skeleton key={k} style={{ paddingBottom: "56.25%", width: "100%", borderRadius: "20px" }} />)
+                                }
+                            </>
+                        }
+                    </SearchList>
+
             }
         </Layout >
     );

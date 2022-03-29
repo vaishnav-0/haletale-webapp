@@ -2,7 +2,7 @@ import React from "react";
 import Layout from "../Layout";
 import propertySearchListingStyle from '../PropertySearchListing.module.scss';
 import userQuery, { IFavoriteAggrData, IFavoriteData } from "../../queries/user.query";
-import InfiniteList from "../../components/InfiniteList";
+import { InfiniteList } from "../../components/InfiniteList";
 import PropertyCardDetailed from "../../components/PropertyCardDetailed";
 import Skeleton from "react-loading-skeleton";
 
