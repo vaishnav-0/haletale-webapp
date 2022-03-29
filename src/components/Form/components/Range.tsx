@@ -20,7 +20,6 @@ export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, d
         function _handleResize() {
             // If offsetParent is null, the element is not visible
             if ((sliderRef.current as any).slider.offsetParent !== null) {
-                console.log("resize", (sliderRef.current as any).resize);
                 (sliderRef.current as any).resize()
             }
         }
@@ -34,7 +33,6 @@ export function Range({ renderThumb = () => { }, max = 100, min = 0, step = 1, d
             ro.disconnect()
         }
     }, [])
-    console.log(touched);
     return <ReactSlider
         key={key}
         className="range-slider"
