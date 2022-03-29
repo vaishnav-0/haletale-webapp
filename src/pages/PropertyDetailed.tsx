@@ -68,17 +68,19 @@ export default function Example() {
     );
     React.useEffect(() => {
         const BQRef_ = breakdownQuestionRef.current;
-        const mouseEnterHandler = () => {
-            setPriceBreakdownOpen(true);
-        }
-        const mouseLeaveHandler = () => {
-            setPriceBreakdownOpen(false);
-        }
-        BQRef_.addEventListener('mouseenter', mouseEnterHandler);
-        BQRef_.addEventListener('mouseleave', mouseLeaveHandler);
-        return () => {
-            BQRef_.removeEventListener('mouseenter', mouseEnterHandler);
-            BQRef_.removeEventListener('mouseLeave', mouseLeaveHandler)
+        if (BQRef_) {
+            const mouseEnterHandler = () => {
+                setPriceBreakdownOpen(true);
+            }
+            const mouseLeaveHandler = () => {
+                setPriceBreakdownOpen(false);
+            }
+            BQRef_.addEventListener('mouseenter', mouseEnterHandler);
+            BQRef_.addEventListener('mouseleave', mouseLeaveHandler);
+            return () => {
+                BQRef_.removeEventListener('mouseenter', mouseEnterHandler);
+                BQRef_.removeEventListener('mouseLeave', mouseLeaveHandler)
+            }
         }
     }, [])
     React.useEffect(() => {
@@ -99,9 +101,10 @@ export default function Example() {
             setLoader(false);
     }, [propertyloading]);
     React.useEffect(() => {
+        if (propertyData?.property.length === 0)
+            toast.warn("Property not available");
         if (propertyData?.property.length === 0 || error)
             navigate("/");
-
     }, [propertyData, error]);
     React.useEffect(() => {
         if (auth?.user?.role.includes(Roles['tenant']))
@@ -114,142 +117,148 @@ export default function Example() {
                 Loader
             }
             {
-                mapOpen && propertyData &&
-                <MapView properties={propertyData.property} onClose={() => setMapOpen(false)} />
-            }
-            <div className={style["wrapper"]}>
-                {(imageGalleryOpen !== false) &&
-                    <div className={style["image-gallery-container"]}>
-                        <button type="button" onClick={() => setImageGalleryOpen(false)} className={style["imagegallary-close-btn"]}>
-                            <i className="fas fa-times" />
-                        </button>
-                        <ImageGallery showThumbs={true} showArrows={true} imgSrc={property?.property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]} />
-                    </div>
-                }
-                <div className={style["property-card"]}>
-                    <div className={style["top-info"]}>
-                        <ButtonSolid onClick={() => setMapOpen(true)} className={style["property-map"]}>
-                            <i className='far fa-map' />
-                        </ButtonSolid>
-                        <button className={style["property-id"]}>
-                            <ClampLines
-                                text={`Property ID: ${property?.id}`}
-                                id={Math.random() * 100000 + (property?.id ?? "")}
-                                lines={1}
-                                stopPropagation={true}
-                                buttons={false}
-                            />
-                        </button>
-                    </div>
-                    <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
-                        imgSrc={(!propertyData?.property[0].property_images || propertyData?.property[0].property_images?.length === 0) ? [defaultImage] : propertyData?.property[0]?.property_images?.map(e => e?.s3Url?.url ?? "")}
-                        aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
-                    <div className={style["property-feature"]}>
-                        <div className={style["property-feature-row1"]}>
-                            <div>
-                                <img src={bedIcon} alt='' />
-                                {property?.property_detail?.rooms?.bedroom ?? ""} BED
-                            </div>
-                            <div className={style["seperator"]}></div>
-                            <div>
-                                <img src={bathIcon} alt='' />
-                                {property?.property_detail?.rooms?.bathroom ?? ""} BATH
-                            </div>
-                            {
-                                //<div className={style["seperator"]}></div>
-                                //<div>1250 SQ.</div>
-                            }
-                        </div>
-                        <div className={style["property-feature-row2"]}>
-                            <div>{property?.property_type.name?.toUpperCase()}</div>
-                            <div>|</div>
-                            <div>{property?.property_subtype.name?.toUpperCase()}</div>
-                        </div>
-                    </div>
-
-                </div>
-                <div className={style["rateinfo"]}>
-                    <div className={style["rateinfo-text"]}>
-                        <div>
-                            Monthly rent share
-                        </div>
-                        <i ref={breakdownQuestionRef} className='fas fa-question' />
-                        {
-                            //  <div style={{ display: priceBreakdownOpen ? "" : "none" }} className={style["ratebreakdown"]}>
-                            //      <div className={style["ratebreakdown-item"]}>
-                            //          <div>Utilities included</div>
-                            //          <ul>
-                            //              <li>Electricity,Water, Maintenence</li>
-                            //          </ul>
-                            //      </div>
-                            //      <div className={style["ratebreakdown-item"]}>
-                            //          <div>C${property?.property_detail?.rent_amount ?? ""}: Booking amount</div>
-                            //          <ul>
-                            //              <li>Rent deposit(first &amp; last)</li>
-                            //              <li>Key deposit</li>
-                            //          </ul>
-                            //      </div>
-                            //  </div>
-                        }
-                    </div>
-                    <div className={style["rateinfo-rate"]} >C$ {property?.property_detail?.rent_amount ?? ""}</div>
-                </div>
-                <div className={style["description"]}>
-                    {property?.description}
-                </div>
-                <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0", "1"]}>
-                    <AccordionItem uuid="0">
-                        <AccordionItemHeading>
-                            <AccordionItemButton>
-                                About the property
-                            </AccordionItemButton>
-                        </AccordionItemHeading>
-                        <AccordionItemPanel>
-                            <ul className={style["feature-accordion-list"]}>
-                                <li>Address: {property?.property_address?.address?.full_address}</li>
-                                <li>Building Amenities: {property?.property_detail?.features ? property?.property_detail?.features?.join(",") : "-"}</li>
-                                <li>Bedroom x {property?.property_detail?.rooms?.bedroom}</li>
-                                <li>Bathroom x {property?.property_detail?.rooms?.bathroom}</li>
-                                <li>Parking: {property?.property_detail?.rooms?.parking}</li>
-                                <li>Restrictions: {property?.property_detail?.restrictions?.length ? property?.property_detail?.restrictions?.join(",") : "-"}</li>
-                                <li>Maximum occupants: {property?.property_detail?.max_occupants}</li>
-                            </ul>
-                        </AccordionItemPanel>
-                    </AccordionItem>
-                    {!!property?.property_utility_lists.length &&
-                        <AccordionItem uuid="1">
-                            <AccordionItemHeading>
-                                <AccordionItemButton>
-                                    Utilities
-                                </AccordionItemButton>
-                            </AccordionItemHeading>
-                            <AccordionItemPanel>
-                                <ul className={style["feature-accordion-list"]}>
-                                    {
-                                        property.property_utility_lists.map(e => <li>{e.utility_list.name}: Paid by {e.role.name}</li>)
-                                    }
-                                </ul>
-                            </AccordionItemPanel>
-                        </AccordionItem>
-                    }
-                </Accordion>
-
-                <div className={style["bottom-panel"]}>
-                    <ButtonSolid disabled={!!auth?.user?.role.some((role) => role === Roles['landlord'] || role === Roles['admin'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
-
+                property &&
+                <>
                     {
-                        //                   <button className={style["bottom-panel-icon"]}>
-                        //                     <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
-                        //                   </button>
+                        mapOpen && propertyData &&
+                        <MapView properties={propertyData.property} onClose={() => setMapOpen(false)} />
                     }
-                    <FavButton control={favControl} hide={skipFav} />
-                    <button onClick={() => {
-                        navigator.clipboard.writeText(window.location.href).then(d => toast.success("Link copied."))
-                    }} className={style["bottom-panel-shareicon"]}>
-                        <img src={forwardIcon} alt="" />
-                    </button>
-                </div>
-            </div>
+                    <div className={style["wrapper"]}>
+                        {(imageGalleryOpen !== false) &&
+                            <div className={style["image-gallery-container"]}>
+                                <button type="button" onClick={() => setImageGalleryOpen(false)} className={style["imagegallary-close-btn"]}>
+                                    <i className="fas fa-times" />
+                                </button>
+                                <ImageGallery showThumbs={true} showArrows={true} imgSrc={property?.property_images?.map(e => e?.s3Url?.url ?? "") ?? [defaultImage]} />
+                            </div>
+                        }
+                        <div className={style["property-card"]}>
+                            <div className={style["top-info"]}>
+                                <ButtonSolid onClick={() => setMapOpen(true)} className={style["property-map"]}>
+                                    <i className='far fa-map' />
+                                </ButtonSolid>
+                                <button className={style["property-id"]}>
+                                    <ClampLines
+                                        text={`Property ID: ${property?.id}`}
+                                        id={Math.random() * 100000 + (property?.id ?? "")}
+                                        lines={1}
+                                        stopPropagation={true}
+                                        buttons={false}
+                                    />
+                                </button>
+                            </div>
+                            <ImageSlider onMouseDown={imageSliderClick.mousedown} onMouseUp={imageSliderClick.mouseup}
+                                imgSrc={(!propertyData?.property[0].property_images || propertyData?.property[0].property_images?.length === 0) ? [defaultImage] : propertyData?.property[0]?.property_images?.map(e => e?.s3Url?.url ?? "")}
+                                aspectRatio={16 / 9} className={style["image-slider"]} indicatorClassName={style["slider-indicator"]} />
+                            <div className={style["property-feature"]}>
+                                <div className={style["property-feature-row1"]}>
+                                    <div>
+                                        <img src={bedIcon} alt='' />
+                                        {property?.property_detail?.rooms?.bedroom ?? ""} BED
+                                    </div>
+                                    <div className={style["seperator"]}></div>
+                                    <div>
+                                        <img src={bathIcon} alt='' />
+                                        {property?.property_detail?.rooms?.bathroom ?? ""} BATH
+                                    </div>
+                                    {
+                                        //<div className={style["seperator"]}></div>
+                                        //<div>1250 SQ.</div>
+                                    }
+                                </div>
+                                <div className={style["property-feature-row2"]}>
+                                    <div>{property?.property_type.name?.toUpperCase()}</div>
+                                    <div>|</div>
+                                    <div>{property?.property_subtype.name?.toUpperCase()}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className={style["rateinfo"]}>
+                            <div className={style["rateinfo-text"]}>
+                                <div>
+                                    Monthly rent share
+                                </div>
+                                {
+                                    //<i ref={breakdownQuestionRef} className='fas fa-question' />
+                                    //  <div style={{ display: priceBreakdownOpen ? "" : "none" }} className={style["ratebreakdown"]}>
+                                    //      <div className={style["ratebreakdown-item"]}>
+                                    //          <div>Utilities included</div>
+                                    //          <ul>
+                                    //              <li>Electricity,Water, Maintenence</li>
+                                    //          </ul>
+                                    //      </div>
+                                    //      <div className={style["ratebreakdown-item"]}>
+                                    //          <div>C${property?.property_detail?.rent_amount ?? ""}: Booking amount</div>
+                                    //          <ul>
+                                    //              <li>Rent deposit(first &amp; last)</li>
+                                    //              <li>Key deposit</li>
+                                    //          </ul>
+                                    //      </div>
+                                    //  </div>
+                                }
+                            </div>
+                            <div className={style["rateinfo-rate"]} >C$ {property?.property_detail?.rent_amount ?? ""}</div>
+                        </div>
+                        <div className={style["description"]}>
+                            {property?.description}
+                        </div>
+                        <Accordion allowMultipleExpanded allowZeroExpanded preExpanded={["0", "1"]}>
+                            <AccordionItem uuid="0">
+                                <AccordionItemHeading>
+                                    <AccordionItemButton>
+                                        About the property
+                                    </AccordionItemButton>
+                                </AccordionItemHeading>
+                                <AccordionItemPanel>
+                                    <ul className={style["feature-accordion-list"]}>
+                                        <li>Address: {property?.property_address?.address?.full_address}</li>
+                                        <li>Building Amenities: {property?.property_detail?.features ? property?.property_detail?.features?.join(",") : "-"}</li>
+                                        <li>Bedroom x {property?.property_detail?.rooms?.bedroom}</li>
+                                        <li>Bathroom x {property?.property_detail?.rooms?.bathroom}</li>
+                                        <li>Parking: {property?.property_detail?.rooms?.parking}</li>
+                                        <li>Restrictions: {property?.property_detail?.restrictions?.length ? property?.property_detail?.restrictions?.join(",") : "-"}</li>
+                                        <li>Maximum occupants: {property?.property_detail?.max_occupants}</li>
+                                    </ul>
+                                </AccordionItemPanel>
+                            </AccordionItem>
+                            {!!property?.property_utility_lists.length &&
+                                <AccordionItem uuid="1">
+                                    <AccordionItemHeading>
+                                        <AccordionItemButton>
+                                            Utilities
+                                        </AccordionItemButton>
+                                    </AccordionItemHeading>
+                                    <AccordionItemPanel>
+                                        <ul className={style["feature-accordion-list"]}>
+                                            {
+                                                property.property_utility_lists.map(e => <li>{e.utility_list.name}: Paid by {e.role.name}</li>)
+                                            }
+                                        </ul>
+                                    </AccordionItemPanel>
+                                </AccordionItem>
+                            }
+                        </Accordion>
+
+                        <div className={style["bottom-panel"]}>
+                            <ButtonSolid disabled={!!auth?.user?.role.some((role) => role === Roles['landlord'] || role === Roles['admin'])} className={style["bottom-panel-sendbtn"]} onClick={() => navigate("/sendRequest?id=" + property?.id)}>Send request</ButtonSolid>
+
+                            {
+                                //                   <button className={style["bottom-panel-icon"]}>
+                                //                     <i onClick={() => setNotify(!notify)} className={`${notify ? style["notifyfilled"] + " fas" : " far"} fa-bell`}></i>
+                                //                   </button>
+                            }
+                            <FavButton control={favControl} hide={skipFav} />
+                            <button onClick={() => {
+                                navigator.clipboard.writeText(window.location.href).then(d => toast.success("Link copied."))
+                            }} className={style["bottom-panel-shareicon"]}>
+                                <img src={forwardIcon} alt="" />
+                            </button>
+                        </div>
+                    </div>
+                </>
+            }
+
         </Layout>
     );
 }
