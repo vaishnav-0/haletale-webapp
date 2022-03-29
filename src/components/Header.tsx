@@ -41,15 +41,17 @@ export default function Header(): JSX.Element {
                         <img src={haletaleLogo} />
                     </Link>
                 </div>
-                <div className={style["modal-background"]} style={{ display: loginModalOpen && !user ? "" : "none" }}>
+                {   !user &&
+                    <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
 
-                    <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
-                        <LoginModal signUpUrl="/signUp" onClose={() => {
-                            setloginModalOpen(false);
-                        }} />
+                        <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
+                            <LoginModal signUpUrl="/signUp" onClose={() => {
+                                setloginModalOpen(false);
+                            }} />
 
-                    </Openable>
-                </div>
+                        </Openable>
+                    </div>
+                }
                 <div className={style["topnav-right-container"]}>
 
                     {user ?
