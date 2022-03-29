@@ -12,10 +12,10 @@ export default function AdminDashboardRoutes() {
             <Route path="*" element={<Dashboard />}>
                 <Route index element={<CenterContent>DASHBOARD</CenterContent>} />
                 {
-                    dashboardItems.map(e => <Route path={e.url} element={e.component} />)
+                    dashboardItems.map((e, i) => <Route key={i} path={e.url} element={e.component} />)
                 }
                 {
-                    dashboardItems.map(e => <Route path={e.url} element={e.component} />)
+                    dashboardItems.map((e, i) => <Route key={i} path={e.url} element={e.component} />)
                 }
             </Route>
         </Routes>

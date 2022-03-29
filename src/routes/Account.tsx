@@ -13,10 +13,10 @@ export default function AccountRoutes() {
         <Routes>
             <Route path="*" element={<Account />}>
                 {
-                    accountItems.map(e => <Route path={e.url} element={e.component} />)
+                    accountItems.map((e, i) => <Route path={e.url} key={i} element={e.component} />)
                 }
                 {
-                    otherRoutes.map(e => <Route path={e.url} element={e.component} />)
+                    otherRoutes.map((e, i) => <Route path={e.url} key={i} element={e.component} />)
                 }
             </Route>
         </Routes>

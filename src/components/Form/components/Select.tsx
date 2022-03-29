@@ -14,8 +14,8 @@ export const Select = React.forwardRef<HTMLSelectElement, PropsType>(({ values, 
         <div className={style["box"]}>
             <select {...inputProps} ref={ref}>
                 {
-                    Object.entries(values_).map(([value, label]) => {
-                        return < option value={value} > {label}</option>
+                    Object.entries(values_).map(([value, label],i) => {
+                        return <option key={i} value={value} > {label}</option>
                     })
                 }
             </select>

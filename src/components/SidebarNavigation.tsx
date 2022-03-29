@@ -8,7 +8,7 @@ export default function SidebarNavigation({ items, active, children }: { items: 
             <div className={style["nav-container"]}>
                 <ul className={style["nav-list"]}>
                     {
-                        items.map((e, i) => <li>
+                        items.map((e, i) => <li key={i}>
                             <Link className={active === i ? style["active"] : ""}
                                 to={e.url}>{e.label}
                             </Link>
