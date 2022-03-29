@@ -10,7 +10,7 @@ import { ButtonHollow } from './Button';
 import { ButtonSolid } from './Button';
 import { Openable } from './Openable';
 import auth from '../functions/auth';
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Roles } from '../functions/auth/types';
 import { useUserContext } from '../functions/auth/userContext';
 import Skeleton from 'react-loading-skeleton'
@@ -22,10 +22,14 @@ export default function Header(): JSX.Element {
     const user = useUserContext();
     const location = useLocation();
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     React.useEffect(() => {
         location.state?.openLoginModal && setloginModalOpen(true);
     }, [location])
-    console.log(loginModalOpen)
+    React.useEffect(() => {
+        if (searchParams.get("login") === "true")
+            setloginModalOpen(true);
+    }, [searchParams])
     return (
         <div className={style["header"]}>
             <div className={style["topnav"]}>
@@ -37,7 +41,7 @@ export default function Header(): JSX.Element {
                         <img src={haletaleLogo} />
                     </Link>
                 </div>
-                <div className={style["modal-background"]} style={{ display: loginModalOpen ? "" : "none" }}>
+                <div className={style["modal-background"]} style={{ display: loginModalOpen && !user ? "" : "none" }}>
 
                     <Openable className={style["login-container"]} open={[loginModalOpen, setloginModalOpen]}>
                         <LoginModal signUpUrl="/signUp" onClose={() => {
