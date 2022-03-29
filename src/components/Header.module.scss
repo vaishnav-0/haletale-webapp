@@ -241,24 +241,20 @@
   margin-top: 3em;
 
   @include media(">smMin") {
-    width: 25em;
     margin-left: auto;
     margin-right: auto;
-
-    @media screen and (min-height:600px) {
-      width: 30em;
-    }
+    width: 30em;
   }
 
-  @media screen and (max-height:900px) {
+  @media screen and (max-height:1000px) {
     font-size: 0.7em;
   }
 
-  @media screen and (max-height:600px) {
+  @media screen and (max-height:650px) {
     font-size: 0.6em;
   }
 
-  @media screen and (max-height:400px) {
+  @media screen and (max-height:550px) {
     font-size: 0.5em;
   }
 }
