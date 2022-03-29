@@ -19,7 +19,7 @@ export default function (props: React.DetailedHTMLProps<React.ImgHTMLAttributes<
 
     }
         {
-            <img ref={imgRef} onLoad={() => setLoaded(true)} {...props} style={{ width: loaded ? "" : 0 }} />
+            <img crossOrigin="anonymous" ref={imgRef} onLoad={() => setLoaded(true)} {...props} style={{ width: loaded ? "" : 0 }} />
         }
     </>
 }
