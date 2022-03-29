@@ -29,7 +29,7 @@ export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange
     const [count, setCount] = React.useState(_defaultValue ?? _init);
     if (setValueRef)
         setValueRef.current = setCount;
-    React.useEffect(() => onChange(_init), []);
+    React.useEffect(() => onChange(_defaultValue ?? _init), []);
     return (
         <div key={key} className={style["container"]}>
             <button type="button"
