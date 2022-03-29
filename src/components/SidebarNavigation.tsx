@@ -8,8 +8,8 @@ export default function SidebarNavigation({ items, active, children }: { items: 
     const overFlowRef = React.useRef<boolean>(false);
     overFlowRef.current = overflow;
     React.useEffect(() => {
-        if (sidebarRef.current) {
-            function _handleResize() {
+        function _handleResize() {
+            if (sidebarRef.current) {
                 if (sidebarRef.current!.offsetParent !== null) {
                     if (!overFlowRef.current)
                         if (sidebarRef.current!.scrollWidth > sidebarRef.current!.clientWidth)
@@ -18,11 +18,10 @@ export default function SidebarNavigation({ items, active, children }: { items: 
                             setOverflow(false)
                 }
             }
+        }
+        if (sidebarRef.current) {
             const ro = new ResizeObserver(_handleResize)
             ro.observe((sidebarRef.current));
-
-
-            // Cleanup
             return () => {
                 ro.disconnect()
             }
