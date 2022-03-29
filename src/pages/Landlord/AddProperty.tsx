@@ -335,9 +335,10 @@ function AddPropertyForm3(props: FormPropsType) {
                     {
                         name: "hydro",
                         type: "select",
+                        title: "Paid by",
                         props: {
                             values: {
-                                "": "Paid by", "4": "Landlord", "7": "Tenant"
+                                "": "", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",
@@ -356,9 +357,10 @@ function AddPropertyForm3(props: FormPropsType) {
                     {
                         name: "water",
                         type: "select",
+                        title: "Paid by",
                         props: {
                             values: {
-                                "": "Paid by", "4": "Landlord", "7": "Tenant"
+                                "": "", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",
@@ -377,9 +379,10 @@ function AddPropertyForm3(props: FormPropsType) {
                     {
                         name: "heat",
                         type: "select",
+                        title: "Paid by",
                         props: {
                             values: {
-                                "": "Paid by", "4": "Landlord", "7": "Tenant"
+                                "": "", "4": "Landlord", "7": "Tenant"
                             }
                         },
                         defaultValue: "",

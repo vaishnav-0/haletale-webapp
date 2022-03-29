@@ -138,9 +138,10 @@ const schema = {
                 {
                     name: "hydro",
                     type: "select",
+                    title: "Paid by",
                     props: {
                         values: {
-                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                            "": "", "4": "Landlord", "7": "Tenant"
                         }
                     },
                     isOptional: {
@@ -160,9 +161,10 @@ const schema = {
                 {
                     name: "water",
                     type: "select",
+                    title: "Paid by",
                     props: {
                         values: {
-                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                            "": "", "4": "Landlord", "7": "Tenant"
                         }
                     },
                     defaultValue: "",
@@ -181,9 +183,10 @@ const schema = {
                 {
                     name: "heat",
                     type: "select",
+                    title: "Paid by",
                     props: {
                         values: {
-                            "": "Paid by", "4": "Landlord", "7": "Tenant"
+                            "": "", "4": "Landlord", "7": "Tenant"
                         }
                     },
                     defaultValue: "",
