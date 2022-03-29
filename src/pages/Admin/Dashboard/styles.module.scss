@@ -21,14 +21,23 @@
     &.disapprove {
         background-color: $redLight;
         border: 1px solid $redLight;
+
+        &:hover {
+            color: $redLight;
+            background-color: white !important;
+        }
     }
 
     &:hover {
-        color: black;
+        color: $green1;
+        background-color: white !important;
+    }
+
+    &:disabled {
+        background-color: $grey;
     }
 }
 
 .link-btn {
     @include button-link;
 }
-

@@ -27,18 +27,26 @@
         td {
             text-align: center;
 
-            :hover {
+
+        }
+
+        &:not(:hover) {
+            td:nth-child(odd) {
                 background-color: adjust-color($color: $primary, $lightness: 60%, );
             }
         }
 
         td:nth-child(odd) {
-            background-color: adjust-color($color: $primary, $lightness: 60%, );
             border-bottom: 3px solid white;
+
         }
 
         td:nth-child(even) {
             border-bottom: 3px solid adjust-color($color: $primary, $lightness: 60%, );
+        }
+
+        &:hover {
+            background-color: $greyBackground;
         }
     }
 }
