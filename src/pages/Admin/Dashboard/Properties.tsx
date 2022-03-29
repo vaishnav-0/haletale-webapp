@@ -10,7 +10,7 @@ import Table from '../../../components/Table';
 
 export default function Properties() {
   const navigate = useNavigate();
-  //data
+
   const { data: allPropertyData, loading: propertyLoading, refetch } = useQuery<IGetAllPropertyData>(propertyQuery.GET_ALL_PROPERTIES, {
     fetchPolicy: "cache-and-network"
   });
@@ -28,9 +28,7 @@ export default function Properties() {
 
   const result = React.useMemo(() => allPropertyData?.property ?? [], [allPropertyData])
 
-  console.log(result)
 
-  // table structure
   const columns = React.useMemo<{ Header: string, accessor: string | undefined | ((d: IPropertyDetails) => string | number | undefined | JSX.Element) }[]>(
     () => [
       {
