@@ -25,6 +25,7 @@ export default function (): JSX.Element {
     const [queryParams, setQueryParams] = React.useState<object | null>(null);
     const [mapOpen, setMapOpen] = React.useState<boolean>(false);
     const [params, setParams] = React.useState<any>(null);
+    const sortTypeRef = React.useRef<string>()
     const [SearchList, propertyData, propertyAggData] = useInfiniteList<searchPropertyQueryResult, searchPropertyAggregate>({
         query: propertyQuery.SEARCH_PROPERTY,
         initialParams: queryParams ?? {},
@@ -69,6 +70,14 @@ export default function (): JSX.Element {
         let sort = null;
         try {
             sort = JSON.parse(searchParams.get("sort-by")!);
+            if (sort.created_at === "asc")
+                sortTypeRef.current = "Recent";
+            else if (sort.created_at === "desc")
+                sortTypeRef.current = "Oldest";
+            else if (sort.property_detail.rent_amount === "asc")
+                sortTypeRef.current = "Rent asc.";
+            else if (sort.property_detail.rent_amount === "desc")
+                sortTypeRef.current = "Rent desc."
             if (!(sort.created_at === "asc" || sort.created_at === "desc" || sort.property_detail.rent_amount === "asc" || sort.property_detail.rent_amount === "desc"))
                 sort = null
         } catch (e) {
@@ -89,7 +98,7 @@ export default function (): JSX.Element {
                 }
             });
     }, [params])
-
+    console.log(openSort)
     return (
         <Layout>
             {
@@ -117,42 +126,24 @@ export default function (): JSX.Element {
                     clickOutsideCloseException={[sortButtonRef]}
                 >
                     <div className={style["sortradio-container"]}>
-                        {
-                            <RadioButtonGroup style={{ width: "100%" }} name="sort"
-                                defaultValue={(function () {
-                                    try {
-                                        const j = JSON.parse(searchParams.get("sort-by")!);
-                                        if (j.created_at === "asc")
-                                            return "Recent";
-                                        else if (j.created_at === "desc")
-                                            return "Oldest";
-                                        else if (j.property_detail.rent_amount === "asc")
-                                            return "Rent asc.";
-                                        else if (j.property_detail.rent_amount === "desc")
-                                            return "Rent desc."
-                                        else
-                                            return;
+                        <RadioButtonGroup style={{ width: "100%" }} name="sort"
+                            defaultValue={sortTypeRef.current}
+                            values={["Oldest", "Recent", "Rent asc.", "Rent desc."]}
+                            onChange={(e) => {
+                                if (e.target.value === "Oldest")
+                                    searchParams.set("sort-by", JSON.stringify({ created_at: "desc" }))
 
-                                    } catch (e) {
-                                        return;
-                                    }
-                                }())}
-                                values={["Oldest", "Recent", "Rent asc.", "Rent desc."]} onChange={(e) => {
-                                    if (e.target.value === "Oldest")
-                                        searchParams.set("sort-by", JSON.stringify({ created_at: "desc" }))
-
-                                    else if (e.target.value === "Recent") {
-                                        searchParams.set("sort-by", JSON.stringify({ created_at: "asc" }))
-                                    }
-                                    else if (e.target.value === "Rent asc.") {
-                                        searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "asc" } }))
-                                    } else if (e.target.value === "Rent desc.") {
-                                        searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "desc" } }))
-                                    }
-                                    navigate("?" + searchParams.toString());
+                                else if (e.target.value === "Recent") {
+                                    searchParams.set("sort-by", JSON.stringify({ created_at: "asc" }))
                                 }
-                                } />
-                        }
+                                else if (e.target.value === "Rent asc.") {
+                                    searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "asc" } }))
+                                } else if (e.target.value === "Rent desc.") {
+                                    searchParams.set("sort-by", JSON.stringify({ property_detail: { rent_amount: "desc" } }))
+                                }
+                                navigate("?" + searchParams.toString());
+                            }
+                            } />
                     </div>
                 </Openable>
                 <div className={style["filter-background"]} style={{ display: filterOpen ? "" : "none" }}>
