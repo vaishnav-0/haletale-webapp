@@ -1,0 +1,17 @@
+@import 'src/styles/mixins.scss';
+@import 'src/colors.scss';
+
+.button {
+    @include unstyle-btn;
+    @include def-shadow;
+    background-color: white;
+    color: $primary;
+    z-index: 1000;
+    display: flex;
+    gap: 0.5em;
+    position: absolute;
+    border-radius: 0.6em;
+    padding: 1em;
+    bottom: 2em;
+    right: 2em;
+}
