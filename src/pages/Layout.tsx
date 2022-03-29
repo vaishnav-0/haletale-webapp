@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import Body from '../components/Body';
 import Footer from '../components/Footer';
 import style from './Layout.module.scss';
+import ScrollButton from '../components/ScrollButton';
 
 type props = {
     children: React.ReactNode,
@@ -10,8 +11,10 @@ type props = {
     bodyClassName?: string
 }
 function Layout({ children, footer, bodyClassName }: props): JSX.Element {
+    const containerRef = React.useRef<HTMLDivElement>(null)
     return (
-        <div className={style["VP"]}>
+        <div className={style["VP"]} ref={containerRef}>
+            <ScrollButton container={containerRef.current!} />
             <Header />
             <Body className={bodyClassName}>
                 {children}
