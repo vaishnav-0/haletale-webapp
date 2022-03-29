@@ -177,7 +177,7 @@ export default function Example() {
                         <div className={style["rateinfo"]}>
                             <div className={style["rateinfo-text"]}>
                                 <div>
-                                    Monthly rent share
+                                    Monthly rent
                                 </div>
                                 {
                                     //<i ref={breakdownQuestionRef} className='fas fa-question' />
