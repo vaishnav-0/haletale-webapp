@@ -87,11 +87,16 @@
         z-index: 20;
         height: 40px;
         width: 40px;
-        transform: rotate(-30deg) translate(10%, 50%);
+        transform: rotate(-30deg) translate(7%, 43%);
     }
 
     &::after {
-        @include rings(2s, 0.3s, #000000d6);
+        @include rings(3s, 0.3s, #000000d6);
+        z-index: 10;
+    }
+
+    &::before {
+        @include rings(3s, 1.2s, #000000d6);
         z-index: 10;
     }
 }
