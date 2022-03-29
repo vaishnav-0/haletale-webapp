@@ -42,8 +42,8 @@ export default function ({ aspectRatio = 16 / 9, indicatorClassName = "",
                 selectedItem={currentImage}
             >
                 {
-                    imgSrc.map(i => {
-                        return <div className={style["image-slider"]}>
+                    imgSrc.map((i, ind) => {
+                        return <div key={ind} className={style["image-slider"]}>
 
                             <div style={{ paddingBottom: 100 / aspectRatio + "%" }} className={style["aspect-ratio-container"]} />
                             <div className={style["image-slider-container"]}>
