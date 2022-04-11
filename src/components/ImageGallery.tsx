@@ -22,6 +22,11 @@ export default function ({ indicatorClassName = "",
     showThumbs = false, showArrows = false, showIndicators = false, showStatus = false, infiniteLoop = true,
     className = "", onChange = () => { }, onClick = () => { }, selectedItem = 0, imgSrc = [] }: propType) {
     const [currentImage, setCurrentImage] = React.useState(0);
+    const customRenderThumb = (children:any) =>
+        children.map((item:any) => {
+            console.log(item)
+            return <img src={item.props.children.props.src} />;
+        });
     return (
         <div onClick={onClick} className={style["slider-container"]}>
             <PositionIndicator style={{ position: "absolute", zIndex: "10" }} className={indicatorClassName + " " + style["position-indicator"]} onChange={(i) => setCurrentImage(i)}
@@ -37,6 +42,7 @@ export default function ({ indicatorClassName = "",
                 onChange={(i) => setCurrentImage(i)}
                 selectedItem={currentImage}
                 dynamicHeight={true}
+                renderThumbs={customRenderThumb}
             >
                 {
                     imgSrc.map((src, i) => {
