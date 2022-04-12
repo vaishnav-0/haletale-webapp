@@ -60,3 +60,29 @@
         border: none;
     }
 }
+
+.sort-container {
+    margin: 0.7em 0;
+    max-width: 18em;
+
+    &>div {
+        margin-bottom: 0.5em;
+    }
+}
+
+.sort-dropdown-container {
+    display: flex;
+
+    & button {
+        height: 2.5em;
+        align-self: start;
+    }
+}
+
+.top-panel {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 5%;
+    flex-wrap: wrap;
+    width: 90%;
+}

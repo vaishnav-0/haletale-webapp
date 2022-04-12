@@ -63,3 +63,30 @@ export function objectReduce(obj: object, func: (acc: any, curr: [k: string | nu
     }
     return ret;
 }
+
+export function objectStringifiedAccessor(obj: any, s: string, value?: any) {
+    const parts = s.split('.');
+    let ret = obj;
+    for (let i = 0; i < parts.length; i++) {
+        if (parts[i] in ret)
+            if (ret[parts[i]] === Object(ret[parts[i]])) {
+                if (value && i === parts.length - 1)
+                    ret[parts[i]] = value;
+                ret = ret[parts[i]];
+            }
+            else
+                throw new Error("Object value not accessible");
+        else {
+            if (value)
+                if (i === parts.length - 1)
+                    ret[parts[i]] = value;
+                else {
+                    ret[parts[i]] = {};
+                    ret = ret[parts[i]];
+                }
+            else
+                return undefined;
+        }
+    }
+    return obj;
+}
