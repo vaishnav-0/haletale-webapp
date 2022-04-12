@@ -1,8 +1,13 @@
 import React from "react";
-import { usePagination, useTable } from "react-table"
+import { useGlobalFilter, usePagination, useTable } from "react-table"
+import FormGenerator from "./Form/FormGenerator";
 import style from './Table.module.scss';
+import * as yup from 'yup';
+import { TextInput } from "./Form/components/TextInput";
+import debounce from "../functions/debounce";
 
-export default function Table({ columns, data }: { columns: any, data: any }) {
+export default function Table({ columns, data, sortData }:
+    { columns: any, data: any, sortData?: { fields: { [k: string]: string }, onChange: (e: any) => void } }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -17,6 +22,7 @@ export default function Table({ columns, data }: { columns: any, data: any }) {
         nextPage,
         previousPage,
         setPageSize,
+        setGlobalFilter,
         state: { pageIndex, pageSize },
     } = useTable(
         {
@@ -24,7 +30,8 @@ export default function Table({ columns, data }: { columns: any, data: any }) {
             data,
             initialState: { pageIndex: 0 },
         },
-        usePagination
+        useGlobalFilter,
+        usePagination,
     )
     const [currPage, setCurrPage] = React.useState(0);
     React.useEffect(() => {
@@ -34,8 +41,56 @@ export default function Table({ columns, data }: { columns: any, data: any }) {
         setCurrPage(pgNo);
         gotoPage(pgNo);
     }
+    const setFilter = debounce((v: any) => {
+        setGlobalFilter(v);
+    }, 500);
     return (
-        <>
+        <div>
+            <div className={style["top-panel"]}>
+                {
+                    sortData && <div className={style["sort-container"]}>
+                        <div>Sort:</div>
+                        <div className={style["sort-dropdown-container"]}>
+                            <FormGenerator
+                                schema={{
+                                    heading: "",
+                                    wrapperStyle: { display: "flex", gap: "0.5em" },
+                                    items: [
+                                        {
+                                            name: "sortBy",
+                                            type: "select",
+                                            props: {
+                                                values: { "": "Field", ...sortData.fields },
+                                                height: 40
+                                            },
+                                            validationSchema: yup.string().required("Please select an option.")
+
+                                        },
+                                        {
+                                            name: "sortType",
+                                            type: "select",
+                                            props: {
+                                                values: { "": "Type", asc: "Ascending", desc: "Descending" },
+                                                height: 40
+                                            },
+                                            validationSchema: yup.string().required("Please select an option.")
+
+                                        }
+                                    ],
+                                    submitButton: "Sort"
+                                }}
+                                onSubmit={sortData.onChange}
+                            />
+                        </div>
+                    </div>
+                }
+                <div className={style["sort-container"]}>
+                    <div>Search:</div>
+                    <div className={style["sort-dropdown-container"]}>
+                        <TextInput type="text" name="search" onChange={(v) => setFilter(v.target.value)} height={40}/>
+                    </div>
+                </div>
+            </div>
             <table {...getTableProps()} className={style["table"]}>
                 <thead>
                     {headerGroups.map(headerGroup => (
@@ -103,6 +158,6 @@ export default function Table({ columns, data }: { columns: any, data: any }) {
                     ))}
                 </select>
             </div>
-        </>)
+        </div>)
 
 }
