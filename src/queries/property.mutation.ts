@@ -59,7 +59,7 @@ export default {
   delete_property(where: {id: {_eq: $pId}}) {
     affected_rows
   }
-  delete_address(where: {id: {_eq: $pId}}) {
+  delete_address(where: {id: {_eq: $aId}}) {
     affected_rows
   }
 }
