@@ -329,7 +329,6 @@ export type PropsType = {
 }
 
 function applyTransform(fD: any, items: SchemaType["items"]): { [k: string]: any } {
-    console.log(fD,items);
     return items.reduce((obj, e) => {
         if (e.isArray)
             obj[e.name] = fD?.[e.name]?.map((fDItem: any) => applyTransform(fDItem, e.items))
