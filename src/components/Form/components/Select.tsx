@@ -4,17 +4,18 @@ import { SelectPropsType } from './types';
 export interface PropsType extends SelectPropsType {
     values: {
         [index: string]: string;
-    } | string[]
+    } | string[],
+    height?: number;
 }
 export type ElementType = typeof Select;
 
-export const Select = React.forwardRef<HTMLSelectElement, PropsType>(({ values, ...inputProps }: PropsType, ref) => {
+export const Select = React.forwardRef<HTMLSelectElement, PropsType>(({ values, height, ...inputProps }: PropsType, ref) => {
     const values_ = Array.isArray(values) ? Object.fromEntries(values.map(e => [e, e])) : values;
     return (
-        <div className={style["box"]}>
+        <div className={style["box"]} style={height ? { height: height + "px" } : {}}>
             <select {...inputProps} ref={ref}>
                 {
-                    Object.entries(values_).map(([value, label],i) => {
+                    Object.entries(values_).map(([value, label], i) => {
                         return <option key={i} value={value} > {label}</option>
                     })
                 }
