@@ -7,6 +7,7 @@ import ImageSlider from '../../../components/ImageSlider';
 import propertyMutation from '../../../queries/property.mutation';
 import { useLoader } from '../../../components/Loader';
 import Table from '../../../components/Table';
+import { objectStringifiedAccessor } from '../../../functions/utils';
 
 export default function Properties() {
   const navigate = useNavigate();
@@ -27,7 +28,11 @@ export default function Properties() {
   const [searchTerm, setSearchTerm] = React.useState<string>("");
 
   const result = React.useMemo(() => allPropertyData?.property ?? [], [allPropertyData])
-
+  const onSortChange = (sortInput: any) => {
+    refetch({
+      order_by: objectStringifiedAccessor({}, sortInput.sortBy, sortInput.sortType)
+    });
+  }
 
   const columns = React.useMemo<{ Header: string, accessor: string | undefined | ((d: IPropertyDetails) => string | number | undefined | JSX.Element) }[]>(
     () => [
@@ -94,7 +99,16 @@ export default function Properties() {
   return <>
     {Loader}
     <div>
-      <Table columns={columns} data={result} />
+      <Table
+        columns={columns}
+        data={result}
+        sortData={
+          {
+            fields:
+              { "name": "name", "property_detail.rent_amount": "Rent", "property_detail.max_occupants": "Max occupants", "is_approved": "Approval", "is_listed": "Listed" },
+            onChange: onSortChange
+          }
+        } />
     </div>
   </>
 }

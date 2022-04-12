@@ -88,8 +88,8 @@ export default {
       isActive
     }
   }`,
-  ADMIN_GET_ALL_USERS: gql`query  ADMIN_GET_ALL_USERS{
-  user {
+  ADMIN_GET_ALL_USERS: gql`query  ADMIN_GET_ALL_USERS($order_by:user_order_by={}){
+  user(order_by:[$order_by]) {
     email
     id
     isActive

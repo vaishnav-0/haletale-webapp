@@ -77,8 +77,8 @@ export default {
         }
         }
       }
-      `, ADMIN_GET_ALL_REQUESTS: gql`query ADMIN_GET_ALL_REQUESTS {
-        property_request {
+      `, ADMIN_GET_ALL_REQUESTS: gql`query ADMIN_GET_ALL_REQUESTS($order_by:property_request_order_by={}) {
+        property_request(order_by:[$order_by]) {
         id
         intended_move_in_date
         lease_duration

@@ -8,6 +8,7 @@ import { useLoader } from '../../../components/Loader';
 import userQuery, { IUserData } from '../../../queries/user.query';
 import { userMutation } from '../../../queries';
 import Table from '../../../components/Table';
+import { objectStringifiedAccessor } from '../../../functions/utils';
 
 export default function Properties() {
     const navigate = useNavigate();
@@ -24,6 +25,11 @@ export default function Properties() {
     const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedMutationLoading }] = useMutation(userMutation.SET_USER_STATUS, { onCompleted: refetch, notifyOnNetworkStatusChange: true })
 
     const result = React.useMemo(() => allUserData?.user ?? [], [allUserData])
+    const onSortChange = (sortInput: any) => {
+        refetch({
+            order_by: objectStringifiedAccessor({}, sortInput.sortBy, sortInput.sortType)
+        });
+    }
     // table structureexport interface IUserData {
     const columns = React.useMemo<{ Header: string, accessor: string | undefined | ((d: IUserData["user"][number]) => string | number | undefined | JSX.Element) }[]>(
         () => [
@@ -70,7 +76,16 @@ export default function Properties() {
     return <>
         {Loader}
         <div>
-            <Table columns={columns} data={result} />
+            <Table
+                columns={columns}
+                data={result}
+                sortData={
+                    {
+                        fields:
+                            { "name": "Name", "email": "Email", "user_detail.date_of_birth": "DOB", "user_detail.country.name": "Nationality", "created_at": "Created", "isActive": "Status" },
+                        onChange: onSortChange
+                    }
+                } />
         </div>
     </>
 }

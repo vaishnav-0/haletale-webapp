@@ -7,6 +7,7 @@ import { useLoader } from '../../../components/Loader';
 import requestsQuery, { IRequestData } from '../../../queries/requests.query';
 import requestMutation from '../../../queries/request.mutation';
 import Table from '../../../components/Table';
+import { objectStringifiedAccessor } from '../../../functions/utils';
 
 export default function Properties() {
     const navigate = useNavigate();
@@ -21,7 +22,11 @@ export default function Properties() {
     }, [allRequestDataLoading])
     const [Loader, setLoader] = useLoader({});
     const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedutationLoading }] = useMutation(requestMutation.APPROVE_REQUEST, { onCompleted: refetch })
-
+    const onSortChange = (sortInput: any) => {
+        refetch({
+            order_by: objectStringifiedAccessor({}, sortInput.sortBy, sortInput.sortType)
+        });
+    }
     const result = React.useMemo(() => allRequestData?.property_request ?? [], [allRequestData])
     // table structure
     const columns = React.useMemo<{ Header: string, accessor: string | undefined | ((d: any) => string | number | undefined | JSX.Element) }[]>(
@@ -75,7 +80,16 @@ export default function Properties() {
     return <>
         {Loader}
         <div>
-            <Table columns={columns} data={result} />
+            <Table
+                columns={columns}
+                data={result}
+                sortData={
+                    {
+                        fields:
+                            { "user.name": "Name", "user.email": "Email", "reachout_time": "Reachout time", "intended_move_in_date": "Move in date", "lease_duration": "Lease duration","isApproved":"Status" },
+                        onChange: onSortChange
+                    }
+                } />
         </div>
     </>
 }
