@@ -34,7 +34,12 @@ export interface IUserData {
         name: string
       }
     }
-    created_at: string
+    created_at: string,
+    user_roles: {
+      role: {
+        name: string
+      }
+    }[]
   }[]
 
 }
@@ -103,6 +108,11 @@ export default {
       }
     }
     created_at
+    user_roles {
+      role {
+        name
+      }
+    }
   }
 }
 `
