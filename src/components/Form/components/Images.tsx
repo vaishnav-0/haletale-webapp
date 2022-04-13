@@ -64,6 +64,7 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                         divElm.appendChild(img);
                         const cropper = new cropperjs(img, {
                             aspectRatio: aspectRatio,
+                            autoCropArea:1,
                             ready() {
                                 (this as any).cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
                                     if (blob) {
@@ -291,6 +292,7 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                                 guides={false}
                                                 src={images[editor][CUSTOM_DATA_URL]}
                                                 ref={cropperRef}
+                                                viewMode={1}
                                             >
 
                                             </Cropper>
