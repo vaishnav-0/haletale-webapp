@@ -62,6 +62,10 @@ export default function Properties() {
                 accessor: 'user_detail.country.name',
             },
             {
+                Header: "Role",
+                accessor: (data)=>data.user_roles.map((v) =>v.role.name).join(' ')
+            },
+            {
                 Header: 'Created at',
                 accessor: 'created_at'
             },
