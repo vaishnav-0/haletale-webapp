@@ -16,10 +16,10 @@ export type PropsType = {
     disabled?: boolean,
     defaultValue?: number,
     minLabel?: string
-
+    steps?:number
 }
 export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange = () => { }
-    , onIncrement, onDecrement, setValueRef, key, disabled, defaultValue, minLabel }: PropsType): JSX.Element {
+    , onIncrement, onDecrement, setValueRef, key, disabled, defaultValue, minLabel,steps=1 }: PropsType): JSX.Element {
     if (disabled)
         disabledBtn = [0, 1];
     const _defaultValue = defaultValue ?
@@ -36,9 +36,9 @@ export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange
                 className={count === min || disabledBtn.includes(0) ? style["inactive"] : ""}
                 onClick={() => {
                     if (!disabledBtn.includes(0) && count > min) {
-                        onChange && onChange(count - 1);
-                        onDecrement && onDecrement(count - 1);
-                        setCount(count - 1);
+                        onChange && onChange(count - steps);
+                        onDecrement && onDecrement(count - steps);
+                        setCount(count - steps);
                     }
                 }}>
                 <i className="fas fa-minus"></i>
@@ -55,9 +55,9 @@ export function NumberInput({ init = 0, min = 0, max, disabledBtn = [], onChange
                 className={count === max || disabledBtn.includes(1) ? style["inactive"] : ""}
                 onClick={() => {
                     if (!disabledBtn.includes(1) && (max == null || count != max)) {
-                        onChange && onChange(count + 1);
-                        onIncrement && onIncrement(count + 1);
-                        setCount(count + 1);
+                        onChange && onChange(count + steps);
+                        onIncrement && onIncrement(count + steps);
+                        setCount(count + steps);
                     }
                 }}>
                 <i className="fas fa-plus"></i>
