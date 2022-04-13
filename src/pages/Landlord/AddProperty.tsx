@@ -286,7 +286,8 @@ function AddPropertyForm3(props: FormPropsType) {
                 type: "number",
                 props: {
                     min: 1,
-                    max: 10
+                    max: 10,
+                    steps: 0.5
                 }
             },
             {
@@ -508,7 +509,6 @@ function AddProperty(): JSX.Element {
                 toast.success("Property added");
                 navigate("/landlord/dashboard");
             }}
-                parallel
             />
         </Layout >
     );
