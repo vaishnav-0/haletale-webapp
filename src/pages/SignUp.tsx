@@ -38,8 +38,8 @@ const schema = {
             props: {
                 type: "text"
             },
-            validationSchema: stringFieldRequired
-
+            validationSchema: stringFieldRequired,
+            valueTransform:(v:string)=>v.toLowerCase()
         },
         {
             title: "Date of birth",
