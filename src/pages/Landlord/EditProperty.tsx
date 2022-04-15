@@ -303,7 +303,7 @@ export default function EditProperty() {
                                 item.props.fetchList = property.property_images ? property.property_images.map(e => { return { url: e?.s3Url?.url, name: e?.key } }) : []
                             },
                             address: (item: any) => {
-                                item.info = "Current address: " + property.property_address?.address?.full_address;
+                                item.info = "Current address: " + (property.property_address?.address?.unit ?? "") + " " + property.property_address?.address?.full_address;
                             },
                             type: (item: any) => {
                                 item.props.values = {
@@ -415,6 +415,7 @@ export default function EditProperty() {
             lease_term: d.lease_term,
             rooms: { bedroom: d.bedroom, bathroom: d.bathroom, parking: d.parking },
         }
+        console.log(details);
         updateProperty({
             variables: {
                 id: property?.id,

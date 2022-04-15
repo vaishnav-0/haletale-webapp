@@ -2,8 +2,8 @@ import { gql } from '@apollo/client'
 
 
 export default {
-  ADD_PROPERTY_ADDRESS: gql`mutation MyMutation($property_id: uuid, $administrative_area_level_1: String, $administrative_area_level_2: String, $country: String, $full_address: String, $locality: String,$sublocality:String, $route: String, $street_number: String, $postal_code: String) {
-    insert_property_address(objects: {property_id: $property_id, address: {data: {administrative_area_level_1: $administrative_area_level_1, administrative_area_level_2: $administrative_area_level_2, country: $country, full_address: $full_address, locality: $locality, route: $route, street_number: $street_number, postal_code: $postal_code,sublocality:$sublocality}}}) {
+  ADD_PROPERTY_ADDRESS: gql`mutation MyMutation($property_id: uuid, $administrative_area_level_1: String, $administrative_area_level_2: String, $country: String, $full_address: String, $locality: String,$sublocality:String, $route: String, $street_number: String, $postal_code: String,$unit:String) {
+    insert_property_address(objects: {property_id: $property_id, address: {data: {administrative_area_level_1: $administrative_area_level_1, administrative_area_level_2: $administrative_area_level_2, country: $country, full_address: $full_address, locality: $locality, route: $route, street_number: $street_number, postal_code: $postal_code,sublocality:$sublocality,unit:$unit}}}) {
    affected_rows 
     }
   }`,
@@ -55,11 +55,11 @@ export default {
     }
     
   }`,
-  DELETE_PROPERTY: gql`mutation DELETE_PROPERTY($pId: uuid, $aId: uuid) {
-  delete_property(where: {id: {_eq: $pId}}) {
+  DELETE_PROPERTIES: gql`mutation DELETE_PROPERTIES($pIds: [uuid!], $aIds: [uuid!]) {
+  delete_property(where: {id: {_in: $pIds}}) {
     affected_rows
   }
-  delete_address(where: {id: {_eq: $aId}}) {
+  delete_address(where: {id: {_in: $aIds}}) {
     affected_rows
   }
 }
@@ -76,8 +76,8 @@ export default {
 }
 
 `,
-  UPDATE_IS_APPROVED: gql`mutation UPDATE_IS_APPROVED($id: uuid, $is_approved: Boolean) {
-  update_property(where: {id: {_eq: $id}}, _set: {is_approved: $is_approved}){
+  UPDATE_IS_APPROVED: gql`mutation UPDATE_IS_APPROVED($ids: [uuid!], $is_approved: Boolean) {
+  update_property(where: {id: {_in: $ids}}, _set: {is_approved: $is_approved}){
         affected_rows
   }
 }
