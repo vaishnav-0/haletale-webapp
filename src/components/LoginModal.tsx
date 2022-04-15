@@ -7,8 +7,6 @@ import googleLogo from '../assets/icons/google-logo.png';
 import fbLogo from '../assets/icons/fb_logo_color.png';
 import { useNavigate } from 'react-router-dom';
 import FormGenerator, { SchemaType } from '../components/Form/FormGenerator';
-import { validateSchema } from 'graphql';
-import { MessageBox } from './MessageBox';
 import { resendConfirmationCode } from '../functions/auth/cognito';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
@@ -20,7 +18,8 @@ const schema: SchemaType = {
             name: "email",
             type: "text",
             props: {
-                type: "text"
+                type: "text",
+                autoComplete:"off"
             },
             validationSchema: yup.string().email().required("Email is required.")
         },
