@@ -8,7 +8,7 @@ export interface PropsType extends InputPropsType {
 
 export const TextInput = React.forwardRef<HTMLInputElement, PropsType>(({ children, height, ...inputProps }: PropsType, ref) => {
     return (
-        <div className={style["textbox"]} style={height ? { height: height + "px" } : {}}>
+        <div className={style["textbox"] + (inputProps.disabled ? ` ${style["disabled"]}` : "")} style={height ? { height: height + "px" } : {}}>
             <input {...inputProps} ref={ref} />
             {
                 children

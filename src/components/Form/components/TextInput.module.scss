@@ -1,4 +1,5 @@
 @import 'src/styles/mixins.scss';
+@import 'src/colors.scss';
 
 .textbox {
     display: flex;
@@ -7,6 +8,17 @@
     border-radius: 1.5em;
     @include def-shadow;
     padding: 0 0.8em;
+
+    &.disabled {
+        background: #d4d4d4;
+        input {
+            cursor: not-allowed;
+            &::placeholder{
+                color: white;
+                font-weight: 700;
+            }
+        }
+    }
 
     button {
         @include clickable-text-btn;
@@ -17,8 +29,10 @@
         border-radius: inherit;
         background-color: inherit;
         height: 100%;
-        &::placeholder{
+
+        &::placeholder {
             font-size: 0.8em;
         }
+
     }
 }
