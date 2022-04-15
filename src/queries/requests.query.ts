@@ -4,7 +4,9 @@ export interface IRequestData {
   property_request: {
     intended_move_in_date: string,
     lease_duration: number,
-    reachout_time?: string
+    reachout_time?: string,
+    isApproved: boolean,
+    status:string,
     other_tenents?:
     {
       name?: string
@@ -36,6 +38,35 @@ export interface IRequestCount {
     }
   }
 }
+export const RequestAdminFragment = gql`fragment RequestAdminFragment on property_request{
+        id
+        intended_move_in_date
+        lease_duration
+        other_tenents
+        property_id
+        reachout_time
+        isApproved
+        status
+        user {
+          email
+          phone
+          name
+        }
+}
+`;
+export const RequestFragment = gql`fragment RequestAdminFragment on property_request{
+         id
+        intended_move_in_date
+        lease_duration
+        other_tenents
+        property_id
+        user {
+          email
+          phone
+          name
+        }
+}
+`;
 export default {
   GET_ALL_REQUEST_COUNT: gql`query GET_ALL_REQUEST_COUNT {
   property_request(distinct_on: property_id) {
@@ -64,50 +95,23 @@ export default {
 }
   `,
   GET_ALL_REQUESTS: gql`query PROPERTY_REQUEST {
-        property_request {
-        id
-        intended_move_in_date
-        lease_duration
-        other_tenents
-        property_id
-        user {
-          email
-          phone
-          name
-        }
-        }
+        ...RequestFragment
       }
-      `, ADMIN_GET_ALL_REQUESTS: gql`query ADMIN_GET_ALL_REQUESTS($order_by:property_request_order_by={}) {
+      ${RequestFragment}
+      `,
+  ADMIN_GET_ALL_REQUESTS: gql`query ADMIN_GET_ALL_REQUESTS($order_by:property_request_order_by={}) {
         property_request(order_by:[$order_by]) {
-        id
-        intended_move_in_date
-        lease_duration
-        other_tenents
-        property_id
-        reachout_time
-        isApproved
-        user {
-          email
-          phone
-          name
-        }
+          ...RequestAdminFragment
         }
       }
+      ${RequestAdminFragment}
       `,
   GET_REQUEST_BY_ID: gql`query PROPERTY_REQUEST($id:uuid) {
   property_request(where: {property_id: {_eq: $id}}) {
-    intended_move_in_date
-    lease_duration
-    living_type
-    other_tenents
-    requested_at
-    user {
-          email
-          phone
-          name
-        }
+    ...RequestFragment
   }
 }
+${RequestFragment}
 `,
   GET_REQUESTED_PROPERTIES: gql`query PROPERTY_REQUEST {
         property_request {
@@ -117,5 +121,4 @@ export default {
         property_id
         }
       }`,
-
 }

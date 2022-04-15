@@ -9,12 +9,23 @@ export default {
       }
       `,
 
-  APPROVE_REQUEST : gql`mutation REQUEST_APPROVAL_STATUS($isApproved: Boolean, $id: uuid) {
-    update_property_request(where: {id: {_eq: $id}}, _set: {isApproved: $isApproved}){
+  APPROVE_REQUESTS : gql`mutation REQUEST_APPROVAL_STATUS($isApproved: Boolean, $ids: [uuid!]) {
+    update_property_request(where: {id: {_in: $ids}}, _set: {isApproved: $isApproved}){
       affected_rows
     }
   }
   `,
-  
+  DELETE_REQUEST:gql`mutation DELETE_REQUEST($ids: [uuid!]) {
+    delete_property_request(where: {id: {_in: $ids}}) {
+      affected_rows
+  }
+}
+  `,
+  UPDATE_STATUS:gql`mutation UPDATE_STATUS($status: String = "", $id: uuid) {
+  update_property_request(where: {id: {_eq: $id}}, _set: {status: $status}) {
+    affected_rows
+  }
+}
 
+  `
 }
