@@ -1,13 +1,15 @@
 import React from "react";
-import { useGlobalFilter, usePagination, useTable } from "react-table"
+import { useGlobalFilter, usePagination, useTable, useRowSelect } from "react-table";
 import FormGenerator from "./Form/FormGenerator";
 import style from './Table.module.scss';
 import * as yup from 'yup';
 import { TextInput } from "./Form/components/TextInput";
 import debounce from "../functions/debounce";
+import { CheckBox } from "./Form/components/ToggleButtons";
+import { ButtonHollow } from "./Button";
 
-export default function Table({ columns, data, sortData }:
-    { columns: any, data: any, sortData?: { fields: { [k: string]: string }, onChange: (e: any) => void } }) {
+export default function Table({ columns, data, sortData, actions }:
+    { columns: any, data: any, sortData?: { fields: { [k: string]: string }, onChange: (e: any) => void }, actions?: { [k: string]: (d: any) => void } }) {
     const {
         getTableProps,
         getTableBodyProps,
@@ -23,6 +25,7 @@ export default function Table({ columns, data, sortData }:
         previousPage,
         setPageSize,
         setGlobalFilter,
+        selectedFlatRows,
         state: { pageIndex, pageSize },
     } = useTable(
         {
@@ -32,6 +35,30 @@ export default function Table({ columns, data, sortData }:
         },
         useGlobalFilter,
         usePagination,
+        useRowSelect,
+        hooks => {
+            hooks.visibleColumns.push(columns => [
+                // Let's make a column for selection
+                {
+                    id: 'selection',
+                    // The header can use the table's getToggleAllRowsSelectedProps method
+                    // to render a checkbox
+                    Header: ({ getToggleAllPageRowsSelectedProps }) => (
+                        <div>
+                            <CheckBox name="select_all" {...getToggleAllPageRowsSelectedProps()} />
+                        </div>
+                    ),
+                    // The cell can use the individual row's getToggleRowSelectedProps method
+                    // to the render a checkbox
+                    Cell: ({ row }) => (
+                        <div>
+                            <CheckBox name="select" {...row.getToggleRowSelectedProps()} />
+                        </div>
+                    ),
+                },
+                ...columns,
+            ])
+        }
     )
     const [currPage, setCurrPage] = React.useState(0);
     React.useEffect(() => {
@@ -87,9 +114,21 @@ export default function Table({ columns, data, sortData }:
                 <div className={style["sort-container"]}>
                     <div>Search:</div>
                     <div className={style["sort-dropdown-container"]}>
-                        <TextInput type="text" name="search" onChange={(v) => setFilter(v.target.value)} height={40}/>
+                        <TextInput type="text" name="search" onChange={(v) => setFilter(v.target.value)} height={40} />
                     </div>
                 </div>
+                {
+                    actions && <div className={style["sort-container"]}>
+                        <div>Actions:</div>
+                        <div className={style["action-container"]}>
+                            {
+                                Object.entries(actions).map(([label, action]) => (
+                                    <ButtonHollow disabled={!selectedFlatRows.length} onClick={() => action(selectedFlatRows.map(row => row.original))} >{label}</ButtonHollow>
+                                ))
+                            }
+                        </div>
+                    </div>
+                }
             </div>
             <table {...getTableProps()} className={style["table"]}>
                 <thead>

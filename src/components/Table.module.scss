@@ -86,3 +86,14 @@
     flex-wrap: wrap;
     width: 90%;
 }
+
+.action-container{
+    display: flex;
+    align-items: center;
+    padding-left: 0.5em;
+    &>button{
+        padding: 0.5em;
+        margin: 0 0.5em;
+        white-space: nowrap;
+    }
+}
