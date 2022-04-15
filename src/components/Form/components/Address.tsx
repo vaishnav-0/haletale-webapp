@@ -22,19 +22,33 @@ export function AddressInput({ onChange, disabled, defaultValue }: PropsType) {
             placeholder="Search a place"
             onChange={suggest}
             onSubmit={(v, i) => {
-                let value: any = {};
-                value.address = v;
-                addressToGeo(suggestions[i!][1]).then(d => {
-                    const addressComponents = ["administrative_area_level_1", "sublocality", "administrative_area_level_2", "country", "locality", "route", "street_number", "postal_code"];
-                    value.addressComponents = extractAddressComponents(d);
-                    value.addressComponents.full_address = v;
-                    value.coords = [d.geometry.location.lat, d.geometry.location.lng];
-                    setValue(value);
-                }).catch(e => {
-                    console.log(e);
-                });
+                if (i != undefined) {
+                    let value: any = {}
+                    value.address = v;
+                    addressToGeo(suggestions[i!][1]).then(d => {
+                        value.addressComponents = extractAddressComponents(d);
+                        value.addressComponents.full_address = v;
+                        value.coords = [d.geometry.location.lat, d.geometry.location.lng];
+                        setValue(value);
+                    }).catch(e => {
+                        console.log(e);
+                    });
+                }
             }}
             submitOnSuggestionClick />
+        <TextInput
+            placeholder="Unit number"
+            disabled={!value}
+            name="unit"
+            type="text"
+            onChange={(v) => setValue(prev => {
+                if (prev) {
+                    const cp = cloneDeep(prev);
+                    cp.addressComponents.unit = v.target.value;
+                    return cp;
+                } else
+                    return prev;
+            })} />
         <CoordinateInput
             disabled={true}
             center={[55.731538, -103.650174]}
