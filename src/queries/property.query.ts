@@ -14,6 +14,7 @@ interface IPropertyQueryOptional {
       administrative_area_level_2: string
       route: string
       street_number: string
+      unit: string
     }
   }
   property_detail: {
@@ -110,6 +111,7 @@ export const propertyBasicFragment = gql`
       property_address {
         address {
         id
+        unit
         full_address
       }
     }
@@ -139,6 +141,7 @@ export const propertyFragment = gql`
       property_address {
         address {
         id
+        unit
         full_address
           ${""//locality
   //country
