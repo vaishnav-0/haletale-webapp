@@ -10,7 +10,7 @@ import Table from '../../../components/Table';
 import { objectStringifiedAccessor } from '../../../functions/utils';
 import { usePopupDialog } from '../../../components/PopupDialog';
 import ClampLines from 'react-clamp-lines';
-import { ButtonHollow } from '../../../components/Button';
+import { ButtonHollow, ButtonSolid } from '../../../components/Button';
 import { TextArea } from '../../../components/Form/components/TextArea';
 
 const StatusEditor = (props: { submit: (v: string) => void, close: () => void, defaultValue?: string }) => {
@@ -19,15 +19,15 @@ const StatusEditor = (props: { submit: (v: string) => void, close: () => void, d
     }>
         Status:
         <TextArea onChange={e => statusRef.current = e.target.value} name='status-edit' rows={5} cols={40} defaultValue={props.defaultValue} />
-        <ButtonHollow onClick={() => {
+        <ButtonSolid style={{padding:"0.5em"}} onClick={() => {
             props.submit(statusRef.current);
             props.close();
-        }}>Edit</ButtonHollow>
+        }}>Edit</ButtonSolid>
     </div >
 }
 export default function Properties() {
     const navigate = useNavigate();
-    const [Popup, setPopup] = usePopupDialog();
+    const [Popup, setPopup] = usePopupDialog({ buttonsVisible: false });
     const { data: allRequestData, loading: allRequestDataLoading, refetch } = useQuery<IRequestData>(requestsQuery.ADMIN_GET_ALL_REQUESTS, {
         fetchPolicy: "network-only"
     });
