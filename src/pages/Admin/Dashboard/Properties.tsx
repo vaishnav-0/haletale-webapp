@@ -8,6 +8,7 @@ import propertyMutation from '../../../queries/property.mutation';
 import { useLoader } from '../../../components/Loader';
 import Table from '../../../components/Table';
 import { objectStringifiedAccessor } from '../../../functions/utils';
+import { usePopupDialog } from '../../../components/PopupDialog';
 
 export default function Properties() {
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ export default function Properties() {
       setLoader(false)
   }, [propertyLoading])
   const [Loader, setLoader] = useLoader({});
+  const [Popup, setPopup] = usePopupDialog();
   const [setApprovedMutation, { data: setApprovedMutationData, loading: setApprovedutationLoading }] = useMutation(propertyMutation.UPDATE_IS_APPROVED, { onCompleted: refetch })
+  const [deleteProperties, { data: deletePropertiesData, loading: deletePropertiesLoading }] = useMutation(propertyMutation.DELETE_PROPERTIES, { onCompleted: refetch })
   const [data, setData] = React.useState<readonly IPropertyDetails[]>([]);
   const [current_page, setPage] = React.useState<Number>(0);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
@@ -46,7 +49,7 @@ export default function Properties() {
       },
       {
         Header: 'Approval',
-        accessor: (data) => <button onClick={() => setApprovedMutation({ variables: { id: data.id, is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Remove approval" : "Approve"}</button>,
+        accessor: (data) => <button onClick={() => setApprovedMutation({ variables: { ids: [data.id], is_approved: !data.is_approved } })} className={`${style["property-approve-btn"]} ${data.is_approved ? style["disapprove"] : ""}`}>{data.is_approved ? "Remove approval" : "Approve"}</button>,
       },
       {
         Header: 'Full Address',
@@ -98,6 +101,7 @@ export default function Properties() {
 
   return <>
     {Loader}
+    {Popup}
     <div>
       <Table
         columns={columns}
@@ -108,7 +112,15 @@ export default function Properties() {
               { "name": "name", "property_detail.rent_amount": "Rent", "property_detail.max_occupants": "Max occupants", "is_approved": "Approval", "is_listed": "Listed" },
             onChange: onSortChange
           }
-        } />
+        }
+        actions={
+          {
+            "Delete": (data: IGetAllPropertyData["property"]) => setPopup(true, "This will delete the selected properties. Are you sure?", () => deleteProperties({ variables: { pIds: data.map((e: any) => e.id), aIds: data.map((e) => e.property_address?.address?.id) } })),
+            "Approve": (data: any) => setPopup(true, "This will approve the selected properties. Are you sure?", () => setApprovedMutation({ variables: { ids: data.map((e: any) => e.id), is_approved: true } })),
+            "Remove Approval": (data: any) => setPopup(true, "This remove approval for the selected properties. Are you sure?", () => setApprovedMutation({ variables: { ids: data.map((e: any) => e.id), is_approved: false } })),
+          }
+        }
+      />
     </div>
   </>
 }
