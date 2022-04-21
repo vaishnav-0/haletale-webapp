@@ -9,12 +9,15 @@ import userQuery, { IUserData } from '../../../queries/user.query';
 import { userMutation } from '../../../queries';
 import Table from '../../../components/Table';
 import { objectStringifiedAccessor } from '../../../functions/utils';
+import { usePopupDialog } from '../../../components/PopupDialog';
 
 export default function Properties() {
     const navigate = useNavigate();
     const { data: allUserData, loading: allUserDataLoading, refetch } = useQuery<IUserData>(userQuery.ADMIN_GET_ALL_USERS, {
         fetchPolicy: "network-only"
     });
+    const [deleteUsers, { data: userDeleteData, loading: userDeleteLoading, }] = useMutation(userMutation.DELETE_USERS, { onCompleted: refetch });
+    const [Popup, setPopup] = usePopupDialog();
     React.useEffect(() => {
         if (allUserDataLoading)
             setLoader(true)
@@ -63,7 +66,7 @@ export default function Properties() {
             },
             {
                 Header: "Role",
-                accessor: (data)=>data.user_roles.map((v) =>v.role.name).join(' ')
+                accessor: (data) => data.user_roles.map((v) => v.role.name).join(' ')
             },
             {
                 Header: 'Created at',
@@ -79,6 +82,7 @@ export default function Properties() {
     )
     return <>
         {Loader}
+        {Popup}
         <div>
             <Table
                 columns={columns}
@@ -89,7 +93,13 @@ export default function Properties() {
                             { "name": "Name", "email": "Email", "user_detail.date_of_birth": "DOB", "user_detail.country.name": "Nationality", "created_at": "Created", "isActive": "Status" },
                         onChange: onSortChange
                     }
-                } />
+                }
+                actions={
+                    {
+                        "Delete": (data: any) => setPopup(true, "This will delete the selected users. Are you sure?", () => deleteUsers({ variables: { ids: data.map((e: any) => e.id) } })),
+                    }
+                }
+            />
         </div>
     </>
 }

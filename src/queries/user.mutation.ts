@@ -39,10 +39,12 @@ export default {
     affected_rows
   }
 }`,
-
-
-
-
+  DELETE_USERS:gql`mutation DELETE_USERS($ids: [uuid!]) {
+  delete_user(where: {id: {_in: $ids}}) {
+    affected_rows
+  }
+}
+`
 }
 
 
