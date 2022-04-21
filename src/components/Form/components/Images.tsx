@@ -10,6 +10,7 @@ import cropperjs from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import { usePillCollection } from './PillList';
 import { toast } from 'react-toastify';
+const aspectRatio = 16 / 9;
 export interface PropsType {
     max?: number,
     multiple?: boolean,
@@ -33,9 +34,9 @@ const tagItems = {
 const CUSTOM_DATA_URL = "dataUrl";
 const toDataURL = (url: string, fileName: string) => {
     return fetch(url, { mode: "cors" })
-        .then(response => response.blob() )
+        .then(response => response.blob())
         .then(blob => new Promise((resolve, reject) => {
-            var file = new File([blob], fileName,{type:blob.type});
+            var file = new File([blob], fileName, { type: blob.type });
             const reader = new FileReader();
             reader.onloadend = () => resolve({ dataUrl: reader.result, file: file });
             reader.onerror = reject
@@ -64,7 +65,7 @@ export function cropToAspectRatio(imgList: ImageListType, aspectRatio: number) {
                         divElm.appendChild(img);
                         const cropper = new cropperjs(img, {
                             aspectRatio: aspectRatio,
-                            autoCropArea:1,
+                            autoCropArea: 1,
                             ready() {
                                 (this as any).cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
                                     if (blob) {
@@ -109,6 +110,15 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
     //         className: style["tag"]
     //     }
     // })
+    const cropperReadyFn = React.useCallback((e: any) => {
+        const cropper = (e.target as any).cropper;
+        const imageData = cropper.getImageData();
+        const h = imageData.width / aspectRatio;
+        cropper.setCropBoxData({
+            width: imageData.width,
+            top: (imageData.height - h) / 2,
+        });
+    }, []);
     React.useEffect(() => {
         if (fetchList)
             Promise.allSettled(fetchList.map(e => toDataURL(e.url, e.name))
@@ -288,11 +298,12 @@ export function ImageUpload({ max = 1000, multiple = true, acceptType = ['jpg', 
                                         <div className={style["image-editor-container"]}>
                                             <Cropper
                                                 className={style["image-editor"]}
-                                                aspectRatio={16 / 9}
+                                                aspectRatio={aspectRatio}
                                                 guides={false}
                                                 src={images[editor][CUSTOM_DATA_URL]}
                                                 ref={cropperRef}
                                                 viewMode={1}
+                                                ready={cropperReadyFn}
                                             >
 
                                             </Cropper>
